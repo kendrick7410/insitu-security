@@ -29,7 +29,8 @@ const APP = {
   gl: null,
   surfaceFound: false,
   raycaster: new THREE.Raycaster(),
-  loader: null
+  loader: null,
+  lastUIClick: 0  // Timestamp of last UI button click
 };
 
 // UI Elements (will be initialized after DOM ready)
@@ -397,6 +398,21 @@ function placeObject() {
  */
 function onSelect(event) {
   debugLog('👆 TAP DETECTED! Mode: ' + STATE.currentMode);
+
+  // Check if tap was on a UI element (button, panel, etc.)
+  if (event && event.inputSource && event.inputSource.targetRayMode === 'screen') {
+    // This is a screen tap - might be on UI
+    // We'll let it pass through for now since we can't easily check target
+    // The issue is that XR select fires for ALL taps, including UI
+  }
+
+  // WORKAROUND: Add a small delay to avoid conflicts with UI button clicks
+  // If a UI button was just clicked, skip this select event
+  const now = Date.now();
+  if (APP.lastUIClick && (now - APP.lastUIClick) < 300) {
+    debugLog('  ⏭️ Skipping - UI button was just clicked');
+    return;
+  }
 
   if (STATE.currentMode === 'place') {
     debugLog('  📍 Calling placeObject...');
@@ -834,6 +850,7 @@ function setupUIListeners() {
   debugLog('🟢 Setting up catalog item listeners: ' + UI.catalogItems.length + ' items');
   UI.catalogItems.forEach((btn, index) => {
     btn.addEventListener('click', () => {
+      APP.lastUIClick = Date.now();
       debugLog('🔵 Catalog item clicked: ' + btn.dataset.type);
       UI.catalogItems.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -845,16 +862,19 @@ function setupUIListeners() {
 
   // Toggle list
   UI.toggleListBtn.addEventListener('click', () => {
+    APP.lastUIClick = Date.now();
     UI.listPanel.classList.toggle('hidden');
   });
 
   // Close list
   UI.closeList.addEventListener('click', () => {
+    APP.lastUIClick = Date.now();
     UI.listPanel.classList.add('hidden');
   });
 
   // Close inspector
   UI.closeInspector.addEventListener('click', () => {
+    APP.lastUIClick = Date.now();
     deselectObject();
   });
 
@@ -892,6 +912,7 @@ function setupUIListeners() {
 
   // Move button
   UI.moveBtn.addEventListener('click', () => {
+    APP.lastUIClick = Date.now();
     STATE.setMode('move');
     updateModeIndicator();
     updateStatus('Tap surface to move object');
@@ -900,16 +921,19 @@ function setupUIListeners() {
 
   // Duplicate button
   UI.duplicateBtn.addEventListener('click', () => {
+    APP.lastUIClick = Date.now();
     duplicateSelectedObject();
   });
 
   // Delete button
   UI.deleteBtn.addEventListener('click', () => {
+    APP.lastUIClick = Date.now();
     deleteSelectedObject();
   });
 
   // Clear all
   UI.clearAllBtn.addEventListener('click', () => {
+    APP.lastUIClick = Date.now();
     clearAllObjects();
   });
 
