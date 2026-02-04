@@ -4,6 +4,8 @@
  * Security system planner with multi-object placement
  */
 
+console.log('🟢 app.js loaded');
+
 // Global app state
 const APP = {
   scene: null,
@@ -26,8 +28,10 @@ const UI = {};
  * Initialize UI element references
  */
 function initUIElements() {
+  console.log('🟢 initUIElements called');
   UI.startScreen = document.getElementById('start-screen');
   UI.startButton = document.getElementById('start-ar-button');
+  console.log('🟢 startButton:', UI.startButton);
   UI.loadingScreen = document.getElementById('loading-screen');
   UI.loadingText = document.getElementById('loading-text');
   UI.errorMessage = document.getElementById('error-message');
@@ -517,6 +521,8 @@ async function checkWebXRSupport() {
  * Start WebXR AR Session
  */
 async function startARSession() {
+  console.log('🔵 startARSession called!');
+  alert('Start button clicked!'); // Temporary debug alert
   UI.startScreen.classList.add('hidden');
   UI.loadingScreen.classList.remove('hidden');
   UI.loadingText.textContent = 'Initializing AR...';
@@ -640,6 +646,20 @@ function onSessionEnd() {
  * Setup UI event listeners
  */
 function setupUIListeners() {
+  console.log('🟢 setupUIListeners called');
+
+  // Start button
+  console.log('🟢 Setting up start button listener');
+  if (UI.startButton) {
+    UI.startButton.addEventListener('click', () => {
+      console.log('🔵 Start button clicked!');
+      startARSession();
+    });
+    console.log('🟢 Start button listener added');
+  } else {
+    console.error('❌ Start button not found!');
+  }
+
   // Catalog items
   UI.catalogItems.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -718,9 +738,6 @@ function setupUIListeners() {
   UI.clearAllBtn.addEventListener('click', () => {
     clearAllObjects();
   });
-
-  // Start button
-  UI.startButton.addEventListener('click', startARSession);
 
   // Reload button
   UI.reloadButton.addEventListener('click', () => {
