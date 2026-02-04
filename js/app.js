@@ -100,66 +100,105 @@ function updateModeIndicator() {
  * Initialize three.js scene
  */
 function initThreeJS() {
-  // Scene
-  APP.scene = new THREE.Scene();
+  try {
+    debugLog('🔧 Checking THREE availability...');
+    if (typeof THREE === 'undefined') {
+      debugLog('❌ THREE is not defined! CDN not loaded');
+      showError('THREE.js library failed to load from CDN');
+      return;
+    }
+    debugLog('✅ THREE is available');
 
-  // Camera
-  APP.camera = new THREE.PerspectiveCamera(
-    70,
-    window.innerWidth / window.innerHeight,
-    0.01,
-    20
-  );
+    debugLog('🔧 Creating scene...');
+    APP.scene = new THREE.Scene();
+    debugLog('✅ Scene created');
 
-  // Renderer with XR support
-  APP.renderer = new THREE.WebGLRenderer({
-    alpha: true,
-    antialias: true,
-    xrCompatible: true
-  });
-  APP.renderer.setSize(window.innerWidth, window.innerHeight);
-  APP.renderer.setPixelRatio(window.devicePixelRatio);
-  APP.renderer.xr.enabled = true;
+    debugLog('🔧 Creating camera...');
+    APP.camera = new THREE.PerspectiveCamera(
+      70,
+      window.innerWidth / window.innerHeight,
+      0.01,
+      20
+    );
+    debugLog('✅ Camera created');
 
-  document.getElementById('ar-container').appendChild(APP.renderer.domElement);
+    debugLog('🔧 Creating WebGL renderer...');
+    APP.renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: true,
+      xrCompatible: true
+    });
+    debugLog('✅ Renderer created');
 
-  // Lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-  APP.scene.add(ambientLight);
+    debugLog('🔧 Configuring renderer...');
+    APP.renderer.setSize(window.innerWidth, window.innerHeight);
+    APP.renderer.setPixelRatio(window.devicePixelRatio);
+    APP.renderer.xr.enabled = true;
+    debugLog('✅ Renderer configured');
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
-  directionalLight.position.set(1, 2, 1);
-  APP.scene.add(directionalLight);
+    debugLog('🔧 Appending canvas to DOM...');
+    document.getElementById('ar-container').appendChild(APP.renderer.domElement);
+    debugLog('✅ Canvas appended');
 
-  // Create reticle
-  createReticle();
+    debugLog('🔧 Adding lights...');
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    APP.scene.add(ambientLight);
 
-  // Initialize GLTF loader
-  APP.loader = new THREE.GLTFLoader();
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    directionalLight.position.set(1, 2, 1);
+    APP.scene.add(directionalLight);
+    debugLog('✅ Lights added');
 
-  console.log('three.js initialized');
+    debugLog('🔧 Creating reticle...');
+    createReticle();
+    debugLog('✅ Reticle created');
+
+    debugLog('🔧 Checking GLTFLoader...');
+    if (typeof THREE.GLTFLoader === 'undefined') {
+      debugLog('⚠️ GLTFLoader not available, will use fallback');
+      APP.loader = null;
+    } else {
+      APP.loader = new THREE.GLTFLoader();
+      debugLog('✅ GLTFLoader initialized');
+    }
+
+    debugLog('✅ three.js initialization complete');
+  } catch (error) {
+    debugLog('❌ Error in initThreeJS: ' + error.message);
+    showError('Failed to initialize 3D engine: ' + error.message);
+  }
 }
 
 /**
  * Create reticle for surface placement
  */
 function createReticle() {
-  const geometry = new THREE.RingGeometry(
-    CONFIG.reticle.size * 0.85,
-    CONFIG.reticle.size,
-    32
-  );
-  const material = new THREE.MeshBasicMaterial({
-    color: CONFIG.reticle.color,
-    opacity: CONFIG.reticle.opacity,
-    transparent: true,
-    side: THREE.DoubleSide
-  });
+  try {
+    debugLog('  📍 Creating reticle geometry...');
+    const geometry = new THREE.RingGeometry(
+      CONFIG.reticle.size * 0.85,
+      CONFIG.reticle.size,
+      32
+    );
+    debugLog('  📍 Creating reticle material...');
+    const material = new THREE.MeshBasicMaterial({
+      color: CONFIG.reticle.color,
+      opacity: CONFIG.reticle.opacity,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
 
-  APP.reticle = new THREE.Mesh(geometry, material);
-  APP.reticle.matrixAutoUpdate = false;
-  APP.reticle.visible = false;
-  APP.scene.add(APP.reticle);
+    debugLog('  📍 Creating reticle mesh...');
+    APP.reticle = new THREE.Mesh(geometry, material);
+    APP.reticle.matrixAutoUpdate = false;
+    APP.reticle.visible = false;
+    debugLog('  📍 Adding reticle to scene...');
+    APP.scene.add(APP.reticle);
+    debugLog('  ✅ Reticle complete');
+  } catch (error) {
+    debugLog('  ❌ Error creating reticle: ' + error.message);
+    throw error;
+  }
 }
 
 /**
