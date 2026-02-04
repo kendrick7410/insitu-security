@@ -168,12 +168,94 @@ function loadModel(callback) {
 }
 
 /**
+ * Create stylized cactus
+ */
+function createCactus() {
+  const group = new THREE.Group();
+
+  // Main body
+  const bodyGeometry = new THREE.CylinderGeometry(0.08, 0.08, 0.3, 16);
+  const bodyMaterial = new THREE.MeshStandardMaterial({
+    color: 0x2d5016,
+    roughness: 0.8
+  });
+  const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+  body.position.y = 0.15;
+  group.add(body);
+
+  // Left arm
+  const armGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.15, 16);
+  const leftArm = new THREE.Mesh(armGeometry, bodyMaterial);
+  leftArm.position.set(-0.1, 0.2, 0);
+  leftArm.rotation.z = Math.PI / 4;
+  group.add(leftArm);
+
+  // Right arm
+  const rightArm = new THREE.Mesh(armGeometry, bodyMaterial);
+  rightArm.position.set(0.1, 0.18, 0);
+  rightArm.rotation.z = -Math.PI / 4;
+  group.add(rightArm);
+
+  return group;
+}
+
+/**
+ * Create stylized palm tree
+ */
+function createPalmTree() {
+  const group = new THREE.Group();
+
+  // Trunk
+  const trunkGeometry = new THREE.CylinderGeometry(0.05, 0.07, 0.4, 8);
+  const trunkMaterial = new THREE.MeshStandardMaterial({
+    color: 0x8b4513,
+    roughness: 0.9
+  });
+  const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+  trunk.position.y = 0.2;
+  group.add(trunk);
+
+  // Leaves (spheres at top)
+  const leafMaterial = new THREE.MeshStandardMaterial({
+    color: 0x228b22,
+    roughness: 0.7
+  });
+
+  for (let i = 0; i < 5; i++) {
+    const angle = (i / 5) * Math.PI * 2;
+    const radius = 0.12;
+    const leaf = new THREE.Mesh(
+      new THREE.SphereGeometry(0.08, 8, 8),
+      leafMaterial
+    );
+    leaf.position.set(
+      Math.cos(angle) * radius,
+      0.42,
+      Math.sin(angle) * radius
+    );
+    leaf.scale.set(1.5, 0.3, 1);
+    leaf.rotation.y = angle;
+    group.add(leaf);
+  }
+
+  return group;
+}
+
+/**
  * Create 3D object based on selected type
  */
 function createObject(type) {
   let geometry;
   const size = 0.2;
 
+  // Handle special plant types
+  if (type === 'cactus') {
+    return createCactus();
+  } else if (type === 'palm') {
+    return createPalmTree();
+  }
+
+  // Handle geometric shapes
   switch (type) {
     case 'cube':
       geometry = new THREE.BoxGeometry(size, size, size);
@@ -214,12 +296,37 @@ function placeObject() {
   updateStatus('Placing object...');
 
   try {
-    // Create the selected 3D object
+    // If avocado plant, load the GLB model
+    if (APP.selectedObjectType === 'avocado') {
+      loadModel((model) => {
+        finalizeObjectPlacement(model);
+      });
+      return;
+    }
+
+    // Create the selected 3D object (shapes or stylized plants)
     const object = createObject(APP.selectedObjectType);
+    finalizeObjectPlacement(object);
+  } catch (error) {
+    console.error('Error placing object:', error);
+    updateStatus('❌ Error: ' + error.message);
+  }
+}
+
+/**
+ * Finalize object placement in the scene
+ */
+function finalizeObjectPlacement(object) {
+  try {
 
     // Position at reticle location
     object.position.setFromMatrixPosition(APP.reticle.matrix);
     object.position.y += 0.1; // Lift slightly above surface
+
+    // Scale avocado model if needed
+    if (APP.selectedObjectType === 'avocado') {
+      object.scale.set(0.3, 0.3, 0.3);
+    }
 
     // Add to scene
     APP.scene.add(object);

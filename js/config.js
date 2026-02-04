@@ -7,9 +7,9 @@
 const CONFIG = {
   // 3D Model configuration
   model: {
-    path: 'models/object.glb', // Path to your 3D model
-    scale: 0.5,                 // Scale of the model
-    rotationY: 0                // Initial Y rotation (radians)
+    path: 'models/avocado-plant.glb', // Path to your 3D model
+    scale: 0.3,                        // Scale of the model
+    rotationY: 0                       // Initial Y rotation (radians)
   },
 
   // Reticle configuration (visual indicator for surface placement)
