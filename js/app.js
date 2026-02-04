@@ -69,7 +69,8 @@ function initThreeJS() {
   // Renderer with XR support
   APP.renderer = new THREE.WebGLRenderer({
     alpha: true,
-    antialias: true
+    antialias: true,
+    xrCompatible: true
   });
   APP.renderer.setSize(window.innerWidth, window.innerHeight);
   APP.renderer.setPixelRatio(window.devicePixelRatio);
