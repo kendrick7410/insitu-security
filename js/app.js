@@ -200,6 +200,102 @@ function createCactus() {
 }
 
 /**
+ * Create stylized unicorn
+ */
+function createUnicorn() {
+  const group = new THREE.Group();
+
+  // Body
+  const bodyGeometry = new THREE.SphereGeometry(0.12, 16, 16);
+  const bodyMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    roughness: 0.3,
+    metalness: 0.2
+  });
+  const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+  body.scale.set(1, 0.8, 1.3);
+  body.position.y = 0.12;
+  group.add(body);
+
+  // Head
+  const headGeometry = new THREE.SphereGeometry(0.08, 16, 16);
+  const head = new THREE.Mesh(headGeometry, bodyMaterial);
+  head.position.set(0, 0.2, 0.15);
+  head.scale.set(0.8, 0.9, 1);
+  group.add(head);
+
+  // Horn (cone on top of head)
+  const hornGeometry = new THREE.ConeGeometry(0.02, 0.12, 8);
+  const hornMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffd700,
+    roughness: 0.2,
+    metalness: 0.8
+  });
+  const horn = new THREE.Mesh(hornGeometry, hornMaterial);
+  horn.position.set(0, 0.32, 0.15);
+  horn.rotation.z = -0.2;
+  group.add(horn);
+
+  // Ears (small cones)
+  const earGeometry = new THREE.ConeGeometry(0.02, 0.05, 8);
+  const leftEar = new THREE.Mesh(earGeometry, bodyMaterial);
+  leftEar.position.set(-0.05, 0.27, 0.15);
+  group.add(leftEar);
+
+  const rightEar = new THREE.Mesh(earGeometry, bodyMaterial);
+  rightEar.position.set(0.05, 0.27, 0.15);
+  group.add(rightEar);
+
+  // Legs (4 cylinders)
+  const legGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.1, 8);
+  const positions = [
+    [-0.07, 0.05, 0.05],
+    [0.07, 0.05, 0.05],
+    [-0.07, 0.05, -0.05],
+    [0.07, 0.05, -0.05]
+  ];
+
+  positions.forEach(pos => {
+    const leg = new THREE.Mesh(legGeometry, bodyMaterial);
+    leg.position.set(...pos);
+    group.add(leg);
+  });
+
+  // Mane (colorful spheres)
+  const maneColors = [0xff69b4, 0x9370db, 0x87ceeb];
+  for (let i = 0; i < 3; i++) {
+    const maneGeometry = new THREE.SphereGeometry(0.03, 8, 8);
+    const maneMaterial = new THREE.MeshStandardMaterial({
+      color: maneColors[i],
+      roughness: 0.5
+    });
+    const mane = new THREE.Mesh(maneGeometry, maneMaterial);
+    mane.position.set(-0.02 + i * 0.02, 0.24, 0.08 - i * 0.04);
+    group.add(mane);
+  }
+
+  // Tail (small spheres in arc)
+  const tailMaterial = new THREE.MeshStandardMaterial({
+    color: 0xff69b4,
+    roughness: 0.5
+  });
+  for (let i = 0; i < 3; i++) {
+    const tailPart = new THREE.Mesh(
+      new THREE.SphereGeometry(0.02, 8, 8),
+      tailMaterial
+    );
+    tailPart.position.set(
+      0,
+      0.13 - i * 0.03,
+      -0.15 - i * 0.02
+    );
+    group.add(tailPart);
+  }
+
+  return group;
+}
+
+/**
  * Create stylized palm tree
  */
 function createPalmTree() {
@@ -248,11 +344,13 @@ function createObject(type) {
   let geometry;
   const size = 0.2;
 
-  // Handle special plant types
+  // Handle special types
   if (type === 'cactus') {
     return createCactus();
   } else if (type === 'palm') {
     return createPalmTree();
+  } else if (type === 'unicorn') {
+    return createUnicorn();
   }
 
   // Handle geometric shapes
@@ -537,7 +635,8 @@ function onSessionEnd() {
  * Reset placement - allow placing another object
  */
 function resetPlacement() {
-  console.log('Resetting placement');
+  console.log('🔄 RESET: Resetting placement');
+  updateStatus('Resetting...');
 
   // Remove placed object from scene
   if (APP.placedObject) {
