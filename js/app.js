@@ -213,6 +213,11 @@ function loadSecurityItem(type, callback) {
   if (STATE.modelCache[type]) {
     debugLog('  ✅ Found in cache');
     const cloned = STATE.modelCache[type].clone();
+    // Preserve isFallback flag when cloning
+    if (STATE.modelCache[type].userData.isFallback) {
+      cloned.userData.isFallback = true;
+      debugLog('  ⚠️ Cloned fallback - preserving flag');
+    }
     callback(cloned);
     return;
   }
@@ -221,7 +226,7 @@ function loadSecurityItem(type, callback) {
   if (!APP.loader) {
     debugLog('  ⚠️ No GLTFLoader, using fallback');
     const fallback = createFallbackMesh(type);
-    STATE.modelCache[type] = fallback; // Cache it
+    // Don't cache the original - it will be cloned later
     callback(fallback);
     return;
   }
@@ -292,9 +297,14 @@ function placeObject() {
   debugLog('  Surface found: ' + APP.surfaceFound);
   debugLog('  Mode: ' + STATE.currentMode);
 
-  if (!APP.surfaceFound || STATE.currentMode !== 'place') {
-    debugLog('  ❌ Cannot place: surface=' + APP.surfaceFound + ', mode=' + STATE.currentMode);
+  // Allow placement even without surface (for wall mode)
+  if (STATE.currentMode !== 'place') {
+    debugLog('  ❌ Cannot place: mode=' + STATE.currentMode);
     return;
+  }
+
+  if (!APP.surfaceFound) {
+    debugLog('  ⚠️ No surface detected - will use fixed distance placement');
   }
 
   const type = STATE.currentCatalogType;
@@ -309,10 +319,30 @@ function placeObject() {
     const name = STATE.getNextName(type);
     debugLog('  ID: ' + id + ', Name: ' + name);
 
-    // Position at reticle
+    // Position at reticle OR at fixed distance if looking at wall
     const position = new THREE.Vector3();
-    position.setFromMatrixPosition(APP.reticle.matrix);
-    position.y += config.yOffset;
+
+    // Check if reticle is visible (hit test found surface)
+    if (APP.reticle.visible && APP.surfaceFound) {
+      // Use hit test result
+      position.setFromMatrixPosition(APP.reticle.matrix);
+      position.y += config.yOffset;
+      debugLog('  📍 Using reticle position (floor)');
+    } else {
+      // No surface found - place at fixed distance from camera (for walls)
+      // Get camera position and direction
+      const camera = APP.camera;
+      const cameraPos = new THREE.Vector3();
+      const cameraDir = new THREE.Vector3();
+
+      camera.getWorldPosition(cameraPos);
+      camera.getWorldDirection(cameraDir);
+
+      // Place 1.5m in front of camera
+      position.copy(cameraPos).add(cameraDir.multiplyScalar(1.5));
+      debugLog('  🎯 No surface - placing at fixed distance (wall mode)');
+    }
+
     debugLog('  Position: ' + position.x.toFixed(2) + ', ' + position.y.toFixed(2) + ', ' + position.z.toFixed(2));
 
     mesh.position.copy(position);
