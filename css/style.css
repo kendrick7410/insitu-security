@@ -28,6 +28,7 @@ html, body {
   width: 100%;
   height: 100%;
   display: block;
+  touch-action: none;
 }
 
 /* Start Screen */
@@ -422,10 +423,13 @@ html, body {
   border-top: 2px solid rgba(102, 126, 234, 0.5);
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s ease;
+  pointer-events: auto;
+  touch-action: auto;
 }
 
 #catalog-panel.hidden {
   transform: translateY(100%);
+  pointer-events: none;
 }
 
 .catalog-header {

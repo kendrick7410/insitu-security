@@ -638,7 +638,16 @@ async function setupXRSession() {
 
   APP.renderer.setAnimationLoop(render);
 
-  console.log('WebXR session configured');
+  debugLog('WebXR session configured');
+
+  // Force catalog to stay visible after session setup
+  setTimeout(() => {
+    debugLog('🔧 Force showing catalog panel...');
+    UI.catalogPanel.classList.remove('hidden');
+    UI.catalogPanel.style.display = 'block';
+    UI.catalogPanel.style.visibility = 'visible';
+    debugLog('✅ Catalog forced visible');
+  }, 500);
 }
 
 /**
