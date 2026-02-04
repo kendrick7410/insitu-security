@@ -348,17 +348,21 @@ function placeObject() {
 
     mesh.position.copy(position);
 
-    // Apply default scale (but not for fallback cubes - they're already sized)
-    const scale = mesh.userData.isFallback ? 1.0 : config.defaultScale;
-    mesh.scale.set(scale, scale, scale);
-    debugLog('  Scale: ' + scale + (mesh.userData.isFallback ? ' (fallback - no scaling)' : ''));
+    // Save isFallback flag before userData is overwritten
+    const isFallback = mesh.userData.isFallback || false;
 
-    // Store metadata
+    // Apply default scale (but not for fallback cubes - they're already sized)
+    const scale = isFallback ? 1.0 : config.defaultScale;
+    mesh.scale.set(scale, scale, scale);
+    debugLog('  Scale: ' + scale + (isFallback ? ' (fallback - no scaling)' : ''));
+
+    // Store metadata - preserve isFallback flag
     mesh.userData = {
       id: id,
       type: type,
       name: name,
-      isSecurityItem: true
+      isSecurityItem: true,
+      isFallback: isFallback
     };
 
     // Add to scene
@@ -679,7 +683,6 @@ async function checkWebXRSupport() {
  */
 async function startARSession() {
   debugLog('🔵 startARSession called!');
-  alert('Start button clicked!'); // Temporary debug alert
   UI.startScreen.classList.add('hidden');
   UI.loadingScreen.classList.remove('hidden');
   UI.loadingText.textContent = 'Initializing AR...';
