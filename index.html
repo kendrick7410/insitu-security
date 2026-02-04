@@ -16,6 +16,19 @@
     <div class="start-content">
       <h1>In situ Security</h1>
       <p>Place objects in augmented reality</p>
+
+      <!-- Object Selection -->
+      <div class="object-selection">
+        <label for="object-selector">Choose an object:</label>
+        <select id="object-selector">
+          <option value="cube">🟩 Cube</option>
+          <option value="sphere">🔵 Sphere</option>
+          <option value="cylinder">🟦 Cylinder</option>
+          <option value="cone">🔺 Cone</option>
+          <option value="torus">🍩 Torus</option>
+        </select>
+      </div>
+
       <button id="start-ar-button">Start AR</button>
       <p class="requirements">Requires: Android Chrome + ARCore</p>
     </div>
@@ -62,6 +75,7 @@
   <div id="ui-overlay">
     <div id="status-text">Scanning for surfaces...</div>
     <div id="tap-hint" class="hidden">Tap to place object</div>
+    <button id="reset-button" class="hidden">🔄 Place Another Object</button>
   </div>
 
   <!-- Scripts -->

@@ -17,19 +17,22 @@ const APP = {
   xrSession: null,
   xrRefSpace: null,
   xrHitTestSource: null,
-  gl: null
+  gl: null,
+  selectedObjectType: 'cube' // Default object type
 };
 
 // UI Elements
 const UI = {
   startScreen: document.getElementById('start-screen'),
   startButton: document.getElementById('start-ar-button'),
+  objectSelector: document.getElementById('object-selector'),
   loadingScreen: document.getElementById('loading-screen'),
   instructions: document.getElementById('instructions'),
   errorMessage: document.getElementById('error-message'),
   errorText: document.getElementById('error-text'),
   statusText: document.getElementById('status-text'),
   tapHint: document.getElementById('tap-hint'),
+  resetButton: document.getElementById('reset-button'),
   reloadButton: document.getElementById('reload-button')
 };
 
@@ -165,6 +168,42 @@ function loadModel(callback) {
 }
 
 /**
+ * Create 3D object based on selected type
+ */
+function createObject(type) {
+  let geometry;
+  const size = 0.2;
+
+  switch (type) {
+    case 'cube':
+      geometry = new THREE.BoxGeometry(size, size, size);
+      break;
+    case 'sphere':
+      geometry = new THREE.SphereGeometry(size / 2, 32, 32);
+      break;
+    case 'cylinder':
+      geometry = new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
+      break;
+    case 'cone':
+      geometry = new THREE.ConeGeometry(size / 2, size, 32);
+      break;
+    case 'torus':
+      geometry = new THREE.TorusGeometry(size / 2, size / 6, 16, 100);
+      break;
+    default:
+      geometry = new THREE.BoxGeometry(size, size, size);
+  }
+
+  const material = new THREE.MeshStandardMaterial({
+    color: 0x4a90e2,
+    metalness: 0.5,
+    roughness: 0.5
+  });
+
+  return new THREE.Mesh(geometry, material);
+}
+
+/**
  * Place object at reticle position
  */
 function placeObject() {
@@ -172,42 +211,39 @@ function placeObject() {
 
   if (!APP.surfaceFound || APP.objectPlaced) return;
 
-  updateStatus('Placing cube...');
+  updateStatus('Placing object...');
 
   try {
-    // Create a simple THREE.js cube instead of loading GLB
-    const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x00ff00,
-      metalness: 0.3,
-      roughness: 0.7
-    });
-    const cube = new THREE.Mesh(geometry, material);
+    // Create the selected 3D object
+    const object = createObject(APP.selectedObjectType);
 
     // Position at reticle location
-    cube.position.setFromMatrixPosition(APP.reticle.matrix);
-    cube.position.y += 0.1; // Lift slightly above surface
+    object.position.setFromMatrixPosition(APP.reticle.matrix);
+    object.position.y += 0.1; // Lift slightly above surface
 
     // Add to scene
-    APP.scene.add(cube);
-    APP.placedObject = cube;
+    APP.scene.add(object);
+    APP.placedObject = object;
     APP.objectPlaced = true;
 
     // Position shadow plane under object
     if (APP.shadowPlane) {
-      APP.shadowPlane.position.copy(cube.position);
-      APP.shadowPlane.position.y -= 0.09; // Just below cube
+      APP.shadowPlane.position.copy(object.position);
+      APP.shadowPlane.position.y -= 0.09; // Just below object
       APP.shadowPlane.visible = true;
     }
 
-    // Hide reticle
+    // Hide reticle and tap hint
     APP.reticle.visible = false;
-
-    // Update UI
-    updateStatus('✅ Cube placed successfully!');
     UI.tapHint.classList.add('hidden');
 
-    console.log('Cube placed at:', cube.position);
+    // Show reset button
+    UI.resetButton.classList.remove('hidden');
+
+    // Update UI
+    updateStatus('✅ Object placed successfully!');
+
+    console.log('Object placed at:', object.position);
   } catch (error) {
     console.error('Error placing cube:', error);
     updateStatus('❌ Error: ' + error.message);
@@ -257,6 +293,10 @@ async function checkWebXRSupport() {
  * Start WebXR AR Session
  */
 async function startARSession() {
+  // Save selected object type
+  APP.selectedObjectType = UI.objectSelector.value;
+  console.log('Starting AR with object type:', APP.selectedObjectType);
+
   // Hide start screen, show loading
   UI.startScreen.classList.add('hidden');
   UI.loadingScreen.classList.remove('hidden');
@@ -387,6 +427,35 @@ function onSessionEnd() {
 }
 
 /**
+ * Reset placement - allow placing another object
+ */
+function resetPlacement() {
+  console.log('Resetting placement');
+
+  // Remove placed object from scene
+  if (APP.placedObject) {
+    APP.scene.remove(APP.placedObject);
+    APP.placedObject = null;
+  }
+
+  // Hide shadow plane
+  if (APP.shadowPlane) {
+    APP.shadowPlane.visible = false;
+  }
+
+  // Reset state
+  APP.objectPlaced = false;
+  APP.reticle.visible = true;
+
+  // Update UI
+  UI.resetButton.classList.add('hidden');
+  UI.tapHint.classList.remove('hidden');
+  updateStatus('Tap to place another object');
+
+  console.log('Ready to place another object');
+}
+
+/**
  * Initialize application
  */
 async function init() {
@@ -426,6 +495,13 @@ function onWindowResize() {
  */
 UI.reloadButton.addEventListener('click', () => {
   window.location.reload();
+});
+
+UI.resetButton.addEventListener('click', resetPlacement);
+
+UI.objectSelector.addEventListener('change', (e) => {
+  APP.selectedObjectType = e.target.value;
+  console.log('Selected object type:', APP.selectedObjectType);
 });
 
 window.addEventListener('resize', onWindowResize);
