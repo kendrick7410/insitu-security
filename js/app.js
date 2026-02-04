@@ -4,7 +4,18 @@
  * Security system planner with multi-object placement
  */
 
-console.log('🟢 app.js loaded');
+// Debug logging function
+function debugLog(message) {
+  console.log(message);
+  const debugPanel = document.getElementById('debug-log');
+  if (debugPanel) {
+    const time = new Date().toLocaleTimeString();
+    debugPanel.innerHTML += `<div>[${time}] ${message}</div>`;
+    debugPanel.parentElement.scrollTop = debugPanel.parentElement.scrollHeight;
+  }
+}
+
+debugLog('🟢 app.js loaded');
 
 // Global app state
 const APP = {
@@ -28,10 +39,10 @@ const UI = {};
  * Initialize UI element references
  */
 function initUIElements() {
-  console.log('🟢 initUIElements called');
+  debugLog('🟢 initUIElements called');
   UI.startScreen = document.getElementById('start-screen');
   UI.startButton = document.getElementById('start-ar-button');
-  console.log('🟢 startButton:', UI.startButton);
+  debugLog('🟢 startButton: ' + (UI.startButton ? 'FOUND ✅' : 'NOT FOUND ❌'));
   UI.loadingScreen = document.getElementById('loading-screen');
   UI.loadingText = document.getElementById('loading-text');
   UI.errorMessage = document.getElementById('error-message');
@@ -521,7 +532,7 @@ async function checkWebXRSupport() {
  * Start WebXR AR Session
  */
 async function startARSession() {
-  console.log('🔵 startARSession called!');
+  debugLog('🔵 startARSession called!');
   alert('Start button clicked!'); // Temporary debug alert
   UI.startScreen.classList.add('hidden');
   UI.loadingScreen.classList.remove('hidden');
@@ -646,18 +657,18 @@ function onSessionEnd() {
  * Setup UI event listeners
  */
 function setupUIListeners() {
-  console.log('🟢 setupUIListeners called');
+  debugLog('🟢 setupUIListeners called');
 
   // Start button
-  console.log('🟢 Setting up start button listener');
+  debugLog('🟢 Setting up start button listener');
   if (UI.startButton) {
     UI.startButton.addEventListener('click', () => {
-      console.log('🔵 Start button clicked!');
+      debugLog('🔵 Start button clicked!');
       startARSession();
     });
-    console.log('🟢 Start button listener added');
+    debugLog('🟢 Start button listener added');
   } else {
-    console.error('❌ Start button not found!');
+    debugLog('❌ Start button not found!');
   }
 
   // Catalog items
@@ -760,35 +771,44 @@ function onWindowResize() {
  * Initialize application
  */
 async function init() {
-  console.log('In situ Security - WebXR AR Planner (Palier 1)');
+  debugLog('🚀 In situ Security - Initializing...');
 
   // Initialize UI element references first
   initUIElements();
 
   // Check WebXR support
+  debugLog('🔍 Checking WebXR support...');
   const support = await checkWebXRSupport();
   if (!support.supported) {
+    debugLog('❌ WebXR not supported: ' + support.message);
     showError(support.message);
     return;
   }
 
-  console.log('WebXR AR is supported');
+  debugLog('✅ WebXR AR is supported');
 
   // Initialize three.js
+  debugLog('🎨 Initializing three.js...');
   initThreeJS();
 
   // Setup UI listeners
   setupUIListeners();
 
-  console.log('Ready to start AR');
+  debugLog('✅ Ready to start AR');
 }
 
 // Event listeners
 window.addEventListener('resize', onWindowResize);
 
 // Initialize when DOM is ready
+debugLog('📄 Document state: ' + document.readyState);
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+  debugLog('⏳ Waiting for DOMContentLoaded...');
+  document.addEventListener('DOMContentLoaded', () => {
+    debugLog('✅ DOMContentLoaded fired');
+    init();
+  });
 } else {
+  debugLog('✅ DOM already ready, calling init()');
   init();
 }
