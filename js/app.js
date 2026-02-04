@@ -1,40 +1,54 @@
 /**
- * In situ Security - WebXR AR Application
+ * In situ Security - WebXR AR Application (Palier 1)
  *
- * Main application logic using WebXR Device API and three.js
+ * Security system planner with multi-object placement
  */
 
-// Global state
+// Global app state
 const APP = {
   scene: null,
   camera: null,
   renderer: null,
   reticle: null,
-  placedObject: null,
-  shadowPlane: null,
-  surfaceFound: false,
-  objectPlaced: false,
   xrSession: null,
   xrRefSpace: null,
   xrHitTestSource: null,
   gl: null,
-  selectedObjectType: 'cube' // Default object type
+  surfaceFound: false,
+  raycaster: new THREE.Raycaster(),
+  loader: null
 };
 
 // UI Elements
 const UI = {
   startScreen: document.getElementById('start-screen'),
   startButton: document.getElementById('start-ar-button'),
-  objectSelector: document.getElementById('object-selector'),
   loadingScreen: document.getElementById('loading-screen'),
-  instructions: document.getElementById('instructions'),
+  loadingText: document.getElementById('loading-text'),
   errorMessage: document.getElementById('error-message'),
   errorText: document.getElementById('error-text'),
+  reloadButton: document.getElementById('reload-button'),
+  statusOverlay: document.getElementById('status-overlay'),
   statusText: document.getElementById('status-text'),
-  tapHint: document.getElementById('tap-hint'),
-  resetContainer: document.getElementById('reset-container'),
-  resetButton: document.getElementById('reset-button'),
-  reloadButton: document.getElementById('reload-button')
+  modeIndicator: document.getElementById('mode-indicator'),
+  catalogPanel: document.getElementById('catalog-panel'),
+  catalogItems: document.querySelectorAll('.catalog-item'),
+  toggleListBtn: document.getElementById('toggle-list-btn'),
+  inspectorPanel: document.getElementById('inspector-panel'),
+  objectNameInput: document.getElementById('object-name'),
+  closeInspector: document.getElementById('close-inspector'),
+  rotationSlider: document.getElementById('rotation-slider'),
+  rotationValue: document.getElementById('rotation-value'),
+  scaleSlider: document.getElementById('scale-slider'),
+  scaleValue: document.getElementById('scale-value'),
+  moveBtn: document.getElementById('move-btn'),
+  duplicateBtn: document.getElementById('duplicate-btn'),
+  deleteBtn: document.getElementById('delete-btn'),
+  listPanel: document.getElementById('list-panel'),
+  closeList: document.getElementById('close-list'),
+  objectsList: document.getElementById('objects-list'),
+  objectCount: document.getElementById('object-count'),
+  clearAllBtn: document.getElementById('clear-all-btn')
 };
 
 /**
@@ -56,13 +70,20 @@ function updateStatus(text) {
 }
 
 /**
+ * Update mode indicator
+ */
+function updateModeIndicator() {
+  UI.modeIndicator.textContent = `MODE: ${STATE.currentMode.toUpperCase()}`;
+}
+
+/**
  * Initialize three.js scene
  */
 function initThreeJS() {
   // Scene
   APP.scene = new THREE.Scene();
 
-  // Camera (will be controlled by WebXR)
+  // Camera
   APP.camera = new THREE.PerspectiveCamera(
     70,
     window.innerWidth / window.innerHeight,
@@ -90,13 +111,11 @@ function initThreeJS() {
   directionalLight.position.set(1, 2, 1);
   APP.scene.add(directionalLight);
 
-  // Create reticle (placement indicator)
+  // Create reticle
   createReticle();
 
-  // Create shadow plane
-  if (CONFIG.shadow.enabled) {
-    createShadowPlane();
-  }
+  // Initialize GLTF loader
+  APP.loader = new THREE.GLTFLoader();
 
   console.log('three.js initialized');
 }
@@ -124,348 +143,340 @@ function createReticle() {
 }
 
 /**
- * Create shadow plane
+ * Load or get cached model
  */
-function createShadowPlane() {
-  const geometry = new THREE.PlaneGeometry(CONFIG.shadow.size, CONFIG.shadow.size);
-  geometry.rotateX(-Math.PI / 2);
+function loadSecurityItem(type, callback) {
+  const config = CONFIG.items[type];
 
-  const material = new THREE.ShadowMaterial({
-    color: CONFIG.shadow.color,
-    opacity: CONFIG.shadow.opacity
-  });
+  // Check cache
+  if (STATE.modelCache[type]) {
+    const cloned = STATE.modelCache[type].clone();
+    callback(cloned);
+    return;
+  }
 
-  APP.shadowPlane = new THREE.Mesh(geometry, material);
-  APP.shadowPlane.receiveShadow = true;
-  APP.shadowPlane.visible = false;
-  APP.scene.add(APP.shadowPlane);
-}
+  // Load model
+  updateStatus(`Loading ${config.label}...`);
 
-/**
- * Load 3D model
- */
-function loadModel(callback) {
-  const loader = new THREE.GLTFLoader();
-
-  updateStatus('Loading 3D model...');
-
-  loader.load(
-    CONFIG.model.path,
+  APP.loader.load(
+    config.modelPath,
     (gltf) => {
-      console.log('Model loaded successfully');
-      callback(gltf.scene);
+      STATE.modelCache[type] = gltf.scene;
+      const cloned = gltf.scene.clone();
+      callback(cloned);
     },
-    (progress) => {
-      if (progress.total > 0) {
-        const percent = (progress.loaded / progress.total * 100).toFixed(0);
-        console.log(`Loading model: ${percent}%`);
-      }
-    },
+    undefined,
     (error) => {
-      console.error('Error loading model:', error);
-      showError('Failed to load 3D model: ' + error.message);
+      console.error(`Error loading ${type}:`, error);
+      // Fallback to simple geometry
+      const fallback = createFallbackMesh(type);
+      callback(fallback);
     }
   );
 }
 
 /**
- * Create stylized cactus
+ * Create fallback mesh if model fails to load
  */
-function createCactus() {
-  const group = new THREE.Group();
-
-  // Main body
-  const bodyGeometry = new THREE.CylinderGeometry(0.08, 0.08, 0.3, 16);
-  const bodyMaterial = new THREE.MeshStandardMaterial({
-    color: 0x2d5016,
-    roughness: 0.8
-  });
-  const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-  body.position.y = 0.15;
-  group.add(body);
-
-  // Left arm
-  const armGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.15, 16);
-  const leftArm = new THREE.Mesh(armGeometry, bodyMaterial);
-  leftArm.position.set(-0.1, 0.2, 0);
-  leftArm.rotation.z = Math.PI / 4;
-  group.add(leftArm);
-
-  // Right arm
-  const rightArm = new THREE.Mesh(armGeometry, bodyMaterial);
-  rightArm.position.set(0.1, 0.18, 0);
-  rightArm.rotation.z = -Math.PI / 4;
-  group.add(rightArm);
-
-  return group;
-}
-
-/**
- * Create stylized unicorn
- */
-function createUnicorn() {
-  const group = new THREE.Group();
-
-  // Body
-  const bodyGeometry = new THREE.SphereGeometry(0.12, 16, 16);
-  const bodyMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    roughness: 0.3,
-    metalness: 0.2
-  });
-  const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-  body.scale.set(1, 0.8, 1.3);
-  body.position.y = 0.12;
-  group.add(body);
-
-  // Head
-  const headGeometry = new THREE.SphereGeometry(0.08, 16, 16);
-  const head = new THREE.Mesh(headGeometry, bodyMaterial);
-  head.position.set(0, 0.2, 0.15);
-  head.scale.set(0.8, 0.9, 1);
-  group.add(head);
-
-  // Horn (cone on top of head)
-  const hornGeometry = new THREE.ConeGeometry(0.02, 0.12, 8);
-  const hornMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffd700,
-    roughness: 0.2,
-    metalness: 0.8
-  });
-  const horn = new THREE.Mesh(hornGeometry, hornMaterial);
-  horn.position.set(0, 0.32, 0.15);
-  horn.rotation.z = -0.2;
-  group.add(horn);
-
-  // Ears (small cones)
-  const earGeometry = new THREE.ConeGeometry(0.02, 0.05, 8);
-  const leftEar = new THREE.Mesh(earGeometry, bodyMaterial);
-  leftEar.position.set(-0.05, 0.27, 0.15);
-  group.add(leftEar);
-
-  const rightEar = new THREE.Mesh(earGeometry, bodyMaterial);
-  rightEar.position.set(0.05, 0.27, 0.15);
-  group.add(rightEar);
-
-  // Legs (4 cylinders)
-  const legGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.1, 8);
-  const positions = [
-    [-0.07, 0.05, 0.05],
-    [0.07, 0.05, 0.05],
-    [-0.07, 0.05, -0.05],
-    [0.07, 0.05, -0.05]
-  ];
-
-  positions.forEach(pos => {
-    const leg = new THREE.Mesh(legGeometry, bodyMaterial);
-    leg.position.set(...pos);
-    group.add(leg);
-  });
-
-  // Mane (colorful spheres)
-  const maneColors = [0xff69b4, 0x9370db, 0x87ceeb];
-  for (let i = 0; i < 3; i++) {
-    const maneGeometry = new THREE.SphereGeometry(0.03, 8, 8);
-    const maneMaterial = new THREE.MeshStandardMaterial({
-      color: maneColors[i],
-      roughness: 0.5
-    });
-    const mane = new THREE.Mesh(maneGeometry, maneMaterial);
-    mane.position.set(-0.02 + i * 0.02, 0.24, 0.08 - i * 0.04);
-    group.add(mane);
-  }
-
-  // Tail (small spheres in arc)
-  const tailMaterial = new THREE.MeshStandardMaterial({
-    color: 0xff69b4,
-    roughness: 0.5
-  });
-  for (let i = 0; i < 3; i++) {
-    const tailPart = new THREE.Mesh(
-      new THREE.SphereGeometry(0.02, 8, 8),
-      tailMaterial
-    );
-    tailPart.position.set(
-      0,
-      0.13 - i * 0.03,
-      -0.15 - i * 0.02
-    );
-    group.add(tailPart);
-  }
-
-  return group;
-}
-
-/**
- * Create stylized palm tree
- */
-function createPalmTree() {
-  const group = new THREE.Group();
-
-  // Trunk
-  const trunkGeometry = new THREE.CylinderGeometry(0.05, 0.07, 0.4, 8);
-  const trunkMaterial = new THREE.MeshStandardMaterial({
-    color: 0x8b4513,
-    roughness: 0.9
-  });
-  const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
-  trunk.position.y = 0.2;
-  group.add(trunk);
-
-  // Leaves (spheres at top)
-  const leafMaterial = new THREE.MeshStandardMaterial({
-    color: 0x228b22,
-    roughness: 0.7
-  });
-
-  for (let i = 0; i < 5; i++) {
-    const angle = (i / 5) * Math.PI * 2;
-    const radius = 0.12;
-    const leaf = new THREE.Mesh(
-      new THREE.SphereGeometry(0.08, 8, 8),
-      leafMaterial
-    );
-    leaf.position.set(
-      Math.cos(angle) * radius,
-      0.42,
-      Math.sin(angle) * radius
-    );
-    leaf.scale.set(1.5, 0.3, 1);
-    leaf.rotation.y = angle;
-    group.add(leaf);
-  }
-
-  return group;
-}
-
-/**
- * Create 3D object based on selected type
- */
-function createObject(type) {
-  let geometry;
-  const size = 0.2;
-
-  // Handle special types
-  if (type === 'cactus') {
-    return createCactus();
-  } else if (type === 'palm') {
-    return createPalmTree();
-  } else if (type === 'unicorn') {
-    return createUnicorn();
-  }
-
-  // Handle geometric shapes
-  switch (type) {
-    case 'cube':
-      geometry = new THREE.BoxGeometry(size, size, size);
-      break;
-    case 'sphere':
-      geometry = new THREE.SphereGeometry(size / 2, 32, 32);
-      break;
-    case 'cylinder':
-      geometry = new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
-      break;
-    case 'cone':
-      geometry = new THREE.ConeGeometry(size / 2, size, 32);
-      break;
-    case 'torus':
-      geometry = new THREE.TorusGeometry(size / 2, size / 6, 16, 100);
-      break;
-    default:
-      geometry = new THREE.BoxGeometry(size, size, size);
-  }
-
+function createFallbackMesh(type) {
+  const config = CONFIG.items[type];
+  const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
   const material = new THREE.MeshStandardMaterial({
     color: 0x4a90e2,
-    metalness: 0.5,
-    roughness: 0.5
+    metalness: 0.3,
+    roughness: 0.7
   });
-
-  return new THREE.Mesh(geometry, material);
+  const mesh = new THREE.Mesh(geometry, material);
+  return mesh;
 }
 
 /**
  * Place object at reticle position
  */
 function placeObject() {
-  console.log('placeObject called!');
+  if (!APP.surfaceFound || STATE.currentMode !== 'place') return;
 
-  if (!APP.surfaceFound || APP.objectPlaced) return;
+  const type = STATE.currentCatalogType;
+  const config = CONFIG.items[type];
 
-  updateStatus('Placing object...');
+  loadSecurityItem(type, (mesh) => {
+    // Get ID and name
+    const id = STATE.getNextId(type);
+    const name = STATE.getNextName(type);
 
-  try {
-    // If avocado plant, load the GLB model
-    if (APP.selectedObjectType === 'avocado') {
-      loadModel((model) => {
-        finalizeObjectPlacement(model);
-      });
-      return;
-    }
+    // Position at reticle
+    const position = new THREE.Vector3();
+    position.setFromMatrixPosition(APP.reticle.matrix);
+    position.y += config.yOffset;
 
-    // Create the selected 3D object (shapes or stylized plants)
-    const object = createObject(APP.selectedObjectType);
-    finalizeObjectPlacement(object);
-  } catch (error) {
-    console.error('Error placing object:', error);
-    updateStatus('❌ Error: ' + error.message);
-  }
-}
+    mesh.position.copy(position);
 
-/**
- * Finalize object placement in the scene
- */
-function finalizeObjectPlacement(object) {
-  try {
+    // Apply default scale
+    const scale = config.defaultScale;
+    mesh.scale.set(scale, scale, scale);
 
-    // Position at reticle location
-    object.position.setFromMatrixPosition(APP.reticle.matrix);
-    object.position.y += 0.1; // Lift slightly above surface
-
-    // Scale avocado model if needed
-    if (APP.selectedObjectType === 'avocado') {
-      object.scale.set(0.3, 0.3, 0.3);
-    }
+    // Store metadata
+    mesh.userData = {
+      id: id,
+      type: type,
+      name: name,
+      isSecurityItem: true
+    };
 
     // Add to scene
-    APP.scene.add(object);
-    APP.placedObject = object;
-    APP.objectPlaced = true;
+    APP.scene.add(mesh);
 
-    // Position shadow plane under object
-    if (APP.shadowPlane) {
-      APP.shadowPlane.position.copy(object.position);
-      APP.shadowPlane.position.y -= 0.09; // Just below object
-      APP.shadowPlane.visible = true;
-    }
-
-    // Hide reticle and tap hint
-    APP.reticle.visible = false;
-    UI.tapHint.classList.add('hidden');
-
-    // Show reset button container
-    UI.resetContainer.classList.remove('hidden');
-    console.log('✅ Reset button should now be visible!');
-    updateStatus('✅ Object placed! RESET BUTTON SHOWN!');
+    // Add to state
+    const objectData = {
+      id: id,
+      type: type,
+      name: name,
+      mesh: mesh,
+      position: position.clone(),
+      rotation: 0,
+      scale: scale,
+      timestamp: Date.now()
+    };
+    STATE.addObject(objectData);
 
     // Update UI
-    updateStatus('✅ Object placed successfully!');
+    updateObjectsList();
+    updateStatus(`✅ ${name} placed`);
 
-    console.log('Object placed at:', object.position);
-  } catch (error) {
-    console.error('Error placing cube:', error);
-    updateStatus('❌ Error: ' + error.message);
+    console.log(`Placed ${name} at`, position);
+  });
+}
+
+/**
+ * Handle tap/touch events
+ */
+function onSelect(event) {
+  if (STATE.currentMode === 'place') {
+    // Place new object
+    placeObject();
+  } else if (STATE.currentMode === 'move') {
+    // Move selected object
+    if (STATE.selectedObjectId) {
+      const obj = STATE.getSelectedObject();
+      if (obj && obj.mesh) {
+        const position = new THREE.Vector3();
+        position.setFromMatrixPosition(APP.reticle.matrix);
+        position.y += CONFIG.items[obj.type].yOffset;
+
+        obj.mesh.position.copy(position);
+        obj.position = position.clone();
+
+        updateStatus(`✅ ${obj.name} moved`);
+
+        // Exit move mode
+        STATE.setMode('place');
+        updateModeIndicator();
+      }
+    }
   }
 }
 
 /**
- * Handle tap/touch events for placement
+ * Handle object selection via raycast
  */
-function onSelect() {
-  console.log('onSelect called! surfaceFound:', APP.surfaceFound, 'objectPlaced:', APP.objectPlaced);
+function handleObjectSelection(x, y) {
+  // Only select in place mode
+  if (STATE.currentMode !== 'place') return;
 
-  if (APP.surfaceFound && !APP.objectPlaced) {
-    placeObject();
+  // Normalize coordinates
+  const mouse = new THREE.Vector2();
+  mouse.x = (x / window.innerWidth) * 2 - 1;
+  mouse.y = -(y / window.innerHeight) * 2 + 1;
+
+  // Raycast
+  APP.raycaster.setFromCamera(mouse, APP.camera);
+
+  // Only check placed objects
+  const placedMeshes = STATE.placedObjects.map(obj => obj.mesh);
+  const intersects = APP.raycaster.intersectObjects(placedMeshes, true);
+
+  if (intersects.length > 0) {
+    let object = intersects[0].object;
+
+    // Find root object with userData
+    while (object.parent && !object.userData.isSecurityItem) {
+      object = object.parent;
+    }
+
+    if (object.userData.isSecurityItem) {
+      const id = object.userData.id;
+      selectObject(id);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Select object and show inspector
+ */
+function selectObject(id) {
+  STATE.selectObject(id);
+  const obj = STATE.getSelectedObject();
+
+  if (obj) {
+    // Update inspector
+    UI.objectNameInput.value = obj.name;
+    UI.rotationSlider.value = obj.rotation || 0;
+    UI.rotationValue.textContent = `${obj.rotation || 0}°`;
+    UI.scaleSlider.value = (obj.scale * 100) || 100;
+    UI.scaleValue.textContent = `${obj.scale.toFixed(1)}x`;
+
+    // Show inspector
+    UI.inspectorPanel.classList.remove('hidden');
+
+    // Highlight in list
+    updateObjectsList();
+
+    updateStatus(`Selected: ${obj.name}`);
+  }
+}
+
+/**
+ * Deselect object and hide inspector
+ */
+function deselectObject() {
+  STATE.deselectObject();
+  UI.inspectorPanel.classList.add('hidden');
+  updateObjectsList();
+  updateStatus('Scanning for surfaces...');
+}
+
+/**
+ * Update objects list panel
+ */
+function updateObjectsList() {
+  UI.objectCount.textContent = STATE.placedObjects.length;
+  UI.objectsList.innerHTML = '';
+
+  STATE.placedObjects.forEach(obj => {
+    const item = document.createElement('div');
+    item.className = 'object-list-item';
+    if (obj.id === STATE.selectedObjectId) {
+      item.classList.add('selected');
+    }
+
+    const config = CONFIG.items[obj.type];
+    const icon = config.label.split(' ')[0]; // Get emoji
+
+    item.innerHTML = `
+      <div class="object-list-item-header">
+        <span class="object-list-item-icon">${icon}</span>
+        <span class="object-list-item-name">${obj.name}</span>
+      </div>
+      <div class="object-list-item-info">
+        ${obj.type} • ${new Date(obj.timestamp).toLocaleTimeString()}
+      </div>
+    `;
+
+    item.addEventListener('click', () => {
+      selectObject(obj.id);
+      UI.listPanel.classList.add('hidden');
+    });
+
+    UI.objectsList.appendChild(item);
+  });
+}
+
+/**
+ * Delete selected object
+ */
+function deleteSelectedObject() {
+  const obj = STATE.getSelectedObject();
+  if (!obj) return;
+
+  // Remove from scene
+  APP.scene.remove(obj.mesh);
+
+  // Remove from state
+  STATE.removeObject(obj.id);
+
+  // Close inspector
+  deselectObject();
+
+  // Update list
+  updateObjectsList();
+
+  updateStatus(`🗑️ ${obj.name} deleted`);
+}
+
+/**
+ * Duplicate selected object
+ */
+function duplicateSelectedObject() {
+  const obj = STATE.getSelectedObject();
+  if (!obj) return;
+
+  const type = obj.type;
+  const config = CONFIG.items[type];
+
+  loadSecurityItem(type, (mesh) => {
+    // Get new ID and name
+    const id = STATE.getNextId(type);
+    const name = STATE.getNextName(type);
+
+    // Position slightly offset
+    const position = obj.position.clone();
+    position.x += 0.2;
+
+    mesh.position.copy(position);
+    mesh.rotation.copy(obj.mesh.rotation);
+    mesh.scale.copy(obj.mesh.scale);
+
+    mesh.userData = {
+      id: id,
+      type: type,
+      name: name,
+      isSecurityItem: true
+    };
+
+    APP.scene.add(mesh);
+
+    const objectData = {
+      id: id,
+      type: type,
+      name: name,
+      mesh: mesh,
+      position: position.clone(),
+      rotation: obj.rotation,
+      scale: obj.scale,
+      timestamp: Date.now()
+    };
+    STATE.addObject(objectData);
+
+    updateObjectsList();
+    updateStatus(`📋 ${name} duplicated`);
+  });
+}
+
+/**
+ * Clear all objects
+ */
+function clearAllObjects() {
+  if (STATE.placedObjects.length === 0) return;
+
+  if (confirm('Clear all objects? This cannot be undone.')) {
+    // Remove all meshes from scene
+    STATE.placedObjects.forEach(obj => {
+      APP.scene.remove(obj.mesh);
+    });
+
+    // Clear state
+    STATE.clearAll();
+
+    // Close panels
+    deselectObject();
+    UI.listPanel.classList.add('hidden');
+
+    // Update UI
+    updateObjectsList();
+    updateStatus('🗑️ All objects cleared');
   }
 }
 
@@ -476,7 +487,7 @@ async function checkWebXRSupport() {
   if (!navigator.xr) {
     return {
       supported: false,
-      message: 'WebXR not supported. Please use Chrome on Android with ARCore installed.'
+      message: 'WebXR not supported. Please use Chrome on Android with ARCore.'
     };
   }
 
@@ -485,7 +496,7 @@ async function checkWebXRSupport() {
     if (!supported) {
       return {
         supported: false,
-        message: 'AR not supported on this device. Make sure ARCore is installed on Android.'
+        message: 'AR not supported. Make sure ARCore is installed on Android.'
       };
     }
     return { supported: true };
@@ -501,39 +512,25 @@ async function checkWebXRSupport() {
  * Start WebXR AR Session
  */
 async function startARSession() {
-  // Save selected object type
-  APP.selectedObjectType = UI.objectSelector.value;
-  console.log('Starting AR with object type:', APP.selectedObjectType);
-
-  // Hide start screen, show loading
   UI.startScreen.classList.add('hidden');
   UI.loadingScreen.classList.remove('hidden');
+  UI.loadingText.textContent = 'Initializing AR...';
 
   try {
-    // Request AR session with required features
     APP.xrSession = await navigator.xr.requestSession('immersive-ar', {
       requiredFeatures: ['hit-test', 'local-floor']
     });
 
     console.log('WebXR AR session started');
 
-    // Set up session
     await setupXRSession();
-
-    // Start render loop
     APP.renderer.xr.setSession(APP.xrSession);
 
-    // Hide loading, show instructions briefly
     UI.loadingScreen.classList.add('hidden');
-    setTimeout(() => {
-      UI.instructions.classList.add('hidden');
-    }, CONFIG.ui.instructionsTimeout);
-
-    // TEST: Show reset button immediately to verify it's visible
-    UI.resetContainer.classList.remove('hidden');
-    console.log('🔴 TEST: Reset button container displayed for testing');
+    UI.catalogPanel.classList.remove('hidden');
 
     updateStatus('Scanning for surfaces...');
+    updateModeIndicator();
 
   } catch (error) {
     console.error('Failed to start AR session:', error);
@@ -545,38 +542,36 @@ async function startARSession() {
  * Setup WebXR session
  */
 async function setupXRSession() {
-  // Set up WebGL layer
   APP.gl = APP.renderer.getContext();
-
-  // Ensure GL context is XR compatible
   await APP.gl.makeXRCompatible();
 
   await APP.xrSession.updateRenderState({
     baseLayer: new XRWebGLLayer(APP.xrSession, APP.gl)
   });
 
-  // Get reference space
   APP.xrRefSpace = await APP.xrSession.requestReferenceSpace('local-floor');
 
-  // Set up hit test source
   const viewerSpace = await APP.xrSession.requestReferenceSpace('viewer');
   APP.xrHitTestSource = await APP.xrSession.requestHitTestSource({
     space: viewerSpace
   });
 
-  // Handle session end
   APP.xrSession.addEventListener('end', onSessionEnd);
-
-  // Handle select (tap) events
   APP.xrSession.addEventListener('select', onSelect);
 
-  // Add touch handler for mobile (fallback if 'select' doesn't work)
+  // Touch handler for object selection
   APP.renderer.domElement.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    onSelect();
-  }, { passive: false });
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      const selected = handleObjectSelection(touch.clientX, touch.clientY);
 
-  // Set render loop
+      // If no object selected, treat as placement/move tap
+      if (!selected) {
+        onSelect();
+      }
+    }
+  }, { passive: true });
+
   APP.renderer.setAnimationLoop(render);
 
   console.log('WebXR session configured');
@@ -588,12 +583,14 @@ async function setupXRSession() {
 function render(timestamp, frame) {
   if (!frame) return;
 
-  // Get viewer pose
   const pose = frame.getViewerPose(APP.xrRefSpace);
   if (!pose) return;
 
-  // Process hit test results
-  if (APP.xrHitTestSource && !APP.objectPlaced) {
+  // Update camera for raycasting
+  APP.camera = pose.views[0].camera || APP.camera;
+
+  // Hit test for reticle
+  if (APP.xrHitTestSource) {
     const hitTestResults = frame.getHitTestResults(APP.xrHitTestSource);
 
     if (hitTestResults.length > 0) {
@@ -601,14 +598,12 @@ function render(timestamp, frame) {
       const hitPose = hit.getPose(APP.xrRefSpace);
 
       if (hitPose) {
-        // Update reticle position
         APP.reticle.matrix.fromArray(hitPose.transform.matrix);
         APP.reticle.visible = true;
 
         if (!APP.surfaceFound) {
           APP.surfaceFound = true;
-          updateStatus('Surface detected!');
-          UI.tapHint.classList.remove('hidden');
+          updateStatus('Tap to place');
         }
       }
     } else {
@@ -616,7 +611,6 @@ function render(timestamp, frame) {
     }
   }
 
-  // Render the scene
   APP.renderer.render(APP.scene, APP.camera);
 }
 
@@ -629,67 +623,104 @@ function onSessionEnd() {
   APP.xrRefSpace = null;
   APP.surfaceFound = false;
 
-  // Show start screen again
   UI.startScreen.classList.remove('hidden');
-  UI.instructions.classList.add('hidden');
-  UI.tapHint.classList.add('hidden');
+  UI.catalogPanel.classList.add('hidden');
+  UI.inspectorPanel.classList.add('hidden');
+  UI.listPanel.classList.add('hidden');
 
-  updateStatus('AR session ended');
   console.log('WebXR session ended');
 }
 
 /**
- * Reset placement - allow placing another object
+ * Setup UI event listeners
  */
-function resetPlacement() {
-  console.log('🔄 RESET: Resetting placement');
-  updateStatus('Resetting...');
+function setupUIListeners() {
+  // Catalog items
+  UI.catalogItems.forEach(btn => {
+    btn.addEventListener('click', () => {
+      UI.catalogItems.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      STATE.setCatalogType(btn.dataset.type);
+    });
+  });
 
-  // Remove placed object from scene
-  if (APP.placedObject) {
-    APP.scene.remove(APP.placedObject);
-    APP.placedObject = null;
-  }
+  // Toggle list
+  UI.toggleListBtn.addEventListener('click', () => {
+    UI.listPanel.classList.toggle('hidden');
+  });
 
-  // Hide shadow plane
-  if (APP.shadowPlane) {
-    APP.shadowPlane.visible = false;
-  }
+  // Close list
+  UI.closeList.addEventListener('click', () => {
+    UI.listPanel.classList.add('hidden');
+  });
 
-  // Reset state
-  APP.objectPlaced = false;
-  APP.reticle.visible = true;
+  // Close inspector
+  UI.closeInspector.addEventListener('click', () => {
+    deselectObject();
+  });
 
-  // Update UI
-  UI.resetContainer.classList.add('hidden');
-  UI.tapHint.classList.remove('hidden');
-  updateStatus('Tap to place another object');
+  // Object name change
+  UI.objectNameInput.addEventListener('input', (e) => {
+    const obj = STATE.getSelectedObject();
+    if (obj) {
+      obj.name = e.target.value;
+      obj.mesh.userData.name = e.target.value;
+      updateObjectsList();
+    }
+  });
 
-  console.log('Ready to place another object');
-}
+  // Rotation slider
+  UI.rotationSlider.addEventListener('input', (e) => {
+    const obj = STATE.getSelectedObject();
+    if (obj) {
+      const rotation = parseInt(e.target.value);
+      obj.rotation = rotation;
+      obj.mesh.rotation.y = THREE.MathUtils.degToRad(rotation);
+      UI.rotationValue.textContent = `${rotation}°`;
+    }
+  });
 
-/**
- * Initialize application
- */
-async function init() {
-  console.log('In situ Security - WebXR AR initializing...');
+  // Scale slider
+  UI.scaleSlider.addEventListener('input', (e) => {
+    const obj = STATE.getSelectedObject();
+    if (obj) {
+      const scale = parseInt(e.target.value) / 100;
+      obj.scale = scale;
+      obj.mesh.scale.set(scale, scale, scale);
+      UI.scaleValue.textContent = `${scale.toFixed(1)}x`;
+    }
+  });
 
-  // Check WebXR support
-  const support = await checkWebXRSupport();
-  if (!support.supported) {
-    showError(support.message);
-    return;
-  }
+  // Move button
+  UI.moveBtn.addEventListener('click', () => {
+    STATE.setMode('move');
+    updateModeIndicator();
+    updateStatus('Tap surface to move object');
+    UI.inspectorPanel.classList.add('hidden');
+  });
 
-  console.log('WebXR AR is supported');
+  // Duplicate button
+  UI.duplicateBtn.addEventListener('click', () => {
+    duplicateSelectedObject();
+  });
 
-  // Initialize three.js
-  initThreeJS();
+  // Delete button
+  UI.deleteBtn.addEventListener('click', () => {
+    deleteSelectedObject();
+  });
 
-  // Set up start button
+  // Clear all
+  UI.clearAllBtn.addEventListener('click', () => {
+    clearAllObjects();
+  });
+
+  // Start button
   UI.startButton.addEventListener('click', startARSession);
 
-  console.log('Ready to start AR');
+  // Reload button
+  UI.reloadButton.addEventListener('click', () => {
+    window.location.reload();
+  });
 }
 
 /**
@@ -704,19 +735,30 @@ function onWindowResize() {
 }
 
 /**
- * Event listeners
+ * Initialize application
  */
-UI.reloadButton.addEventListener('click', () => {
-  window.location.reload();
-});
+async function init() {
+  console.log('In situ Security - WebXR AR Planner (Palier 1)');
 
-UI.resetButton.addEventListener('click', resetPlacement);
+  // Check WebXR support
+  const support = await checkWebXRSupport();
+  if (!support.supported) {
+    showError(support.message);
+    return;
+  }
 
-UI.objectSelector.addEventListener('change', (e) => {
-  APP.selectedObjectType = e.target.value;
-  console.log('Selected object type:', APP.selectedObjectType);
-});
+  console.log('WebXR AR is supported');
 
+  // Initialize three.js
+  initThreeJS();
+
+  // Setup UI listeners
+  setupUIListeners();
+
+  console.log('Ready to start AR');
+}
+
+// Event listeners
 window.addEventListener('resize', onWindowResize);
 
 // Initialize when DOM is ready
