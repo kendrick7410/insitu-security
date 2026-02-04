@@ -588,9 +588,12 @@ async function startARSession() {
     APP.renderer.xr.setSession(APP.xrSession);
 
     UI.loadingScreen.classList.add('hidden');
-    UI.catalogPanel.classList.remove('hidden');
 
-    updateStatus('Scanning for surfaces...');
+    debugLog('📱 Showing catalog panel...');
+    UI.catalogPanel.classList.remove('hidden');
+    debugLog('✅ Catalog panel visible');
+
+    updateStatus('Tap green circle to place object');
     updateModeIndicator();
 
   } catch (error) {
