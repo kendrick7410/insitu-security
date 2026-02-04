@@ -446,6 +446,7 @@ function finalizeObjectPlacement(object) {
     // Show reset button container
     UI.resetContainer.classList.remove('hidden');
     console.log('✅ Reset button should now be visible!');
+    updateStatus('✅ Object placed! RESET BUTTON SHOWN!');
 
     // Update UI
     updateStatus('✅ Object placed successfully!');
@@ -527,6 +528,10 @@ async function startARSession() {
     setTimeout(() => {
       UI.instructions.classList.add('hidden');
     }, CONFIG.ui.instructionsTimeout);
+
+    // TEST: Show reset button immediately to verify it's visible
+    UI.resetContainer.classList.remove('hidden');
+    console.log('🔴 TEST: Reset button container displayed for testing');
 
     updateStatus('Scanning for surfaces...');
 
