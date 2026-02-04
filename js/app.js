@@ -149,7 +149,6 @@ function loadModel(callback) {
     CONFIG.model.path,
     (gltf) => {
       console.log('Model loaded successfully');
-      alert('Modèle chargé avec succès!');
       callback(gltf.scene);
     },
     (progress) => {
@@ -160,8 +159,7 @@ function loadModel(callback) {
     },
     (error) => {
       console.error('Error loading model:', error);
-      alert('ERREUR chargement modèle: ' + error.message);
-      showError('Failed to load 3D model. Check console for details.');
+      showError('Failed to load 3D model: ' + error.message);
     }
   );
 }
@@ -171,11 +169,10 @@ function loadModel(callback) {
  */
 function placeObject() {
   console.log('placeObject called!');
-  alert('Placement du cube...');
 
   if (!APP.surfaceFound || APP.objectPlaced) return;
 
-  updateStatus('Placing object...');
+  updateStatus('Placing cube...');
 
   try {
     // Create a simple THREE.js cube instead of loading GLB
@@ -207,14 +204,13 @@ function placeObject() {
     APP.reticle.visible = false;
 
     // Update UI
-    updateStatus('Cube placed!');
+    updateStatus('✅ Cube placed successfully!');
     UI.tapHint.classList.add('hidden');
-    alert('Cube vert placé avec succès!');
 
     console.log('Cube placed at:', cube.position);
   } catch (error) {
     console.error('Error placing cube:', error);
-    alert('ERREUR placement: ' + error.message);
+    updateStatus('❌ Error: ' + error.message);
   }
 }
 
@@ -223,7 +219,6 @@ function placeObject() {
  */
 function onSelect() {
   console.log('onSelect called! surfaceFound:', APP.surfaceFound, 'objectPlaced:', APP.objectPlaced);
-  alert('Tap détecté! Surface: ' + APP.surfaceFound);
 
   if (APP.surfaceFound && !APP.objectPlaced) {
     placeObject();
