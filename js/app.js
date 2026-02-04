@@ -282,6 +282,10 @@ async function startARSession() {
 async function setupXRSession() {
   // Set up WebGL layer
   APP.gl = APP.renderer.getContext();
+
+  // Ensure GL context is XR compatible
+  await APP.gl.makeXRCompatible();
+
   await APP.xrSession.updateRenderState({
     baseLayer: new XRWebGLLayer(APP.xrSession, APP.gl)
   });
