@@ -253,10 +253,18 @@ function createFallbackMesh(type) {
  * Place object at reticle position
  */
 function placeObject() {
-  if (!APP.surfaceFound || STATE.currentMode !== 'place') return;
+  debugLog('📦 placeObject called');
+  debugLog('  Surface found: ' + APP.surfaceFound);
+  debugLog('  Mode: ' + STATE.currentMode);
+
+  if (!APP.surfaceFound || STATE.currentMode !== 'place') {
+    debugLog('  ❌ Cannot place: surface=' + APP.surfaceFound + ', mode=' + STATE.currentMode);
+    return;
+  }
 
   const type = STATE.currentCatalogType;
   const config = CONFIG.items[type];
+  debugLog('  Type: ' + type);
 
   loadSecurityItem(type, (mesh) => {
     // Get ID and name
@@ -310,10 +318,14 @@ function placeObject() {
  * Handle tap/touch events
  */
 function onSelect(event) {
+  debugLog('👆 TAP DETECTED! Mode: ' + STATE.currentMode);
+
   if (STATE.currentMode === 'place') {
+    debugLog('  📍 Calling placeObject...');
     // Place new object
     placeObject();
   } else if (STATE.currentMode === 'move') {
+    debugLog('  🚚 Moving object...');
     // Move selected object
     if (STATE.selectedObjectId) {
       const obj = STATE.getSelectedObject();
@@ -326,6 +338,7 @@ function onSelect(event) {
         obj.position = position.clone();
 
         updateStatus(`✅ ${obj.name} moved`);
+        debugLog('  ✅ Object moved');
 
         // Exit move mode
         STATE.setMode('place');
@@ -734,12 +747,16 @@ function setupUIListeners() {
   }
 
   // Catalog items
-  UI.catalogItems.forEach(btn => {
+  debugLog('🟢 Setting up catalog item listeners: ' + UI.catalogItems.length + ' items');
+  UI.catalogItems.forEach((btn, index) => {
     btn.addEventListener('click', () => {
+      debugLog('🔵 Catalog item clicked: ' + btn.dataset.type);
       UI.catalogItems.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       STATE.setCatalogType(btn.dataset.type);
+      updateStatus('Selected: ' + btn.dataset.type + ' - Tap to place');
     });
+    debugLog('  ✅ Listener ' + index + ': ' + btn.dataset.type);
   });
 
   // Toggle list

@@ -397,6 +397,20 @@ html, body {
   z-index: 1000;
 }
 
+/* Allow clicks on interactive elements inside overlay */
+#xr-overlay * {
+  pointer-events: auto;
+}
+
+/* But keep status text non-interactive */
+#status-text {
+  pointer-events: none;
+}
+
+#mode-indicator {
+  pointer-events: none;
+}
+
 /* Status Overlay */
 #status-overlay {
   position: fixed;
