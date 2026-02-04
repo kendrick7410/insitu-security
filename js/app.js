@@ -32,6 +32,7 @@ const UI = {
   errorText: document.getElementById('error-text'),
   statusText: document.getElementById('status-text'),
   tapHint: document.getElementById('tap-hint'),
+  resetContainer: document.getElementById('reset-container'),
   resetButton: document.getElementById('reset-button'),
   reloadButton: document.getElementById('reload-button')
 };
@@ -442,8 +443,9 @@ function finalizeObjectPlacement(object) {
     APP.reticle.visible = false;
     UI.tapHint.classList.add('hidden');
 
-    // Show reset button
-    UI.resetButton.classList.remove('hidden');
+    // Show reset button container
+    UI.resetContainer.classList.remove('hidden');
+    console.log('✅ Reset button should now be visible!');
 
     // Update UI
     updateStatus('✅ Object placed successfully!');
@@ -654,7 +656,7 @@ function resetPlacement() {
   APP.reticle.visible = true;
 
   // Update UI
-  UI.resetButton.classList.add('hidden');
+  UI.resetContainer.classList.add('hidden');
   UI.tapHint.classList.remove('hidden');
   updateStatus('Tap to place another object');
 
