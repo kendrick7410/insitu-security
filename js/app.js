@@ -207,28 +207,43 @@ function createReticle() {
 function loadSecurityItem(type, callback) {
   const config = CONFIG.items[type];
 
+  debugLog('🔧 loadSecurityItem: ' + type);
+
   // Check cache
   if (STATE.modelCache[type]) {
+    debugLog('  ✅ Found in cache');
     const cloned = STATE.modelCache[type].clone();
     callback(cloned);
     return;
   }
 
+  // If GLTFLoader not available, use fallback immediately
+  if (!APP.loader) {
+    debugLog('  ⚠️ No GLTFLoader, using fallback');
+    const fallback = createFallbackMesh(type);
+    STATE.modelCache[type] = fallback; // Cache it
+    callback(fallback);
+    return;
+  }
+
   // Load model
+  debugLog('  📥 Loading GLB model...');
   updateStatus(`Loading ${config.label}...`);
 
   APP.loader.load(
     config.modelPath,
     (gltf) => {
+      debugLog('  ✅ Model loaded');
       STATE.modelCache[type] = gltf.scene;
       const cloned = gltf.scene.clone();
       callback(cloned);
     },
     undefined,
     (error) => {
-      console.error(`Error loading ${type}:`, error);
+      debugLog('  ❌ Error loading model: ' + error.message);
       // Fallback to simple geometry
       const fallback = createFallbackMesh(type);
+      STATE.modelCache[type] = fallback;
       callback(fallback);
     }
   );
@@ -267,20 +282,25 @@ function placeObject() {
   debugLog('  Type: ' + type);
 
   loadSecurityItem(type, (mesh) => {
+    debugLog('  ✅ Mesh received, placing...');
+
     // Get ID and name
     const id = STATE.getNextId(type);
     const name = STATE.getNextName(type);
+    debugLog('  ID: ' + id + ', Name: ' + name);
 
     // Position at reticle
     const position = new THREE.Vector3();
     position.setFromMatrixPosition(APP.reticle.matrix);
     position.y += config.yOffset;
+    debugLog('  Position: ' + position.x.toFixed(2) + ', ' + position.y.toFixed(2) + ', ' + position.z.toFixed(2));
 
     mesh.position.copy(position);
 
     // Apply default scale
     const scale = config.defaultScale;
     mesh.scale.set(scale, scale, scale);
+    debugLog('  Scale: ' + scale);
 
     // Store metadata
     mesh.userData = {
@@ -292,6 +312,7 @@ function placeObject() {
 
     // Add to scene
     APP.scene.add(mesh);
+    debugLog('  ✅ Added to scene');
 
     // Add to state
     const objectData = {
@@ -305,12 +326,12 @@ function placeObject() {
       timestamp: Date.now()
     };
     STATE.addObject(objectData);
+    debugLog('  ✅ Added to state. Total objects: ' + STATE.placedObjects.length);
 
     // Update UI
     updateObjectsList();
     updateStatus(`✅ ${name} placed`);
-
-    console.log(`Placed ${name} at`, position);
+    debugLog('✅ PLACEMENT COMPLETE!');
   });
 }
 
