@@ -45,14 +45,16 @@
   <!-- AR Canvas Container -->
   <div id="ar-container"></div>
 
-  <!-- Status Overlay -->
-  <div id="status-overlay">
-    <div id="status-text">Scanning for surfaces...</div>
-    <div id="mode-indicator">MODE: PLACE</div>
-  </div>
+  <!-- XR Overlay Container (for WebXR DOM Overlay) -->
+  <div id="xr-overlay">
+    <!-- Status Overlay -->
+    <div id="status-overlay">
+      <div id="status-text">Scanning for surfaces...</div>
+      <div id="mode-indicator">MODE: PLACE</div>
+    </div>
 
-  <!-- Bottom Catalog (Item Selector) -->
-  <div id="catalog-panel" class="hidden">
+    <!-- Bottom Catalog (Item Selector) -->
+    <div id="catalog-panel" class="hidden">
     <div class="catalog-header">
       <h3>Security Items</h3>
       <button id="toggle-list-btn">📋 List</button>
@@ -121,6 +123,7 @@
       <button id="clear-all-btn">🗑️ Clear All</button>
     </div>
   </div>
+  </div> <!-- End XR Overlay -->
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
