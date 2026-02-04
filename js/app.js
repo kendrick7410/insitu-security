@@ -558,22 +558,33 @@ function updateObjectsList() {
  * Delete selected object
  */
 function deleteSelectedObject() {
+  debugLog('🗑️ deleteSelectedObject called');
+
   const obj = STATE.getSelectedObject();
-  if (!obj) return;
+  if (!obj) {
+    debugLog('  ❌ No object selected');
+    return;
+  }
+
+  debugLog('  🗑️ Deleting: ' + obj.name + ' (' + obj.id + ')');
 
   // Remove from scene
   APP.scene.remove(obj.mesh);
+  debugLog('  ✅ Removed from scene');
 
   // Remove from state
   STATE.removeObject(obj.id);
+  debugLog('  ✅ Removed from state');
 
   // Close inspector
   deselectObject();
+  debugLog('  ✅ Inspector closed');
 
   // Update list
   updateObjectsList();
 
   updateStatus(`🗑️ ${obj.name} deleted`);
+  debugLog('🗑️ DELETE COMPLETE');
 }
 
 /**
@@ -942,10 +953,13 @@ function setupUIListeners() {
   });
 
   // Delete button - use touchstart to catch BEFORE XR select
-  UI.deleteBtn.addEventListener('touchstart', () => {
+  UI.deleteBtn.addEventListener('touchstart', (e) => {
     APP.lastUIClick = Date.now();
-  });
-  UI.deleteBtn.addEventListener('click', () => {
+    debugLog('🔴 DELETE BUTTON TOUCHED - blocking placement');
+  }, { passive: false });
+  UI.deleteBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    debugLog('🔴 DELETE BUTTON CLICKED');
     deleteSelectedObject();
   });
 
