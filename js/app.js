@@ -578,11 +578,32 @@ async function startARSession() {
   UI.loadingText.textContent = 'Initializing AR...';
 
   try {
+    // Create overlay container
+    const overlay = document.createElement('div');
+    overlay.id = 'xr-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.pointerEvents = 'none';
+    overlay.style.zIndex = '1000';
+    document.body.appendChild(overlay);
+
+    // Move UI elements into overlay
+    overlay.appendChild(UI.statusOverlay);
+    overlay.appendChild(UI.catalogPanel);
+    overlay.appendChild(UI.inspectorPanel);
+    overlay.appendChild(UI.listPanel);
+
+    debugLog('🔧 Requesting XR session with DOM overlay...');
     APP.xrSession = await navigator.xr.requestSession('immersive-ar', {
-      requiredFeatures: ['hit-test', 'local-floor']
+      requiredFeatures: ['hit-test', 'local-floor'],
+      optionalFeatures: ['dom-overlay'],
+      domOverlay: { root: overlay }
     });
 
-    console.log('WebXR AR session started');
+    debugLog('✅ WebXR AR session started with DOM overlay');
 
     await setupXRSession();
     APP.renderer.xr.setSession(APP.xrSession);
