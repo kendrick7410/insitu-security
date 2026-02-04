@@ -46,8 +46,8 @@ const CONFIG = {
   // Reticle configuration
   reticle: {
     color: 0x00ff00,
-    size: 0.3,
-    opacity: 0.8
+    size: 0.15,  // Smaller ring, more precise
+    opacity: 1.0  // Fully opaque, easier to see
   },
 
   // Shadow plane configuration

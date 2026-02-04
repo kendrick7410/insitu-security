@@ -251,16 +251,36 @@ function loadSecurityItem(type, callback) {
 
 /**
  * Create fallback mesh if model fails to load
+ * Making them BIG and BRIGHT so they're clearly visible!
  */
 function createFallbackMesh(type) {
   const config = CONFIG.items[type];
-  const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+
+  // Create a BIG cube - 30cm on each side
+  const geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+
+  // Bright colors per type for easy identification
+  const colors = {
+    camera: 0xff0000,   // Red
+    sensor: 0x00ff00,   // Green
+    hub: 0x0000ff,      // Blue
+    siren: 0xff00ff,    // Magenta
+    keypad: 0xffff00    // Yellow
+  };
+
   const material = new THREE.MeshStandardMaterial({
-    color: 0x4a90e2,
-    metalness: 0.3,
-    roughness: 0.7
+    color: colors[type] || 0xff0000,
+    metalness: 0.1,
+    roughness: 0.8,
+    emissive: colors[type] || 0xff0000,
+    emissiveIntensity: 0.3
   });
+
   const mesh = new THREE.Mesh(geometry, material);
+  mesh.userData.isFallback = true;
+
+  debugLog('  📦 Created fallback cube: ' + type + ', size: 30cm, color: ' + colors[type]);
+
   return mesh;
 }
 
@@ -297,10 +317,10 @@ function placeObject() {
 
     mesh.position.copy(position);
 
-    // Apply default scale
-    const scale = config.defaultScale;
+    // Apply default scale (but not for fallback cubes - they're already sized)
+    const scale = mesh.userData.isFallback ? 1.0 : config.defaultScale;
     mesh.scale.set(scale, scale, scale);
-    debugLog('  Scale: ' + scale);
+    debugLog('  Scale: ' + scale + (mesh.userData.isFallback ? ' (fallback - no scaling)' : ''));
 
     // Store metadata
     mesh.userData = {
@@ -332,6 +352,13 @@ function placeObject() {
     updateObjectsList();
     updateStatus(`✅ ${name} placed`);
     debugLog('✅ PLACEMENT COMPLETE!');
+
+    // Show visual feedback - green flash
+    const flash = document.getElementById('placement-flash');
+    if (flash) {
+      flash.classList.add('active');
+      setTimeout(() => flash.classList.remove('active'), 200);
+    }
   });
 }
 

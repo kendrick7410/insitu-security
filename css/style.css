@@ -411,6 +411,24 @@ html, body {
   pointer-events: none;
 }
 
+/* Placement feedback flash */
+#placement-flash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 255, 0, 0.5);
+  pointer-events: none;
+  z-index: 500;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+#placement-flash.active {
+  opacity: 1;
+}
+
 /* Crosshair (center of screen) */
 #crosshair {
   position: fixed;
