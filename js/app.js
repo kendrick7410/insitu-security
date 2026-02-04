@@ -305,6 +305,12 @@ async function setupXRSession() {
   // Handle select (tap) events
   APP.xrSession.addEventListener('select', onSelect);
 
+  // Add touch handler for mobile (fallback if 'select' doesn't work)
+  APP.renderer.domElement.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    onSelect();
+  }, { passive: false });
+
   // Set render loop
   APP.renderer.setAnimationLoop(render);
 
