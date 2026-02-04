@@ -149,6 +149,7 @@ function loadModel(callback) {
     CONFIG.model.path,
     (gltf) => {
       console.log('Model loaded successfully');
+      alert('Modèle chargé avec succès!');
       callback(gltf.scene);
     },
     (progress) => {
@@ -159,6 +160,7 @@ function loadModel(callback) {
     },
     (error) => {
       console.error('Error loading model:', error);
+      alert('ERREUR chargement modèle: ' + error.message);
       showError('Failed to load 3D model. Check console for details.');
     }
   );
@@ -168,6 +170,9 @@ function loadModel(callback) {
  * Place object at reticle position
  */
 function placeObject() {
+  console.log('placeObject called!');
+  alert('Placement du cube...');
+
   if (!APP.surfaceFound || APP.objectPlaced) return;
 
   updateStatus('Placing object...');
@@ -207,6 +212,9 @@ function placeObject() {
  * Handle tap/touch events for placement
  */
 function onSelect() {
+  console.log('onSelect called! surfaceFound:', APP.surfaceFound, 'objectPlaced:', APP.objectPlaced);
+  alert('Tap détecté! Surface: ' + APP.surfaceFound);
+
   if (APP.surfaceFound && !APP.objectPlaced) {
     placeObject();
   }
