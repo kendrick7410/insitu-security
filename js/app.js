@@ -660,10 +660,16 @@ async function setupXRSession() {
 
   APP.xrRefSpace = await APP.xrSession.requestReferenceSpace('local-floor');
 
+  // Use viewer space for center-screen hit testing
   const viewerSpace = await APP.xrSession.requestReferenceSpace('viewer');
+
+  // Request hit test from viewer (center of screen, looking forward)
   APP.xrHitTestSource = await APP.xrSession.requestHitTestSource({
-    space: viewerSpace
+    space: viewerSpace,
+    offsetRay: new XRRay() // Ray from viewer origin, pointing forward
   });
+
+  debugLog('✅ Hit test configured for center-screen (walls & floor)');
 
   APP.xrSession.addEventListener('end', onSessionEnd);
   APP.xrSession.addEventListener('select', onSelect);
@@ -721,7 +727,7 @@ function render(timestamp, frame) {
 
         if (!APP.surfaceFound) {
           APP.surfaceFound = true;
-          updateStatus('Tap to place');
+          updateStatus('Aim at wall/floor & tap to place');
         }
       }
     } else {

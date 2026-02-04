@@ -411,6 +411,51 @@ html, body {
   pointer-events: none;
 }
 
+/* Crosshair (center of screen) */
+#crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+#crosshair::before,
+#crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(102, 126, 234, 0.8);
+  box-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
+}
+
+/* Vertical line */
+#crosshair::before {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 100%;
+}
+
+/* Horizontal line */
+#crosshair::after {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 3px;
+}
+
+/* Center dot */
+#crosshair {
+  border: 2px solid rgba(102, 126, 234, 0.9);
+  border-radius: 50%;
+  background: rgba(102, 126, 234, 0.3);
+}
+
 /* Status Overlay */
 #status-overlay {
   position: fixed;
