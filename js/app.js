@@ -19,37 +19,42 @@ const APP = {
   loader: null
 };
 
-// UI Elements
-const UI = {
-  startScreen: document.getElementById('start-screen'),
-  startButton: document.getElementById('start-ar-button'),
-  loadingScreen: document.getElementById('loading-screen'),
-  loadingText: document.getElementById('loading-text'),
-  errorMessage: document.getElementById('error-message'),
-  errorText: document.getElementById('error-text'),
-  reloadButton: document.getElementById('reload-button'),
-  statusOverlay: document.getElementById('status-overlay'),
-  statusText: document.getElementById('status-text'),
-  modeIndicator: document.getElementById('mode-indicator'),
-  catalogPanel: document.getElementById('catalog-panel'),
-  catalogItems: document.querySelectorAll('.catalog-item'),
-  toggleListBtn: document.getElementById('toggle-list-btn'),
-  inspectorPanel: document.getElementById('inspector-panel'),
-  objectNameInput: document.getElementById('object-name'),
-  closeInspector: document.getElementById('close-inspector'),
-  rotationSlider: document.getElementById('rotation-slider'),
-  rotationValue: document.getElementById('rotation-value'),
-  scaleSlider: document.getElementById('scale-slider'),
-  scaleValue: document.getElementById('scale-value'),
-  moveBtn: document.getElementById('move-btn'),
-  duplicateBtn: document.getElementById('duplicate-btn'),
-  deleteBtn: document.getElementById('delete-btn'),
-  listPanel: document.getElementById('list-panel'),
-  closeList: document.getElementById('close-list'),
-  objectsList: document.getElementById('objects-list'),
-  objectCount: document.getElementById('object-count'),
-  clearAllBtn: document.getElementById('clear-all-btn')
-};
+// UI Elements (will be initialized after DOM ready)
+const UI = {};
+
+/**
+ * Initialize UI element references
+ */
+function initUIElements() {
+  UI.startScreen = document.getElementById('start-screen');
+  UI.startButton = document.getElementById('start-ar-button');
+  UI.loadingScreen = document.getElementById('loading-screen');
+  UI.loadingText = document.getElementById('loading-text');
+  UI.errorMessage = document.getElementById('error-message');
+  UI.errorText = document.getElementById('error-text');
+  UI.reloadButton = document.getElementById('reload-button');
+  UI.statusOverlay = document.getElementById('status-overlay');
+  UI.statusText = document.getElementById('status-text');
+  UI.modeIndicator = document.getElementById('mode-indicator');
+  UI.catalogPanel = document.getElementById('catalog-panel');
+  UI.catalogItems = document.querySelectorAll('.catalog-item');
+  UI.toggleListBtn = document.getElementById('toggle-list-btn');
+  UI.inspectorPanel = document.getElementById('inspector-panel');
+  UI.objectNameInput = document.getElementById('object-name');
+  UI.closeInspector = document.getElementById('close-inspector');
+  UI.rotationSlider = document.getElementById('rotation-slider');
+  UI.rotationValue = document.getElementById('rotation-value');
+  UI.scaleSlider = document.getElementById('scale-slider');
+  UI.scaleValue = document.getElementById('scale-value');
+  UI.moveBtn = document.getElementById('move-btn');
+  UI.duplicateBtn = document.getElementById('duplicate-btn');
+  UI.deleteBtn = document.getElementById('delete-btn');
+  UI.listPanel = document.getElementById('list-panel');
+  UI.closeList = document.getElementById('close-list');
+  UI.objectsList = document.getElementById('objects-list');
+  UI.objectCount = document.getElementById('object-count');
+  UI.clearAllBtn = document.getElementById('clear-all-btn');
+}
 
 /**
  * Show error message
@@ -739,6 +744,9 @@ function onWindowResize() {
  */
 async function init() {
   console.log('In situ Security - WebXR AR Planner (Palier 1)');
+
+  // Initialize UI element references first
+  initUIElements();
 
   // Check WebXR support
   const support = await checkWebXRSupport();
