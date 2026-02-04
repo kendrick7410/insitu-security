@@ -177,23 +177,29 @@ function placeObject() {
 
   updateStatus('Placing object...');
 
-  loadModel((model) => {
-    // Apply configuration
-    model.scale.set(CONFIG.model.scale, CONFIG.model.scale, CONFIG.model.scale);
-    model.rotation.y = CONFIG.model.rotationY;
+  try {
+    // Create a simple THREE.js cube instead of loading GLB
+    const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x00ff00,
+      metalness: 0.3,
+      roughness: 0.7
+    });
+    const cube = new THREE.Mesh(geometry, material);
 
     // Position at reticle location
-    model.position.setFromMatrixPosition(APP.reticle.matrix);
+    cube.position.setFromMatrixPosition(APP.reticle.matrix);
+    cube.position.y += 0.1; // Lift slightly above surface
 
     // Add to scene
-    APP.scene.add(model);
-    APP.placedObject = model;
+    APP.scene.add(cube);
+    APP.placedObject = cube;
     APP.objectPlaced = true;
 
     // Position shadow plane under object
     if (APP.shadowPlane) {
-      APP.shadowPlane.position.copy(model.position);
-      APP.shadowPlane.position.y += 0.01; // Slightly above surface
+      APP.shadowPlane.position.copy(cube.position);
+      APP.shadowPlane.position.y -= 0.09; // Just below cube
       APP.shadowPlane.visible = true;
     }
 
@@ -201,11 +207,15 @@ function placeObject() {
     APP.reticle.visible = false;
 
     // Update UI
-    updateStatus('Object placed!');
+    updateStatus('Cube placed!');
     UI.tapHint.classList.add('hidden');
+    alert('Cube vert placé avec succès!');
 
-    console.log('Object placed at:', model.position);
-  });
+    console.log('Cube placed at:', cube.position);
+  } catch (error) {
+    console.error('Error placing cube:', error);
+    alert('ERREUR placement: ' + error.message);
+  }
 }
 
 /**
