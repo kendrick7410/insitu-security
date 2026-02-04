@@ -411,10 +411,10 @@ function onSelect(event) {
   }
 
   // WORKAROUND: Add a small delay to avoid conflicts with UI button clicks
-  // If a UI button was just clicked, skip this select event
+  // If a UI button was just touched, skip this select event
   const now = Date.now();
-  if (APP.lastUIClick && (now - APP.lastUIClick) < 300) {
-    debugLog('  ⏭️ Skipping - UI button was just clicked');
+  if (APP.lastUIClick && (now - APP.lastUIClick) < 500) {
+    debugLog('  ⏭️ Skipping - UI button was just touched (' + (now - APP.lastUIClick) + 'ms ago)');
     return;
   }
 
@@ -852,8 +852,11 @@ function setupUIListeners() {
   // Catalog items
   debugLog('🟢 Setting up catalog item listeners: ' + UI.catalogItems.length + ' items');
   UI.catalogItems.forEach((btn, index) => {
-    btn.addEventListener('click', () => {
+    // Touchstart fires BEFORE XR select - set flag immediately
+    btn.addEventListener('touchstart', () => {
       APP.lastUIClick = Date.now();
+    });
+    btn.addEventListener('click', () => {
       debugLog('🔵 Catalog item clicked: ' + btn.dataset.type);
       UI.catalogItems.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -864,20 +867,26 @@ function setupUIListeners() {
   });
 
   // Toggle list
-  UI.toggleListBtn.addEventListener('click', () => {
+  UI.toggleListBtn.addEventListener('touchstart', () => {
     APP.lastUIClick = Date.now();
+  });
+  UI.toggleListBtn.addEventListener('click', () => {
     UI.listPanel.classList.toggle('hidden');
   });
 
   // Close list
-  UI.closeList.addEventListener('click', () => {
+  UI.closeList.addEventListener('touchstart', () => {
     APP.lastUIClick = Date.now();
+  });
+  UI.closeList.addEventListener('click', () => {
     UI.listPanel.classList.add('hidden');
   });
 
   // Close inspector
-  UI.closeInspector.addEventListener('click', () => {
+  UI.closeInspector.addEventListener('touchstart', () => {
     APP.lastUIClick = Date.now();
+  });
+  UI.closeInspector.addEventListener('click', () => {
     deselectObject();
   });
 
@@ -914,8 +923,10 @@ function setupUIListeners() {
   });
 
   // Move button
-  UI.moveBtn.addEventListener('click', () => {
+  UI.moveBtn.addEventListener('touchstart', () => {
     APP.lastUIClick = Date.now();
+  });
+  UI.moveBtn.addEventListener('click', () => {
     STATE.setMode('move');
     updateModeIndicator();
     updateStatus('Tap surface to move object');
@@ -923,20 +934,26 @@ function setupUIListeners() {
   });
 
   // Duplicate button
-  UI.duplicateBtn.addEventListener('click', () => {
+  UI.duplicateBtn.addEventListener('touchstart', () => {
     APP.lastUIClick = Date.now();
+  });
+  UI.duplicateBtn.addEventListener('click', () => {
     duplicateSelectedObject();
   });
 
-  // Delete button
-  UI.deleteBtn.addEventListener('click', () => {
+  // Delete button - use touchstart to catch BEFORE XR select
+  UI.deleteBtn.addEventListener('touchstart', () => {
     APP.lastUIClick = Date.now();
+  });
+  UI.deleteBtn.addEventListener('click', () => {
     deleteSelectedObject();
   });
 
   // Clear all
-  UI.clearAllBtn.addEventListener('click', () => {
+  UI.clearAllBtn.addEventListener('touchstart', () => {
     APP.lastUIClick = Date.now();
+  });
+  UI.clearAllBtn.addEventListener('click', () => {
     clearAllObjects();
   });
 
