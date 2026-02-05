@@ -918,6 +918,10 @@ function setupUIListeners() {
   });
 
   // Object name change
+  UI.objectNameInput.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    APP.lastUIClick = Date.now();
+  }, { passive: false });
   UI.objectNameInput.addEventListener('input', (e) => {
     const obj = STATE.getSelectedObject();
     if (obj) {
@@ -927,7 +931,17 @@ function setupUIListeners() {
     }
   });
 
-  // Rotation slider
+  // Rotation slider - block all touch events
+  UI.rotationSlider.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    APP.lastUIClick = Date.now();
+  }, { passive: false });
+  UI.rotationSlider.addEventListener('touchmove', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.rotationSlider.addEventListener('touchend', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
   UI.rotationSlider.addEventListener('input', (e) => {
     const obj = STATE.getSelectedObject();
     if (obj) {
@@ -938,7 +952,17 @@ function setupUIListeners() {
     }
   });
 
-  // Scale slider
+  // Scale slider - block all touch events
+  UI.scaleSlider.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    APP.lastUIClick = Date.now();
+  }, { passive: false });
+  UI.scaleSlider.addEventListener('touchmove', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.scaleSlider.addEventListener('touchend', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
   UI.scaleSlider.addEventListener('input', (e) => {
     const obj = STATE.getSelectedObject();
     if (obj) {
@@ -1002,6 +1026,56 @@ function setupUIListeners() {
   UI.reloadButton.addEventListener('click', () => {
     window.location.reload();
   });
+
+  // GLOBAL PANEL EVENT BLOCKERS
+  // Block all touch/click events on panels to prevent placement underneath
+
+  // Inspector panel - block all touches
+  UI.inspectorPanel.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    APP.lastUIClick = Date.now();
+  }, { passive: false });
+  UI.inspectorPanel.addEventListener('touchmove', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.inspectorPanel.addEventListener('touchend', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.inspectorPanel.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Catalog panel - block all touches
+  UI.catalogPanel.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    APP.lastUIClick = Date.now();
+  }, { passive: false });
+  UI.catalogPanel.addEventListener('touchmove', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.catalogPanel.addEventListener('touchend', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.catalogPanel.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // List panel - block all touches
+  UI.listPanel.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    APP.lastUIClick = Date.now();
+  }, { passive: false });
+  UI.listPanel.addEventListener('touchmove', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.listPanel.addEventListener('touchend', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.listPanel.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  debugLog('✅ Global panel event blockers added');
 }
 
 /**
