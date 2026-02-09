@@ -416,14 +416,14 @@ function onSelect(event) {
     debugLog('  📱 Screen tap detected (targetRayMode=screen)');
   }
 
-  // WORKAROUND: Add a delay to avoid conflicts with UI button clicks
-  // If a UI button was just touched, skip this select event
-  if (APP.lastUIClick && (now - APP.lastUIClick) < 1000) {
-    debugLog('  ⏭️ BLOCKED - UI button was just touched (' + (now - APP.lastUIClick) + 'ms ago)');
+  // SIMPLIFIED: Only block for dangerous operations (move mode)
+  // In place mode, user WANTS to place objects, so don't block!
+  if (STATE.currentMode === 'move' && APP.lastUIClick && (now - APP.lastUIClick) < 1000) {
+    debugLog('  ⏭️ BLOCKED - UI button was just touched in MOVE mode (' + (now - APP.lastUIClick) + 'ms ago)');
     return;
   }
 
-  debugLog('  ✅ Not blocked by UI click protection');
+  debugLog('  ✅ Not blocked - proceeding with action');
 
   if (STATE.currentMode === 'place') {
     debugLog('  📍 Mode is PLACE - calling placeObject...');
