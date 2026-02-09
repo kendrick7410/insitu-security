@@ -421,13 +421,10 @@ function onSelect(event) {
     debugLog('  📱 Screen tap detected (targetRayMode=screen)');
   }
 
-  // NEW APPROACH: Use explicit flag instead of timing
-  // If placement is blocked, allow it again after this tap (user tried to place)
+  // Check if placement is blocked (UI button was clicked)
   if (!APP.placementAllowed) {
     debugLog('  ⏭️ BLOCKED - Placement not allowed (UI button was clicked)');
-    // Re-enable placement for next tap (user acknowledged the block)
-    APP.placementAllowed = true;
-    debugLog('  ✅ Placement re-enabled for next tap');
+    // Don't re-enable here - let the setTimeout in touchstart handle it
     return;
   }
 
