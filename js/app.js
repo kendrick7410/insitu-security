@@ -416,10 +416,11 @@ function onSelect(event) {
     debugLog('  📱 Screen tap detected (targetRayMode=screen)');
   }
 
-  // SIMPLIFIED: Only block for dangerous operations (move mode)
-  // In place mode, user WANTS to place objects, so don't block!
-  if (STATE.currentMode === 'move' && APP.lastUIClick && (now - APP.lastUIClick) < 1000) {
-    debugLog('  ⏭️ BLOCKED - UI button was just touched in MOVE mode (' + (now - APP.lastUIClick) + 'ms ago)');
+  // SMART PROTECTION: Block placement if a UI button was just touched
+  // This prevents accidental placement when clicking UI buttons
+  // Catalog items don't set lastUIClick, so placement works after selection
+  if (APP.lastUIClick && (now - APP.lastUIClick) < 1000) {
+    debugLog('  ⏭️ BLOCKED - UI button was just touched (' + (now - APP.lastUIClick) + 'ms ago)');
     return;
   }
 
