@@ -397,6 +397,10 @@ html, body {
   z-index: 1000;
 }
 
+#xr-overlay.hidden {
+  display: none;
+}
+
 /* Allow clicks on interactive elements inside overlay */
 #xr-overlay * {
   pointer-events: auto;

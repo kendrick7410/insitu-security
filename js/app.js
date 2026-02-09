@@ -845,6 +845,13 @@ async function startARSession() {
 
     UI.loadingScreen.classList.add('hidden');
 
+    // Show XR overlay (contains all AR UI)
+    const xrOverlay = document.getElementById('xr-overlay');
+    if (xrOverlay) {
+      xrOverlay.classList.remove('hidden');
+      debugLog('✅ XR overlay visible');
+    }
+
     debugLog('📱 Showing catalog panel...');
     UI.catalogPanel.classList.remove('hidden');
     debugLog('✅ Catalog panel visible');
@@ -961,6 +968,13 @@ function onSessionEnd() {
   APP.surfaceFound = false;
 
   UI.startScreen.classList.remove('hidden');
+
+  // Hide XR overlay completely
+  const xrOverlay = document.getElementById('xr-overlay');
+  if (xrOverlay) {
+    xrOverlay.classList.add('hidden');
+  }
+
   UI.catalogPanel.classList.add('hidden');
   UI.inspectorPanel.classList.add('hidden');
   UI.listPanel.classList.add('hidden');
