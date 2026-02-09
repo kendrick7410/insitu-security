@@ -849,6 +849,10 @@ async function startARSession() {
     UI.catalogPanel.classList.remove('hidden');
     debugLog('✅ Catalog panel visible');
 
+    // Show status overlay
+    UI.statusOverlay.classList.remove('hidden');
+    debugLog('✅ Status overlay visible');
+
     updateStatus('Tap green circle to place object');
     updateModeIndicator();
 
@@ -960,6 +964,7 @@ function onSessionEnd() {
   UI.catalogPanel.classList.add('hidden');
   UI.inspectorPanel.classList.add('hidden');
   UI.listPanel.classList.add('hidden');
+  UI.statusOverlay.classList.add('hidden');
 
   console.log('WebXR session ended');
 }

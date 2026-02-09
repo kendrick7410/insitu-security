@@ -489,6 +489,10 @@ html, body {
   gap: 10px;
 }
 
+#status-overlay.hidden {
+  display: none;
+}
+
 #mode-indicator {
   background: rgba(102, 126, 234, 0.9);
   padding: 8px 20px;
