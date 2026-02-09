@@ -1050,6 +1050,8 @@ function setupUIListeners() {
       btn.classList.add('active');
       STATE.setCatalogType(btn.dataset.type);
       updateStatus('Selected: ' + btn.dataset.type + ' - Tap to place');
+      // IMPORTANT: Re-enable placement when user selects an item
+      APP.placementAllowed = true;
       debugLog('  ✅ Item selected, placement is now ALLOWED');
     });
     debugLog('  ✅ Listener ' + index + ': ' + btn.dataset.type);
@@ -1066,6 +1068,11 @@ function setupUIListeners() {
     e.stopPropagation();
     e.preventDefault();
     UI.listPanel.classList.toggle('hidden');
+    // Re-enable placement after a short delay
+    setTimeout(() => {
+      APP.placementAllowed = true;
+      debugLog('✅ Placement re-enabled after List button');
+    }, 300);
   });
 
   // Close list
@@ -1077,6 +1084,11 @@ function setupUIListeners() {
     e.stopPropagation();
     e.preventDefault();
     UI.listPanel.classList.add('hidden');
+    // Re-enable placement after closing
+    setTimeout(() => {
+      APP.placementAllowed = true;
+      debugLog('✅ Placement re-enabled after closing List');
+    }, 300);
   });
 
   // Close inspector
@@ -1236,6 +1248,11 @@ function setupUIListeners() {
       APP.lastUIClick = Date.now();
       debugLog('✅ Finish button clicked');
       showSessionSummary();
+      // Re-enable placement (though session is ending, this prevents issues)
+      setTimeout(() => {
+        APP.placementAllowed = true;
+        debugLog('✅ Placement re-enabled after Finish button');
+      }, 300);
     });
   }
 
