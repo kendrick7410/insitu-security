@@ -543,6 +543,7 @@ function updateObjectsList() {
   STATE.placedObjects.forEach(obj => {
     const item = document.createElement('div');
     item.className = 'object-list-item';
+    item.dataset.objectId = obj.id;  // Store object ID on the element
     if (obj.id === STATE.selectedObjectId) {
       item.classList.add('selected');
     }
@@ -1006,8 +1007,80 @@ async function setupXRSession() {
         }
       }
 
+      // Check list panel specifically (has interactive items)
+      if (!UI.listPanel.classList.contains('hidden')) {
+        const listRect = UI.listPanel.getBoundingClientRect();
+        if (x >= listRect.left && x <= listRect.right &&
+            y >= listRect.top && y <= listRect.bottom) {
+          debugLog('  📋 Touch inside LIST panel');
+
+          // Check Close button
+          const closeRect = UI.closeList.getBoundingClientRect();
+          if (x >= closeRect.left && x <= closeRect.right &&
+              y >= closeRect.top && y <= closeRect.bottom) {
+            debugLog('  ✕ Close list button TOUCHED');
+            UI.listPanel.classList.add('hidden');
+            APP.placementAllowed = false;
+            setTimeout(() => {
+              APP.placementAllowed = true;
+              debugLog('  ✅ Placement re-enabled');
+            }, 100);
+            return;
+          }
+
+          // Check Clear All button
+          const clearRect = UI.clearAllBtn.getBoundingClientRect();
+          if (x >= clearRect.left && x <= clearRect.right &&
+              y >= clearRect.top && y <= clearRect.bottom) {
+            debugLog('  🗑️ Clear All button TOUCHED');
+            if (confirm('Clear all objects? This cannot be undone.')) {
+              STATE.placedObjects.forEach(obj => APP.scene.remove(obj.mesh));
+              STATE.clearAll();
+              deselectObject();
+              UI.listPanel.classList.add('hidden');
+              updateObjectsList();
+              updateStatus('🗑️ All objects cleared');
+            }
+            APP.placementAllowed = false;
+            setTimeout(() => {
+              APP.placementAllowed = true;
+              debugLog('  ✅ Placement re-enabled');
+            }, 100);
+            return;
+          }
+
+          // Check if touch is on a list item
+          const listItems = UI.objectsList.querySelectorAll('.object-list-item');
+          for (const item of listItems) {
+            const itemRect = item.getBoundingClientRect();
+            if (x >= itemRect.left && x <= itemRect.right &&
+                y >= itemRect.top && y <= itemRect.bottom) {
+              const objectId = item.dataset.objectId;
+              debugLog(`  👆 List item TOUCHED: ${objectId}`);
+              selectObject(objectId);
+              UI.listPanel.classList.add('hidden');
+              APP.placementAllowed = false;
+              setTimeout(() => {
+                APP.placementAllowed = true;
+                debugLog('  ✅ Placement re-enabled');
+              }, 100);
+              return;
+            }
+          }
+
+          // Touch in list panel but not on item - just block placement
+          debugLog('  ⏹️ Touch in list panel (not on item) - blocking placement');
+          APP.placementAllowed = false;
+          setTimeout(() => {
+            APP.placementAllowed = true;
+            debugLog('  ✅ Placement re-enabled');
+          }, 300);
+          return;
+        }
+      }
+
       // Check other UI panels geometrically
-      const panels = [UI.inspectorPanel, UI.listPanel, UI.summaryScreen];
+      const panels = [UI.inspectorPanel, UI.summaryScreen];
       for (const panel of panels) {
         if (!panel.classList.contains('hidden')) {
           const rect = panel.getBoundingClientRect();
