@@ -826,19 +826,16 @@ async function startARSession() {
 
   APP.isStartingSession = true;
   debugLog('🔵 startARSession called!');
-  UI.startScreen.classList.add('hidden');
-  UI.loadingScreen.classList.remove('hidden');
-  UI.loadingText.textContent = 'Initializing AR...';
 
   try {
-    // Get existing overlay container from DOM
+    // Get overlay BEFORE any UI updates to minimize delay
     const overlay = document.getElementById('xr-overlay');
     if (!overlay) {
       debugLog('❌ XR overlay container not found!');
       throw new Error('XR overlay container missing');
     }
-    debugLog('✅ Found XR overlay container');
 
+    // CRITICAL: Call requestSession IMMEDIATELY to preserve user activation
     debugLog('🔧 Requesting XR session with DOM overlay...');
     APP.xrSession = await navigator.xr.requestSession('immersive-ar', {
       requiredFeatures: ['hit-test', 'local-floor'],
@@ -847,6 +844,11 @@ async function startARSession() {
     });
 
     debugLog('✅ WebXR AR session started with DOM overlay');
+
+    // NOW we can do UI updates (after session is granted)
+    UI.startScreen.classList.add('hidden');
+    UI.loadingScreen.classList.remove('hidden');
+    UI.loadingText.textContent = 'Initializing AR...';
 
     await setupXRSession();
     APP.renderer.xr.setSession(APP.xrSession);
