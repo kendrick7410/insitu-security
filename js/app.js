@@ -70,6 +70,12 @@ function initUIElements() {
   UI.objectsList = document.getElementById('objects-list');
   UI.objectCount = document.getElementById('object-count');
   UI.clearAllBtn = document.getElementById('clear-all-btn');
+  UI.finishSessionBtn = document.getElementById('finish-session-btn');
+  UI.summaryScreen = document.getElementById('summary-screen');
+  UI.summaryStats = document.getElementById('summary-stats');
+  UI.summaryList = document.getElementById('summary-list');
+  UI.newSessionBtn = document.getElementById('new-session-btn');
+  UI.closeSummaryBtn = document.getElementById('close-summary-btn');
 }
 
 /**
@@ -410,10 +416,10 @@ function onSelect(event) {
     // The issue is that XR select fires for ALL taps, including UI
   }
 
-  // WORKAROUND: Add a small delay to avoid conflicts with UI button clicks
+  // WORKAROUND: Add a delay to avoid conflicts with UI button clicks
   // If a UI button was just touched, skip this select event
   const now = Date.now();
-  if (APP.lastUIClick && (now - APP.lastUIClick) < 150) {
+  if (APP.lastUIClick && (now - APP.lastUIClick) < 1000) {
     debugLog('  ⏭️ Skipping - UI button was just touched (' + (now - APP.lastUIClick) + 'ms ago)');
     return;
   }
@@ -668,6 +674,118 @@ function clearAllObjects() {
 }
 
 /**
+ * Show session summary
+ */
+function showSessionSummary() {
+  debugLog('📊 Showing session summary');
+
+  // Count objects by type
+  const typeCounts = {};
+  STATE.placedObjects.forEach(obj => {
+    typeCounts[obj.type] = (typeCounts[obj.type] || 0) + 1;
+  });
+
+  // Generate stats
+  const totalObjects = STATE.placedObjects.length;
+  const objectTypes = Object.keys(typeCounts).length;
+
+  UI.summaryStats.innerHTML = `
+    <div class="stat-card">
+      <span class="stat-number">${totalObjects}</span>
+      <span class="stat-label">Total Items</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">${objectTypes}</span>
+      <span class="stat-label">Item Types</span>
+    </div>
+  `;
+
+  // Generate list
+  if (totalObjects === 0) {
+    UI.summaryList.innerHTML = `
+      <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.6);">
+        No objects were placed in this session.
+      </div>
+    `;
+  } else {
+    UI.summaryList.innerHTML = '<h3 style="color: #fff; margin-bottom: 15px; font-size: 14px;">Placed Items:</h3>';
+
+    STATE.placedObjects.forEach(obj => {
+      const config = CONFIG.items[obj.type];
+      const icon = config.label.split(' ')[0];
+      const timestamp = new Date(obj.timestamp).toLocaleTimeString();
+
+      UI.summaryList.innerHTML += `
+        <div class="summary-item">
+          <span class="summary-item-icon">${icon}</span>
+          <div class="summary-item-details">
+            <div class="summary-item-name">${obj.name}</div>
+            <div class="summary-item-info">${config.label} • Placed at ${timestamp}</div>
+          </div>
+        </div>
+      `;
+    });
+
+    // Add breakdown by type
+    UI.summaryList.innerHTML += '<h3 style="color: #fff; margin: 20px 0 15px 0; font-size: 14px;">Breakdown by Type:</h3>';
+    Object.entries(typeCounts).forEach(([type, count]) => {
+      const config = CONFIG.items[type];
+      const icon = config.label.split(' ')[0];
+      UI.summaryList.innerHTML += `
+        <div class="summary-item">
+          <span class="summary-item-icon">${icon}</span>
+          <div class="summary-item-details">
+            <div class="summary-item-name">${config.label}</div>
+            <div class="summary-item-info">${count} item${count > 1 ? 's' : ''}</div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // Show summary screen
+  UI.summaryScreen.classList.remove('hidden');
+  debugLog('✅ Summary displayed');
+}
+
+/**
+ * End AR session
+ */
+function endARSession() {
+  debugLog('🔴 Ending AR session');
+
+  if (APP.xrSession) {
+    APP.xrSession.end();
+  }
+}
+
+/**
+ * Start new session
+ */
+function startNewSession() {
+  debugLog('🔄 Starting new session');
+
+  // Clear all objects
+  STATE.placedObjects.forEach(obj => {
+    APP.scene.remove(obj.mesh);
+  });
+  STATE.clearAll();
+
+  // Close summary
+  UI.summaryScreen.classList.add('hidden');
+
+  // End current XR session
+  if (APP.xrSession) {
+    APP.xrSession.end();
+  }
+
+  // Reset UI
+  UI.startScreen.classList.remove('hidden');
+
+  debugLog('✅ Ready for new session');
+}
+
+/**
  * Check WebXR support
  */
 async function checkWebXRSupport() {
@@ -909,12 +1027,18 @@ function setupUIListeners() {
   // Close inspector
   UI.closeInspector.addEventListener('touchstart', (e) => {
     e.stopPropagation();
+    e.preventDefault();
     APP.lastUIClick = Date.now();
   }, { passive: false });
   UI.closeInspector.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
+    APP.lastUIClick = Date.now(); // Update again to extend protection window
     deselectObject();
+    // Extra protection after closing
+    setTimeout(() => {
+      APP.lastUIClick = Date.now();
+    }, 100);
   });
 
   // Object name change
@@ -990,41 +1114,86 @@ function setupUIListeners() {
   // Duplicate button
   UI.duplicateBtn.addEventListener('touchstart', (e) => {
     e.stopPropagation();
+    e.preventDefault();
     APP.lastUIClick = Date.now();
   }, { passive: false });
   UI.duplicateBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
+    APP.lastUIClick = Date.now(); // Update again to extend protection window
     duplicateSelectedObject();
   });
 
   // Delete button - use touchstart to catch BEFORE XR select
   UI.deleteBtn.addEventListener('touchstart', (e) => {
     e.stopPropagation();
+    e.preventDefault();
     APP.lastUIClick = Date.now();
-    debugLog('🔴 DELETE BUTTON TOUCHED - blocking placement');
+    debugLog('🔴 DELETE BUTTON TOUCHED - blocking placement for 1000ms');
   }, { passive: false });
   UI.deleteBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
+    APP.lastUIClick = Date.now(); // Update again to extend protection window
     debugLog('🔴 DELETE BUTTON CLICKED');
     deleteSelectedObject();
+    // Extra protection: set timestamp again after deletion
+    setTimeout(() => {
+      APP.lastUIClick = Date.now();
+      debugLog('🔴 DELETE complete - extended protection window');
+    }, 100);
   });
 
   // Clear all
   UI.clearAllBtn.addEventListener('touchstart', (e) => {
     e.stopPropagation();
+    e.preventDefault();
     APP.lastUIClick = Date.now();
   }, { passive: false });
   UI.clearAllBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
+    APP.lastUIClick = Date.now(); // Update again to extend protection window
     clearAllObjects();
+    // Extra protection after clearing
+    setTimeout(() => {
+      APP.lastUIClick = Date.now();
+    }, 100);
   });
 
   // Reload button
   UI.reloadButton.addEventListener('click', () => {
     window.location.reload();
+  });
+
+  // Finish session button
+  UI.finishSessionBtn.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    APP.lastUIClick = Date.now();
+  }, { passive: false });
+  UI.finishSessionBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    APP.lastUIClick = Date.now();
+    debugLog('✅ Finish button clicked');
+    showSessionSummary();
+  });
+
+  // New session button
+  UI.newSessionBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    startNewSession();
+  });
+
+  // Close summary button
+  UI.closeSummaryBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    endARSession();
+    UI.summaryScreen.classList.add('hidden');
+    UI.startScreen.classList.remove('hidden');
   });
 
   // GLOBAL PANEL EVENT BLOCKERS
@@ -1072,6 +1241,21 @@ function setupUIListeners() {
     e.stopPropagation();
   }, { passive: false });
   UI.listPanel.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Summary screen - block all touches
+  UI.summaryScreen.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    APP.lastUIClick = Date.now();
+  }, { passive: false });
+  UI.summaryScreen.addEventListener('touchmove', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.summaryScreen.addEventListener('touchend', (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+  UI.summaryScreen.addEventListener('click', (e) => {
     e.stopPropagation();
   });
 

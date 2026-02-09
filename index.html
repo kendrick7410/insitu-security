@@ -63,7 +63,10 @@
     <div id="catalog-panel" class="hidden">
     <div class="catalog-header">
       <h3>Security Items</h3>
-      <button id="toggle-list-btn">📋 List</button>
+      <div class="header-buttons">
+        <button id="toggle-list-btn">📋 List</button>
+        <button id="finish-session-btn">✅ Finish</button>
+      </div>
     </div>
     <div class="catalog-items">
       <button class="catalog-item active" data-type="camera">
@@ -127,6 +130,19 @@
     <div id="objects-list"></div>
     <div class="list-footer">
       <button id="clear-all-btn">🗑️ Clear All</button>
+    </div>
+  </div>
+
+  <!-- Summary Screen -->
+  <div id="summary-screen" class="overlay hidden">
+    <div class="summary-content">
+      <h2>🔒 Session Summary</h2>
+      <div id="summary-stats"></div>
+      <div id="summary-list"></div>
+      <div class="summary-actions">
+        <button id="new-session-btn">🔄 New Session</button>
+        <button id="close-summary-btn">❌ Exit</button>
+      </div>
     </div>
   </div>
   </div> <!-- End XR Overlay -->
