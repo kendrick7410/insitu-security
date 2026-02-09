@@ -1167,34 +1167,40 @@ function setupUIListeners() {
   });
 
   // Finish session button
-  UI.finishSessionBtn.addEventListener('touchstart', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    APP.lastUIClick = Date.now();
-  }, { passive: false });
-  UI.finishSessionBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    APP.lastUIClick = Date.now();
-    debugLog('✅ Finish button clicked');
-    showSessionSummary();
-  });
+  if (UI.finishSessionBtn) {
+    UI.finishSessionBtn.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      APP.lastUIClick = Date.now();
+    }, { passive: false });
+    UI.finishSessionBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      APP.lastUIClick = Date.now();
+      debugLog('✅ Finish button clicked');
+      showSessionSummary();
+    });
+  }
 
   // New session button
-  UI.newSessionBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    startNewSession();
-  });
+  if (UI.newSessionBtn) {
+    UI.newSessionBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      startNewSession();
+    });
+  }
 
   // Close summary button
-  UI.closeSummaryBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    endARSession();
-    UI.summaryScreen.classList.add('hidden');
-    UI.startScreen.classList.remove('hidden');
-  });
+  if (UI.closeSummaryBtn) {
+    UI.closeSummaryBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      endARSession();
+      UI.summaryScreen.classList.add('hidden');
+      UI.startScreen.classList.remove('hidden');
+    });
+  }
 
   // GLOBAL PANEL EVENT BLOCKERS
   // Block all touch/click events on panels to prevent placement underneath
@@ -1245,19 +1251,21 @@ function setupUIListeners() {
   });
 
   // Summary screen - block all touches
-  UI.summaryScreen.addEventListener('touchstart', (e) => {
-    e.stopPropagation();
-    APP.lastUIClick = Date.now();
-  }, { passive: false });
-  UI.summaryScreen.addEventListener('touchmove', (e) => {
-    e.stopPropagation();
-  }, { passive: false });
-  UI.summaryScreen.addEventListener('touchend', (e) => {
-    e.stopPropagation();
-  }, { passive: false });
-  UI.summaryScreen.addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
+  if (UI.summaryScreen) {
+    UI.summaryScreen.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+      APP.lastUIClick = Date.now();
+    }, { passive: false });
+    UI.summaryScreen.addEventListener('touchmove', (e) => {
+      e.stopPropagation();
+    }, { passive: false });
+    UI.summaryScreen.addEventListener('touchend', (e) => {
+      e.stopPropagation();
+    }, { passive: false });
+    UI.summaryScreen.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
 
   debugLog('✅ Global panel event blockers added');
 }
