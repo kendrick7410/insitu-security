@@ -978,11 +978,18 @@ function setupUIListeners() {
   // Start button
   debugLog('🟢 Setting up start button listener');
   if (UI.startButton) {
-    UI.startButton.addEventListener('click', () => {
-      debugLog('🔵 Start button clicked!');
+    // Add both touchstart and click for better mobile support
+    UI.startButton.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      debugLog('🔵 Start button TOUCHED!');
+      startARSession();
+    }, { passive: false });
+    UI.startButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      debugLog('🔵 Start button CLICKED!');
       startARSession();
     });
-    debugLog('🟢 Start button listener added');
+    debugLog('🟢 Start button listeners added (touch + click)');
   } else {
     debugLog('❌ Start button not found!');
   }
