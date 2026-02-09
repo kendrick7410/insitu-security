@@ -1076,21 +1076,95 @@ async function setupXRSession() {
         }
       }
 
-      // Check other UI panels geometrically
-      const panels = [UI.inspectorPanel, UI.summaryScreen];
-      for (const panel of panels) {
-        if (!panel.classList.contains('hidden')) {
-          const rect = panel.getBoundingClientRect();
-          if (x >= rect.left && x <= rect.right &&
-              y >= rect.top && y <= rect.bottom) {
-            debugLog('  ⏹️ Touch on other UI panel - blocking placement');
+      // Check inspector panel specifically (has interactive controls)
+      if (!UI.inspectorPanel.classList.contains('hidden')) {
+        const inspectorRect = UI.inspectorPanel.getBoundingClientRect();
+        if (x >= inspectorRect.left && x <= inspectorRect.right &&
+            y >= inspectorRect.top && y <= inspectorRect.bottom) {
+          debugLog('  🔧 Touch inside INSPECTOR panel');
+
+          // Check Close button
+          const closeRect = UI.closeInspector.getBoundingClientRect();
+          if (x >= closeRect.left && x <= closeRect.right &&
+              y >= closeRect.top && y <= closeRect.bottom) {
+            debugLog('  ✕ Close inspector button TOUCHED');
+            deselectObject();
             APP.placementAllowed = false;
             setTimeout(() => {
               APP.placementAllowed = true;
               debugLog('  ✅ Placement re-enabled');
-            }, 300);
+            }, 100);
             return;
           }
+
+          // Check Move button
+          const moveRect = UI.moveBtn.getBoundingClientRect();
+          if (x >= moveRect.left && x <= moveRect.right &&
+              y >= moveRect.top && y <= moveRect.bottom) {
+            debugLog('  📍 Move button TOUCHED');
+            STATE.setMode('move');
+            updateModeIndicator();
+            updateStatus('Tap surface to move object');
+            UI.inspectorPanel.classList.add('hidden');
+            APP.placementAllowed = false;
+            setTimeout(() => {
+              APP.placementAllowed = true;
+              debugLog('  ✅ Placement re-enabled');
+            }, 100);
+            return;
+          }
+
+          // Check Duplicate button
+          const dupRect = UI.duplicateBtn.getBoundingClientRect();
+          if (x >= dupRect.left && x <= dupRect.right &&
+              y >= dupRect.top && y <= dupRect.bottom) {
+            debugLog('  📋 Duplicate button TOUCHED');
+            duplicateSelectedObject();
+            APP.placementAllowed = false;
+            setTimeout(() => {
+              APP.placementAllowed = true;
+              debugLog('  ✅ Placement re-enabled');
+            }, 100);
+            return;
+          }
+
+          // Check Delete button
+          const delRect = UI.deleteBtn.getBoundingClientRect();
+          if (x >= delRect.left && x <= delRect.right &&
+              y >= delRect.top && y <= delRect.bottom) {
+            debugLog('  🗑️ Delete button TOUCHED');
+            deleteSelectedObject();
+            APP.placementAllowed = false;
+            setTimeout(() => {
+              APP.placementAllowed = true;
+              debugLog('  ✅ Placement re-enabled');
+            }, 100);
+            return;
+          }
+
+          // Touch in inspector (sliders, input, etc) - block placement for longer
+          debugLog('  ⏹️ Touch in inspector (sliders/input) - blocking placement');
+          APP.placementAllowed = false;
+          setTimeout(() => {
+            APP.placementAllowed = true;
+            debugLog('  ✅ Placement re-enabled');
+          }, 500);  // Longer timeout for sliders
+          return;
+        }
+      }
+
+      // Check summary screen
+      if (!UI.summaryScreen.classList.contains('hidden')) {
+        const summaryRect = UI.summaryScreen.getBoundingClientRect();
+        if (x >= summaryRect.left && x <= summaryRect.right &&
+            y >= summaryRect.top && y <= summaryRect.bottom) {
+          debugLog('  ⏹️ Touch on summary screen - blocking placement');
+          APP.placementAllowed = false;
+          setTimeout(() => {
+            APP.placementAllowed = true;
+            debugLog('  ✅ Placement re-enabled');
+          }, 300);
+          return;
         }
       }
 
