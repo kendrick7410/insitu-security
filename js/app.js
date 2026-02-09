@@ -1036,16 +1036,9 @@ function setupUIListeners() {
   // Catalog items
   debugLog('🟢 Setting up catalog item listeners: ' + UI.catalogItems.length + ' items');
   UI.catalogItems.forEach((btn, index) => {
-    // DON'T block placement after catalog selection - that's the normal flow!
-    // Only stop propagation to prevent double-firing
-    btn.addEventListener('touchstart', (e) => {
-      e.stopPropagation();
-      // NO APP.lastUIClick here - we WANT placement to work after selection
-    }, { passive: false });
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      debugLog('🔵 Catalog item clicked: ' + btn.dataset.type);
+    // Handle catalog selection - use touchend to ensure it fires reliably
+    const selectItem = () => {
+      debugLog('🔵 Catalog item selected: ' + btn.dataset.type);
       UI.catalogItems.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       STATE.setCatalogType(btn.dataset.type);
@@ -1053,26 +1046,59 @@ function setupUIListeners() {
       // IMPORTANT: Re-enable placement when user selects an item
       APP.placementAllowed = true;
       debugLog('  ✅ Item selected, placement is now ALLOWED');
+    };
+
+    btn.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      APP.lastUIClick = Date.now();
+      debugLog('👆 Catalog button touched: ' + btn.dataset.type);
+    }, { passive: false });
+
+    btn.addEventListener('touchend', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      selectItem();
+    }, { passive: false });
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      selectItem();
     });
+
     debugLog('  ✅ Listener ' + index + ': ' + btn.dataset.type);
   });
 
   // Toggle list
-  UI.toggleListBtn.addEventListener('touchstart', (e) => {
-    e.stopPropagation();
-    APP.lastUIClick = Date.now();
-    APP.placementAllowed = false; // Block next placement tap
-    debugLog('📋 List button touched - placement blocked');
-  }, { passive: false });
-  UI.toggleListBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+  const toggleList = () => {
+    debugLog('📋 List button activated');
     UI.listPanel.classList.toggle('hidden');
     // Re-enable placement after a short delay
     setTimeout(() => {
       APP.placementAllowed = true;
       debugLog('✅ Placement re-enabled after List button');
     }, 300);
+  };
+
+  UI.toggleListBtn.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    APP.lastUIClick = Date.now();
+    APP.placementAllowed = false; // Block next placement tap
+    debugLog('👆 List button touched - placement blocked');
+  }, { passive: false });
+
+  UI.toggleListBtn.addEventListener('touchend', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    toggleList();
+  }, { passive: false });
+
+  UI.toggleListBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    toggleList();
   });
 
   // Close list
@@ -1235,24 +1261,34 @@ function setupUIListeners() {
 
   // Finish session button
   if (UI.finishSessionBtn) {
-    UI.finishSessionBtn.addEventListener('touchstart', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      APP.lastUIClick = Date.now();
-      APP.placementAllowed = false; // Block next placement tap
-      debugLog('✅ Finish button touched - placement blocked');
-    }, { passive: false });
-    UI.finishSessionBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      APP.lastUIClick = Date.now();
-      debugLog('✅ Finish button clicked');
+    const finishSession = () => {
+      debugLog('✅ Finish button activated');
       showSessionSummary();
       // Re-enable placement (though session is ending, this prevents issues)
       setTimeout(() => {
         APP.placementAllowed = true;
         debugLog('✅ Placement re-enabled after Finish button');
       }, 300);
+    };
+
+    UI.finishSessionBtn.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      APP.lastUIClick = Date.now();
+      APP.placementAllowed = false; // Block next placement tap
+      debugLog('👆 Finish button touched - placement blocked');
+    }, { passive: false });
+
+    UI.finishSessionBtn.addEventListener('touchend', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      finishSession();
+    }, { passive: false });
+
+    UI.finishSessionBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      finishSession();
     });
   }
 
@@ -1294,21 +1330,9 @@ function setupUIListeners() {
     e.stopPropagation();
   });
 
-  // Catalog panel - only stop propagation, DON'T block placement
-  // Users need to select items and then immediately place them!
-  UI.catalogPanel.addEventListener('touchstart', (e) => {
-    e.stopPropagation();
-    // NO APP.lastUIClick - catalog is for selecting items to place
-  }, { passive: false });
-  UI.catalogPanel.addEventListener('touchmove', (e) => {
-    e.stopPropagation();
-  }, { passive: false });
-  UI.catalogPanel.addEventListener('touchend', (e) => {
-    e.stopPropagation();
-  }, { passive: false });
-  UI.catalogPanel.addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
+  // Catalog panel - DON'T add event listeners on the panel itself!
+  // The individual buttons inside have their own listeners
+  // Adding listeners here blocks clicks on the buttons inside
 
   // List panel - block all touches
   UI.listPanel.addEventListener('touchstart', (e) => {
