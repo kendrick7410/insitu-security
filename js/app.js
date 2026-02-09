@@ -31,7 +31,8 @@ const APP = {
   raycaster: new THREE.Raycaster(),
   loader: null,
   lastUIClick: 0,  // Timestamp of last UI button click
-  isStartingSession: false  // Flag to prevent duplicate session starts
+  isStartingSession: false,  // Flag to prevent duplicate session starts
+  placementAllowed: true  // NEW: Explicit flag for placement permission
 };
 
 // UI Elements (will be initialized after DOM ready)
@@ -408,23 +409,24 @@ function placeObject() {
  * Handle tap/touch events
  */
 function onSelect(event) {
-  const now = Date.now();
-  debugLog('👆 TAP DETECTED! Mode: ' + STATE.currentMode + ', lastUIClick: ' + (now - APP.lastUIClick) + 'ms ago');
+  debugLog('👆 TAP DETECTED! Mode: ' + STATE.currentMode + ', placementAllowed: ' + APP.placementAllowed);
 
   // Check if tap was on a UI element (button, panel, etc.)
   if (event && event.inputSource && event.inputSource.targetRayMode === 'screen') {
     debugLog('  📱 Screen tap detected (targetRayMode=screen)');
   }
 
-  // SMART PROTECTION: Block placement if a UI button was just touched
-  // This prevents accidental placement when clicking UI buttons
-  // Catalog items don't set lastUIClick, so placement works after selection
-  if (APP.lastUIClick && (now - APP.lastUIClick) < 1000) {
-    debugLog('  ⏭️ BLOCKED - UI button was just touched (' + (now - APP.lastUIClick) + 'ms ago)');
+  // NEW APPROACH: Use explicit flag instead of timing
+  // If placement is blocked, allow it again after this tap (user tried to place)
+  if (!APP.placementAllowed) {
+    debugLog('  ⏭️ BLOCKED - Placement not allowed (UI button was clicked)');
+    // Re-enable placement for next tap (user acknowledged the block)
+    APP.placementAllowed = true;
+    debugLog('  ✅ Placement re-enabled for next tap');
     return;
   }
 
-  debugLog('  ✅ Not blocked - proceeding with action');
+  debugLog('  ✅ Placement allowed - proceeding');
 
   if (STATE.currentMode === 'place') {
     debugLog('  📍 Mode is PLACE - calling placeObject...');
@@ -1057,6 +1059,8 @@ function setupUIListeners() {
   UI.toggleListBtn.addEventListener('touchstart', (e) => {
     e.stopPropagation();
     APP.lastUIClick = Date.now();
+    APP.placementAllowed = false; // Block next placement tap
+    debugLog('📋 List button touched - placement blocked');
   }, { passive: false });
   UI.toggleListBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -1223,6 +1227,8 @@ function setupUIListeners() {
       e.stopPropagation();
       e.preventDefault();
       APP.lastUIClick = Date.now();
+      APP.placementAllowed = false; // Block next placement tap
+      debugLog('✅ Finish button touched - placement blocked');
     }, { passive: false });
     UI.finishSessionBtn.addEventListener('click', (e) => {
       e.stopPropagation();
