@@ -408,25 +408,25 @@ function placeObject() {
  * Handle tap/touch events
  */
 function onSelect(event) {
-  debugLog('👆 TAP DETECTED! Mode: ' + STATE.currentMode);
+  const now = Date.now();
+  debugLog('👆 TAP DETECTED! Mode: ' + STATE.currentMode + ', lastUIClick: ' + (now - APP.lastUIClick) + 'ms ago');
 
   // Check if tap was on a UI element (button, panel, etc.)
   if (event && event.inputSource && event.inputSource.targetRayMode === 'screen') {
-    // This is a screen tap - might be on UI
-    // We'll let it pass through for now since we can't easily check target
-    // The issue is that XR select fires for ALL taps, including UI
+    debugLog('  📱 Screen tap detected (targetRayMode=screen)');
   }
 
   // WORKAROUND: Add a delay to avoid conflicts with UI button clicks
   // If a UI button was just touched, skip this select event
-  const now = Date.now();
   if (APP.lastUIClick && (now - APP.lastUIClick) < 1000) {
-    debugLog('  ⏭️ Skipping - UI button was just touched (' + (now - APP.lastUIClick) + 'ms ago)');
+    debugLog('  ⏭️ BLOCKED - UI button was just touched (' + (now - APP.lastUIClick) + 'ms ago)');
     return;
   }
 
+  debugLog('  ✅ Not blocked by UI click protection');
+
   if (STATE.currentMode === 'place') {
-    debugLog('  📍 Calling placeObject...');
+    debugLog('  📍 Mode is PLACE - calling placeObject...');
     // Place new object
     placeObject();
   } else if (STATE.currentMode === 'move') {
@@ -818,6 +818,8 @@ async function checkWebXRSupport() {
  * Start WebXR AR Session
  */
 async function startARSession() {
+  debugLog('🔵 startARSession called! isStartingSession=' + APP.isStartingSession);
+
   // Prevent duplicate calls
   if (APP.isStartingSession) {
     debugLog('⏭️ Session already starting, ignoring duplicate call');
@@ -825,7 +827,7 @@ async function startARSession() {
   }
 
   APP.isStartingSession = true;
-  debugLog('🔵 startARSession called!');
+  debugLog('✅ Flag set, proceeding with session start');
 
   try {
     // Get overlay BEFORE any UI updates to minimize delay
@@ -910,6 +912,7 @@ async function setupXRSession() {
 
   APP.xrSession.addEventListener('end', onSessionEnd);
   APP.xrSession.addEventListener('select', onSelect);
+  debugLog('✅ Event listeners attached (end, select)');
 
   // Touch handler for object selection only
   // Note: XR session 'select' event already handles placement/move taps
@@ -962,11 +965,16 @@ function render(timestamp, frame) {
 
         if (!APP.surfaceFound) {
           APP.surfaceFound = true;
+          debugLog('🎯 SURFACE DETECTED! Reticle visible');
           updateStatus('Aim at wall/floor & tap to place');
         }
       }
     } else {
       APP.reticle.visible = false;
+      if (APP.surfaceFound) {
+        debugLog('⚠️ Surface lost');
+        APP.surfaceFound = false;
+      }
     }
   }
 
@@ -977,10 +985,13 @@ function render(timestamp, frame) {
  * Handle session end
  */
 function onSessionEnd() {
+  debugLog('🔴 Session ended - resetting state');
+
   APP.xrSession = null;
   APP.xrHitTestSource = null;
   APP.xrRefSpace = null;
   APP.surfaceFound = false;
+  APP.isStartingSession = false; // CRITICAL: Reset flag on session end
 
   UI.startScreen.classList.remove('hidden');
 
@@ -995,6 +1006,7 @@ function onSessionEnd() {
   UI.listPanel.classList.add('hidden');
   UI.statusOverlay.classList.add('hidden');
 
+  debugLog('✅ Ready for new session');
   console.log('WebXR session ended');
 }
 
