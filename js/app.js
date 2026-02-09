@@ -407,39 +407,8 @@ function placeObject() {
   });
 }
 
-/**
- * Check if a touch point is over a VISIBLE UI element
- */
-function isTouchOverUI(x, y) {
-  const element = document.elementFromPoint(x, y);
-  if (!element) return false;
-
-  // Check if we're over any UI panel - BUT ONLY IF VISIBLE
-  const uiSelectors = [
-    '#catalog-panel',
-    '#inspector-panel',
-    '#list-panel',
-    '#summary-screen',
-    '.catalog-item',
-    '#toggle-list-btn',
-    '#finish-session-btn'
-  ];
-
-  for (const selector of uiSelectors) {
-    const uiElement = element.matches(selector) ? element : element.closest(selector);
-    if (uiElement) {
-      // CRITICAL: Check if element is actually VISIBLE (not hidden)
-      if (uiElement.classList.contains('hidden')) {
-        debugLog(`  ⏭️ UI element ${selector} is HIDDEN, ignoring`);
-        continue;
-      }
-      debugLog(`  🎯 Touch over VISIBLE UI element: ${selector}`);
-      return true;
-    }
-  }
-
-  return false;
-}
+// Note: Touch detection is now done geometrically in setupXRSession
+// using getBoundingClientRect() instead of elementFromPoint()
 
 /**
  * Handle tap/touch events
@@ -1176,40 +1145,12 @@ function setupUIListeners() {
     debugLog('❌ Start button not found!');
   }
 
-  // Catalog items - SIMPLIFIED
-  debugLog('🟢 Setting up catalog item listeners: ' + UI.catalogItems.length + ' items');
-  UI.catalogItems.forEach((btn, index) => {
-    const selectItem = () => {
-      debugLog('🔵 Catalog item selected: ' + btn.dataset.type);
-      UI.catalogItems.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      STATE.setCatalogType(btn.dataset.type);
-      updateStatus('Selected: ' + btn.dataset.type + ' - Tap to place');
-      // Re-enable placement immediately
-      setTimeout(() => {
-        APP.placementAllowed = true;
-        debugLog('  ✅ Placement re-enabled after catalog selection');
-      }, 100);
-    };
+  // Catalog items - handled by global touchstart listener in setupXRSession
+  // No individual listeners needed - geometric detection handles everything
+  debugLog('🟢 Catalog has ' + UI.catalogItems.length + ' items (handled by global listener)');
 
-    // Use touchend - most reliable for touch devices
-    btn.addEventListener('touchend', (e) => {
-      debugLog('👆 Catalog button TOUCHED: ' + btn.dataset.type);
-      selectItem();
-    }, { passive: true });
-
-    debugLog('  ✅ Listener ' + index + ': ' + btn.dataset.type);
-  });
-
-  // Toggle list - SIMPLIFIED
-  UI.toggleListBtn.addEventListener('touchend', (e) => {
-    debugLog('📋 List button TOUCHED');
-    UI.listPanel.classList.toggle('hidden');
-    setTimeout(() => {
-      APP.placementAllowed = true;
-      debugLog('✅ Placement re-enabled after List');
-    }, 100);
-  }, { passive: true });
+  // Toggle list - handled by global touchstart listener
+  debugLog('🟢 List and Finish buttons handled by global listener');
 
   // Close list
   UI.closeList.addEventListener('touchstart', (e) => {
@@ -1369,13 +1310,8 @@ function setupUIListeners() {
     window.location.reload();
   });
 
-  // Finish session button - SIMPLIFIED
-  if (UI.finishSessionBtn) {
-    UI.finishSessionBtn.addEventListener('touchend', (e) => {
-      debugLog('✅ Finish button TOUCHED');
-      showSessionSummary();
-    }, { passive: true });
-  }
+  // Finish session button - handled by global touchstart listener
+  debugLog('🟢 Finish button handled by global listener');
 
   // New session button
   if (UI.newSessionBtn) {
