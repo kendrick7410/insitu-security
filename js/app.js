@@ -1033,10 +1033,11 @@ function setupUIListeners() {
   // Catalog items
   debugLog('🟢 Setting up catalog item listeners: ' + UI.catalogItems.length + ' items');
   UI.catalogItems.forEach((btn, index) => {
-    // Touchstart fires BEFORE XR select - set flag immediately
+    // DON'T block placement after catalog selection - that's the normal flow!
+    // Only stop propagation to prevent double-firing
     btn.addEventListener('touchstart', (e) => {
       e.stopPropagation();
-      APP.lastUIClick = Date.now();
+      // NO APP.lastUIClick here - we WANT placement to work after selection
     }, { passive: false });
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1046,6 +1047,7 @@ function setupUIListeners() {
       btn.classList.add('active');
       STATE.setCatalogType(btn.dataset.type);
       updateStatus('Selected: ' + btn.dataset.type + ' - Tap to place');
+      debugLog('  ✅ Item selected, placement is now ALLOWED');
     });
     debugLog('  ✅ Listener ' + index + ': ' + btn.dataset.type);
   });
