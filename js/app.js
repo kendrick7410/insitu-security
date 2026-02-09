@@ -1019,18 +1019,13 @@ function setupUIListeners() {
   // Start button
   debugLog('🟢 Setting up start button listener');
   if (UI.startButton) {
-    // Add both touchstart and click for better mobile support
-    UI.startButton.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      debugLog('🔵 Start button TOUCHED!');
-      startARSession();
-    }, { passive: false });
+    // Use only click event - it works for both touch and mouse
+    // Don't use preventDefault to preserve user activation
     UI.startButton.addEventListener('click', (e) => {
-      e.preventDefault();
       debugLog('🔵 Start button CLICKED!');
       startARSession();
     });
-    debugLog('🟢 Start button listeners added (touch + click)');
+    debugLog('🟢 Start button listener added (click only)');
   } else {
     debugLog('❌ Start button not found!');
   }
