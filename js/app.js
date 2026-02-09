@@ -30,7 +30,8 @@ const APP = {
   surfaceFound: false,
   raycaster: new THREE.Raycaster(),
   loader: null,
-  lastUIClick: 0  // Timestamp of last UI button click
+  lastUIClick: 0,  // Timestamp of last UI button click
+  isStartingSession: false  // Flag to prevent duplicate session starts
 };
 
 // UI Elements (will be initialized after DOM ready)
@@ -817,6 +818,13 @@ async function checkWebXRSupport() {
  * Start WebXR AR Session
  */
 async function startARSession() {
+  // Prevent duplicate calls
+  if (APP.isStartingSession) {
+    debugLog('⏭️ Session already starting, ignoring duplicate call');
+    return;
+  }
+
+  APP.isStartingSession = true;
   debugLog('🔵 startARSession called!');
   UI.startScreen.classList.add('hidden');
   UI.loadingScreen.classList.remove('hidden');
@@ -863,9 +871,14 @@ async function startARSession() {
     updateStatus('Tap green circle to place object');
     updateModeIndicator();
 
+    // Reset flag after successful start
+    APP.isStartingSession = false;
+
   } catch (error) {
     console.error('Failed to start AR session:', error);
     showError('Failed to start AR: ' + error.message);
+    // Reset flag on error
+    APP.isStartingSession = false;
   }
 }
 
