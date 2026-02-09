@@ -953,67 +953,110 @@ async function setupXRSession() {
   APP.xrSession.addEventListener('select', onSelect);
   debugLog('✅ Event listeners attached (end, select)');
 
-  // CRITICAL: Global touch tracker + direct button handler
-  // Handle buttons IMMEDIATELY on touchstart to avoid race with XR select
+  // CRITICAL: Global touch tracker + GEOMETRIC button detection
+  // Use GEOMETRIC detection instead of elementFromPoint to avoid hidden overlay issues
   document.addEventListener('touchstart', (e) => {
     if (e.touches.length === 1) {
       const touch = e.touches[0];
-      APP.lastTouchX = touch.clientX;
-      APP.lastTouchY = touch.clientY;
+      const x = touch.clientX;
+      const y = touch.clientY;
 
-      const element = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (!element) return;
+      APP.lastTouchX = x;
+      APP.lastTouchY = y;
 
-      // Check for catalog item button
-      const catalogItem = element.closest('.catalog-item');
-      if (catalogItem && !UI.catalogPanel.classList.contains('hidden')) {
-        const type = catalogItem.dataset.type;
-        debugLog('👆 Catalog button TOUCHED: ' + type);
-        // Execute selection IMMEDIATELY
-        UI.catalogItems.forEach(b => b.classList.remove('active'));
-        catalogItem.classList.add('active');
-        STATE.setCatalogType(type);
-        updateStatus('Selected: ' + type + ' - Tap to place');
-        APP.placementAllowed = false; // Block this tap
-        setTimeout(() => {
-          APP.placementAllowed = true;
-          debugLog('✅ Placement re-enabled after catalog selection');
-        }, 100);
-        return;
+      debugLog(`👆 TOUCH at (${x}, ${y})`);
+
+      // GEOMETRIC CHECK: Is touch inside catalog panel?
+      if (!UI.catalogPanel.classList.contains('hidden')) {
+        const catalogRect = UI.catalogPanel.getBoundingClientRect();
+        const inCatalog = (
+          x >= catalogRect.left && x <= catalogRect.right &&
+          y >= catalogRect.top && y <= catalogRect.bottom
+        );
+
+        if (inCatalog) {
+          debugLog('  📦 Touch inside CATALOG area');
+
+          // Check each catalog item
+          for (const btn of UI.catalogItems) {
+            const btnRect = btn.getBoundingClientRect();
+            const inButton = (
+              x >= btnRect.left && x <= btnRect.right &&
+              y >= btnRect.top && y <= btnRect.bottom
+            );
+
+            if (inButton) {
+              const type = btn.dataset.type;
+              debugLog(`  👆 Catalog button TOUCHED: ${type}`);
+              // Execute selection IMMEDIATELY
+              UI.catalogItems.forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+              STATE.setCatalogType(type);
+              updateStatus(`Selected: ${type} - Tap to place`);
+              APP.placementAllowed = false;
+              setTimeout(() => {
+                APP.placementAllowed = true;
+                debugLog('  ✅ Placement re-enabled');
+              }, 100);
+              return;
+            }
+          }
+
+          // Check List button
+          const listRect = UI.toggleListBtn.getBoundingClientRect();
+          if (x >= listRect.left && x <= listRect.right &&
+              y >= listRect.top && y <= listRect.bottom) {
+            debugLog('  📋 List button TOUCHED');
+            UI.listPanel.classList.toggle('hidden');
+            APP.placementAllowed = false;
+            setTimeout(() => {
+              APP.placementAllowed = true;
+              debugLog('  ✅ Placement re-enabled');
+            }, 100);
+            return;
+          }
+
+          // Check Finish button
+          const finishRect = UI.finishSessionBtn.getBoundingClientRect();
+          if (x >= finishRect.left && x <= finishRect.right &&
+              y >= finishRect.top && y <= finishRect.bottom) {
+            debugLog('  ✅ Finish button TOUCHED');
+            showSessionSummary();
+            APP.placementAllowed = false;
+            return;
+          }
+
+          // Touch in catalog but not on specific button - still block placement
+          debugLog('  ⏹️ Touch in catalog area - blocking placement');
+          APP.placementAllowed = false;
+          setTimeout(() => {
+            APP.placementAllowed = true;
+            debugLog('  ✅ Placement re-enabled');
+          }, 300);
+          return;
+        }
       }
 
-      // Check for List button
-      const listBtn = element.closest('#toggle-list-btn');
-      if (listBtn && !UI.catalogPanel.classList.contains('hidden')) {
-        debugLog('📋 List button TOUCHED');
-        UI.listPanel.classList.toggle('hidden');
-        APP.placementAllowed = false;
-        setTimeout(() => {
-          APP.placementAllowed = true;
-          debugLog('✅ Placement re-enabled after List');
-        }, 100);
-        return;
+      // Check other UI panels geometrically
+      const panels = [UI.inspectorPanel, UI.listPanel, UI.summaryScreen];
+      for (const panel of panels) {
+        if (!panel.classList.contains('hidden')) {
+          const rect = panel.getBoundingClientRect();
+          if (x >= rect.left && x <= rect.right &&
+              y >= rect.top && y <= rect.bottom) {
+            debugLog('  ⏹️ Touch on other UI panel - blocking placement');
+            APP.placementAllowed = false;
+            setTimeout(() => {
+              APP.placementAllowed = true;
+              debugLog('  ✅ Placement re-enabled');
+            }, 300);
+            return;
+          }
+        }
       }
 
-      // Check for Finish button
-      const finishBtn = element.closest('#finish-session-btn');
-      if (finishBtn && !UI.catalogPanel.classList.contains('hidden')) {
-        debugLog('✅ Finish button TOUCHED');
-        showSessionSummary();
-        APP.placementAllowed = false;
-        return;
-      }
-
-      // Check if touch is over ANY UI element
-      const overUI = isTouchOverUI(touch.clientX, touch.clientY);
-      if (overUI) {
-        debugLog('👆 TOUCH DETECTED OVER UI - Blocking placement');
-        APP.placementAllowed = false;
-        setTimeout(() => {
-          APP.placementAllowed = true;
-          debugLog('✅ Placement re-enabled after UI touch');
-        }, 500);
-      }
+      // Touch not on UI - allow placement
+      debugLog('  ✅ Touch on AR view - placement allowed');
     }
   }, { passive: true, capture: true });
 
