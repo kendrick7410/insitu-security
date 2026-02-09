@@ -32,7 +32,9 @@ const APP = {
   loader: null,
   lastUIClick: 0,  // Timestamp of last UI button click
   isStartingSession: false,  // Flag to prevent duplicate session starts
-  placementAllowed: true  // NEW: Explicit flag for placement permission
+  placementAllowed: true,  // NEW: Explicit flag for placement permission
+  lastTouchX: 0,  // Last touch X coordinate
+  lastTouchY: 0   // Last touch Y coordinate
 };
 
 // UI Elements (will be initialized after DOM ready)
@@ -403,6 +405,34 @@ function placeObject() {
       setTimeout(() => flash.classList.remove('active'), 200);
     }
   });
+}
+
+/**
+ * Check if a touch point is over a UI element
+ */
+function isTouchOverUI(x, y) {
+  const element = document.elementFromPoint(x, y);
+  if (!element) return false;
+
+  // Check if we're over any UI panel
+  const uiSelectors = [
+    '#catalog-panel',
+    '#inspector-panel',
+    '#list-panel',
+    '#summary-screen',
+    '.catalog-item',
+    '#toggle-list-btn',
+    '#finish-session-btn'
+  ];
+
+  for (const selector of uiSelectors) {
+    if (element.matches(selector) || element.closest(selector)) {
+      debugLog(`  🎯 Touch over UI element: ${selector}`);
+      return true;
+    }
+  }
+
+  return false;
 }
 
 /**
@@ -917,6 +947,28 @@ async function setupXRSession() {
   APP.xrSession.addEventListener('select', onSelect);
   debugLog('✅ Event listeners attached (end, select)');
 
+  // CRITICAL: Global touch tracker to record where user touches
+  // This allows us to check if touch was on UI before XR select fires
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      APP.lastTouchX = touch.clientX;
+      APP.lastTouchY = touch.clientY;
+
+      // Check if touch is over UI element
+      const overUI = isTouchOverUI(touch.clientX, touch.clientY);
+      if (overUI) {
+        debugLog('👆 TOUCH DETECTED OVER UI - Blocking placement');
+        APP.placementAllowed = false;
+        // Re-enable after a delay to allow button handler to fire
+        setTimeout(() => {
+          APP.placementAllowed = true;
+          debugLog('✅ Placement re-enabled after UI touch');
+        }, 500);
+      }
+    }
+  }, { passive: true, capture: true }); // Use capture phase to catch events early
+
   // Touch handler for object selection only
   // Note: XR session 'select' event already handles placement/move taps
   APP.renderer.domElement.addEventListener('touchstart', (e) => {
@@ -1033,73 +1085,40 @@ function setupUIListeners() {
     debugLog('❌ Start button not found!');
   }
 
-  // Catalog items
+  // Catalog items - SIMPLIFIED
   debugLog('🟢 Setting up catalog item listeners: ' + UI.catalogItems.length + ' items');
   UI.catalogItems.forEach((btn, index) => {
-    // Handle catalog selection - use touchend to ensure it fires reliably
     const selectItem = () => {
       debugLog('🔵 Catalog item selected: ' + btn.dataset.type);
       UI.catalogItems.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       STATE.setCatalogType(btn.dataset.type);
       updateStatus('Selected: ' + btn.dataset.type + ' - Tap to place');
-      // IMPORTANT: Re-enable placement when user selects an item
-      APP.placementAllowed = true;
-      debugLog('  ✅ Item selected, placement is now ALLOWED');
+      // Re-enable placement immediately
+      setTimeout(() => {
+        APP.placementAllowed = true;
+        debugLog('  ✅ Placement re-enabled after catalog selection');
+      }, 100);
     };
 
-    btn.addEventListener('touchstart', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      APP.lastUIClick = Date.now();
-      debugLog('👆 Catalog button touched: ' + btn.dataset.type);
-    }, { passive: false });
-
+    // Use touchend - most reliable for touch devices
     btn.addEventListener('touchend', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
+      debugLog('👆 Catalog button TOUCHED: ' + btn.dataset.type);
       selectItem();
-    }, { passive: false });
-
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      selectItem();
-    });
+    }, { passive: true });
 
     debugLog('  ✅ Listener ' + index + ': ' + btn.dataset.type);
   });
 
-  // Toggle list
-  const toggleList = () => {
-    debugLog('📋 List button activated');
+  // Toggle list - SIMPLIFIED
+  UI.toggleListBtn.addEventListener('touchend', (e) => {
+    debugLog('📋 List button TOUCHED');
     UI.listPanel.classList.toggle('hidden');
-    // Re-enable placement after a short delay
     setTimeout(() => {
       APP.placementAllowed = true;
-      debugLog('✅ Placement re-enabled after List button');
-    }, 300);
-  };
-
-  UI.toggleListBtn.addEventListener('touchstart', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    APP.lastUIClick = Date.now();
-    APP.placementAllowed = false; // Block next placement tap
-    debugLog('👆 List button touched - placement blocked');
-  }, { passive: false });
-
-  UI.toggleListBtn.addEventListener('touchend', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    toggleList();
-  }, { passive: false });
-
-  UI.toggleListBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    toggleList();
-  });
+      debugLog('✅ Placement re-enabled after List');
+    }, 100);
+  }, { passive: true });
 
   // Close list
   UI.closeList.addEventListener('touchstart', (e) => {
@@ -1259,37 +1278,12 @@ function setupUIListeners() {
     window.location.reload();
   });
 
-  // Finish session button
+  // Finish session button - SIMPLIFIED
   if (UI.finishSessionBtn) {
-    const finishSession = () => {
-      debugLog('✅ Finish button activated');
-      showSessionSummary();
-      // Re-enable placement (though session is ending, this prevents issues)
-      setTimeout(() => {
-        APP.placementAllowed = true;
-        debugLog('✅ Placement re-enabled after Finish button');
-      }, 300);
-    };
-
-    UI.finishSessionBtn.addEventListener('touchstart', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      APP.lastUIClick = Date.now();
-      APP.placementAllowed = false; // Block next placement tap
-      debugLog('👆 Finish button touched - placement blocked');
-    }, { passive: false });
-
     UI.finishSessionBtn.addEventListener('touchend', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      finishSession();
-    }, { passive: false });
-
-    UI.finishSessionBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      finishSession();
-    });
+      debugLog('✅ Finish button TOUCHED');
+      showSessionSummary();
+    }, { passive: true });
   }
 
   // New session button
