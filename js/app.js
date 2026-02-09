@@ -408,13 +408,13 @@ function placeObject() {
 }
 
 /**
- * Check if a touch point is over a UI element
+ * Check if a touch point is over a VISIBLE UI element
  */
 function isTouchOverUI(x, y) {
   const element = document.elementFromPoint(x, y);
   if (!element) return false;
 
-  // Check if we're over any UI panel
+  // Check if we're over any UI panel - BUT ONLY IF VISIBLE
   const uiSelectors = [
     '#catalog-panel',
     '#inspector-panel',
@@ -426,8 +426,14 @@ function isTouchOverUI(x, y) {
   ];
 
   for (const selector of uiSelectors) {
-    if (element.matches(selector) || element.closest(selector)) {
-      debugLog(`  🎯 Touch over UI element: ${selector}`);
+    const uiElement = element.matches(selector) ? element : element.closest(selector);
+    if (uiElement) {
+      // CRITICAL: Check if element is actually VISIBLE (not hidden)
+      if (uiElement.classList.contains('hidden')) {
+        debugLog(`  ⏭️ UI element ${selector} is HIDDEN, ignoring`);
+        continue;
+      }
+      debugLog(`  🎯 Touch over VISIBLE UI element: ${selector}`);
       return true;
     }
   }
@@ -947,27 +953,69 @@ async function setupXRSession() {
   APP.xrSession.addEventListener('select', onSelect);
   debugLog('✅ Event listeners attached (end, select)');
 
-  // CRITICAL: Global touch tracker to record where user touches
-  // This allows us to check if touch was on UI before XR select fires
+  // CRITICAL: Global touch tracker + direct button handler
+  // Handle buttons IMMEDIATELY on touchstart to avoid race with XR select
   document.addEventListener('touchstart', (e) => {
     if (e.touches.length === 1) {
       const touch = e.touches[0];
       APP.lastTouchX = touch.clientX;
       APP.lastTouchY = touch.clientY;
 
-      // Check if touch is over UI element
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!element) return;
+
+      // Check for catalog item button
+      const catalogItem = element.closest('.catalog-item');
+      if (catalogItem && !UI.catalogPanel.classList.contains('hidden')) {
+        const type = catalogItem.dataset.type;
+        debugLog('👆 Catalog button TOUCHED: ' + type);
+        // Execute selection IMMEDIATELY
+        UI.catalogItems.forEach(b => b.classList.remove('active'));
+        catalogItem.classList.add('active');
+        STATE.setCatalogType(type);
+        updateStatus('Selected: ' + type + ' - Tap to place');
+        APP.placementAllowed = false; // Block this tap
+        setTimeout(() => {
+          APP.placementAllowed = true;
+          debugLog('✅ Placement re-enabled after catalog selection');
+        }, 100);
+        return;
+      }
+
+      // Check for List button
+      const listBtn = element.closest('#toggle-list-btn');
+      if (listBtn && !UI.catalogPanel.classList.contains('hidden')) {
+        debugLog('📋 List button TOUCHED');
+        UI.listPanel.classList.toggle('hidden');
+        APP.placementAllowed = false;
+        setTimeout(() => {
+          APP.placementAllowed = true;
+          debugLog('✅ Placement re-enabled after List');
+        }, 100);
+        return;
+      }
+
+      // Check for Finish button
+      const finishBtn = element.closest('#finish-session-btn');
+      if (finishBtn && !UI.catalogPanel.classList.contains('hidden')) {
+        debugLog('✅ Finish button TOUCHED');
+        showSessionSummary();
+        APP.placementAllowed = false;
+        return;
+      }
+
+      // Check if touch is over ANY UI element
       const overUI = isTouchOverUI(touch.clientX, touch.clientY);
       if (overUI) {
         debugLog('👆 TOUCH DETECTED OVER UI - Blocking placement');
         APP.placementAllowed = false;
-        // Re-enable after a delay to allow button handler to fire
         setTimeout(() => {
           APP.placementAllowed = true;
           debugLog('✅ Placement re-enabled after UI touch');
         }, 500);
       }
     }
-  }, { passive: true, capture: true }); // Use capture phase to catch events early
+  }, { passive: true, capture: true });
 
   // Touch handler for object selection only
   // Note: XR session 'select' event already handles placement/move taps
