@@ -1270,10 +1270,11 @@ function setupUIListeners() {
     e.stopPropagation();
   });
 
-  // Catalog panel - block all touches
+  // Catalog panel - only stop propagation, DON'T block placement
+  // Users need to select items and then immediately place them!
   UI.catalogPanel.addEventListener('touchstart', (e) => {
     e.stopPropagation();
-    APP.lastUIClick = Date.now();
+    // NO APP.lastUIClick - catalog is for selecting items to place
   }, { passive: false });
   UI.catalogPanel.addEventListener('touchmove', (e) => {
     e.stopPropagation();
