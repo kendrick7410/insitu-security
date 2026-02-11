@@ -16,7 +16,7 @@ export default function CamerasInstallationPage() {
 
         <h1 className="text-4xl font-bold mb-4">Installation des Caméras</h1>
         <p className="text-xl text-gray-600 mb-12">
-          Guide d'installation pour caméras intérieures et extérieures InSitu Security
+          Guide d'installation pour caméras intérieures et extérieures In Situ Security
         </p>
 
         {/* Choix du modèle */}
@@ -46,9 +46,9 @@ export default function CamerasInstallationPage() {
             Prérequis
           </h2>
           <ul className="space-y-2 text-gray-700">
-            <li>• Centrale InSitu Security installée et opérationnelle</li>
+            <li>• Centrale In Situ Security installée et opérationnelle</li>
             <li>• Réseau WiFi 2.4 GHz ou 5 GHz avec bonne couverture</li>
-            <li>• Application InSitu Security à jour</li>
+            <li>• Application In Situ Security à jour</li>
             <li>• Prise électrique à proximité (sauf modèles sur batterie)</li>
           </ul>
         </div>
@@ -72,7 +72,7 @@ export default function CamerasInstallationPage() {
               <li>• <strong>Hauteur :</strong> 2 à 3 mètres pour une vue optimale</li>
               <li>• <strong>Angle :</strong> Orientez vers les zones à surveiller (porte, fenêtre, allée)</li>
               <li>• <strong>Évitez :</strong> Lumière directe (soleil, lampadaire) qui peut éblouir l'objectif</li>
-              <li>• <strong>WiFi :</strong> Vérifiez la force du signal à cet endroit (app InSitu &gt; Outils &gt; Test WiFi)</li>
+              <li>• <strong>WiFi :</strong> Vérifiez la force du signal à cet endroit (app In Situ &gt; Outils &gt; Test WiFi)</li>
             </ul>
           </div>
 
@@ -133,7 +133,7 @@ export default function CamerasInstallationPage() {
               <h3 className="text-xl font-bold">Appairage avec la centrale</h3>
             </div>
             <p className="text-gray-700 mb-4">
-              Dans l'application InSitu Security :
+              Dans l'application In Situ Security :
             </p>
             <ul className="space-y-2 text-gray-700 ml-6">
               <li>• Ouvrez le menu principal &gt; <strong>Appareils</strong></li>

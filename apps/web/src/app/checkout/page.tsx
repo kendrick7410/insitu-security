@@ -200,7 +200,7 @@ export default function CheckoutPage() {
               </div>
               <div className="bg-white rounded-lg p-4 mt-4">
                 <p className="text-sm text-gray-600">
-                  💡 <strong>RIB inclus</strong> dans la facture. Vous pouvez également payer par chèque à l'ordre d'InSitu Security.
+                  💡 <strong>RIB inclus</strong> dans la facture. Vous pouvez également payer par chèque à l'ordre d'In Situ Security.
                 </p>
               </div>
             </div>

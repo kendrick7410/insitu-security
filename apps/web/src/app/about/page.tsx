@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Shield, Users, Clock, Heart, CheckCircle, Award } from 'lucide-react';
 
 export default function AboutPage() {
@@ -16,7 +17,7 @@ export default function AboutPage() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-orange">InSitu</span> Security
+            <span className="text-orange">In Situ</span> Security
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Seules les entreprises de sécurité avec des valeurs humaines fortes et engageantes
@@ -27,25 +28,37 @@ export default function AboutPage() {
         {/* Mission */}
         <div className="card p-8 mb-12 bg-gradient-to-br from-orange/10 to-yellow/10">
           <h2 className="text-3xl font-bold mb-6 text-center">Notre mission</h2>
-          <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
-            <p>
-              La sécurité est un pilier essentiel de votre tranquillité d'esprit. Notre mission est de vous aider à retrouver — ou à préserver — ce sentiment de sérénité grâce à des solutions fiables, accessibles et efficaces.
-            </p>
-            <p>
-              Nous concevons des systèmes de sécurité <strong>inSitu</strong>, pensés pour s'intégrer naturellement dans votre environnement, sans en altérer l'esthétique, le confort ni l'usage. Un système d'alarme performant doit pouvoir être installé dans son contexte réel — habitation ou entreprise — en respectant les lieux et le mode de vie de ses occupants.
-            </p>
-            <p>
-              Nous proposons des solutions en kit, conçues pour être installées facilement par vos soins. Chaque système est accompagné d'une documentation claire et complète, vous permettant une mise en place autonome, sereine et maîtrisée.
-            </p>
-            <p>
-              Parce qu'une protection durable repose aussi sur l'accompagnement, nous assurons un support technique réactif ainsi qu'un service de maintenance, afin de garantir, dans le temps, la fiabilité et l'efficacité de votre installation.
-            </p>
-            <p>
-              Notre engagement est simple : vous offrir des solutions intelligentes, discrètes et évolutives, parfaitement adaptées à votre environnement.
-            </p>
-            <p className="text-xl font-semibold text-orange text-center mt-6">
-              Notre mission : garantir votre sérénité.
-            </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
+              <p>
+                La sécurité est un pilier essentiel de votre tranquillité d'esprit. Notre mission est de vous aider à retrouver — ou à préserver — ce sentiment de sérénité grâce à des solutions fiables, accessibles et efficaces.
+              </p>
+              <p>
+                Nous concevons des systèmes de sécurité <strong>In Situ</strong>, pensés pour s'intégrer naturellement dans votre environnement, sans en altérer l'esthétique, le confort ni l'usage. Un système d'alarme performant doit pouvoir être installé dans son contexte réel — habitation ou entreprise — en respectant les lieux et le mode de vie de ses occupants.
+              </p>
+              <p>
+                Nous proposons des solutions en kit, conçues pour être installées facilement par vos soins. Chaque système est accompagné d'une documentation claire et complète, vous permettant une mise en place autonome, sereine et maîtrisée.
+              </p>
+              <p>
+                Parce qu'une protection durable repose aussi sur l'accompagnement, nous assurons un support technique réactif ainsi qu'un service de maintenance, afin de garantir, dans le temps, la fiabilité et l'efficacité de votre installation.
+              </p>
+              <p>
+                Notre engagement est simple : vous offrir des solutions intelligentes, discrètes et évolutives, parfaitement adaptées à votre environnement.
+              </p>
+              <p className="text-xl font-semibold text-orange text-center lg:text-left mt-6">
+                Notre mission : garantir votre sérénité.
+              </p>
+            </div>
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative w-64 h-64 md:w-80 md:h-80">
+                <Image
+                  src="/images/logo.png"
+                  alt="In Situ Security"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { useCartStore } from '@/store/cart';
@@ -25,18 +24,9 @@ export function Header() {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="relative w-12 h-12">
-              <Image
-                src="/images/logo.png"
-                alt="InSitu Security"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <span className="text-xl font-bold hidden sm:inline">
-              <span className="text-orange">InSitu</span> Security
+          <Link href="/" className="flex items-center">
+            <span className="text-xl font-bold">
+              <span className="text-orange">In Situ</span> Security
             </span>
           </Link>
 

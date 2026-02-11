@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
-  title: 'InSitu Security - Votre sécurité, votre installation',
+  title: 'In Situ Security - Votre sécurité, votre installation',
   description: 'Système de sécurité connecté que vous installez vous-même. Testez, installez, maîtrisez votre sécurité en toute autonomie.',
   openGraph: {
-    title: 'InSitu Security - Votre sécurité, votre installation',
+    title: 'In Situ Security - Votre sécurité, votre installation',
     description: 'Système de sécurité connecté que vous installez vous-même.',
     type: 'website',
   },
@@ -20,7 +20,7 @@ export default function HomePage() {
           <div className="relative w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80">
             <Image
               src="/images/logo.png"
-              alt="InSitu Security"
+              alt="In Situ Security"
               fill
               className="object-contain"
               priority

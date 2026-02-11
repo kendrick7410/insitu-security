@@ -52,8 +52,8 @@ export default function CapteursInstallationPage() {
             Prérequis
           </h2>
           <ul className="space-y-2 text-gray-700">
-            <li>• Centrale InSitu Security installée et opérationnelle</li>
-            <li>• Application InSitu Security à jour</li>
+            <li>• Centrale In Situ Security installée et opérationnelle</li>
+            <li>• Application In Situ Security à jour</li>
             <li>• Pile CR123A fournie (pré-installée avec languette de protection)</li>
           </ul>
         </div>
@@ -84,7 +84,7 @@ export default function CapteursInstallationPage() {
               <h3 className="text-xl font-bold">Appairage avec la centrale</h3>
             </div>
             <p className="text-gray-700 mb-4">
-              Dans l'application InSitu Security :
+              Dans l'application In Situ Security :
             </p>
             <ul className="space-y-2 text-gray-700 ml-6">
               <li>• Menu &gt; <strong>Appareils</strong> &gt; <strong>+ Ajouter</strong></li>

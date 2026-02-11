@@ -41,7 +41,7 @@ export default function DocsPage() {
         <div className="text-center mb-12">
           <h1 className="section-title">Documentation</h1>
           <p className="section-subtitle">
-            Guides complets pour installer et utiliser votre système InSitu Security
+            Guides complets pour installer et utiliser votre système In Situ Security
           </p>
         </div>
 

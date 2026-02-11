@@ -7,7 +7,7 @@ import { Footer } from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'InSitu Security - Alarme Connectée DIY',
+  title: 'In Situ Security - Alarme Connectée DIY',
   description: 'Système d\'alarme connectée et caméras de surveillance. Installation facile, visualisation AR, app mobile gratuite.',
   keywords: 'alarme maison, caméra surveillance, domotique, sécurité connectée, DIY',
 };

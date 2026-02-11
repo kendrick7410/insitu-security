@@ -8,7 +8,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-white text-lg font-bold mb-4">InSitu Security</h3>
+            <h3 className="text-white text-lg font-bold mb-4">In Situ Security</h3>
             <p className="text-sm mb-4">
               Votre partenaire pour une sécurité connectée accessible à tous.
             </p>
@@ -115,7 +115,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-sm text-center">
-          <p>&copy; {new Date().getFullYear()} InSitu Security. Tous droits réservés.</p>
+          <p>&copy; {new Date().getFullYear()} In Situ Security. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

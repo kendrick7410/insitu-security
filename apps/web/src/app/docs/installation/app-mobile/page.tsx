@@ -16,7 +16,7 @@ export default function AppMobileInstallationPage() {
 
         <h1 className="text-4xl font-bold mb-4">Configuration de l'application mobile</h1>
         <p className="text-xl text-gray-600 mb-12">
-          Maîtrisez votre application InSitu Security pour une expérience optimale
+          Maîtrisez votre application In Situ Security pour une expérience optimale
         </p>
 
         {/* Téléchargement */}
@@ -27,7 +27,7 @@ export default function AppMobileInstallationPage() {
               iOS (iPhone/iPad)
             </h3>
             <p className="text-gray-700 mb-4 text-sm">
-              Téléchargez InSitu Security sur l'App Store
+              Téléchargez In Situ Security sur l'App Store
             </p>
             <ul className="space-y-2 text-gray-700 text-sm">
               <li>• Compatible iOS 13 et versions ultérieures</li>
@@ -41,7 +41,7 @@ export default function AppMobileInstallationPage() {
               Android
             </h3>
             <p className="text-gray-700 mb-4 text-sm">
-              Téléchargez InSitu Security sur Google Play
+              Téléchargez In Situ Security sur Google Play
             </p>
             <ul className="space-y-2 text-gray-700 text-sm">
               <li>• Compatible Android 8.0 et versions ultérieures</li>
@@ -301,7 +301,7 @@ export default function AppMobileInstallationPage() {
         <div className="mt-12 bg-gradient-to-r from-yellow to-orange rounded-xl p-8">
           <h2 className="text-2xl font-bold mb-4">Besoin d'aide ?</h2>
           <p className="text-gray-900 mb-6">
-            Notre équipe support est disponible pour vous accompagner dans l'utilisation de votre système InSitu Security.
+            Notre équipe support est disponible pour vous accompagner dans l'utilisation de votre système In Situ Security.
           </p>
           <div className="space-y-2">
             <Link href="/support" className="block text-gray-900 hover:underline font-semibold">

@@ -16,7 +16,7 @@ export default function CentraleInstallationPage() {
 
         <h1 className="text-4xl font-bold mb-4">Installation de la Centrale d'alarme</h1>
         <p className="text-xl text-gray-600 mb-12">
-          Guide complet pour installer et configurer votre centrale InSitu Security
+          Guide complet pour installer et configurer votre centrale In Situ Security
         </p>
 
         {/* Contenu requis */}
@@ -25,7 +25,7 @@ export default function CentraleInstallationPage() {
           <ul className="space-y-2 text-gray-700">
             <li className="flex items-start">
               <CheckCircle className="w-5 h-5 text-green-600 mr-2 mt-1 flex-shrink-0" />
-              <span>1 Centrale d'alarme InSitu</span>
+              <span>1 Centrale d'alarme In Situ</span>
             </li>
             <li className="flex items-start">
               <CheckCircle className="w-5 h-5 text-green-600 mr-2 mt-1 flex-shrink-0" />
@@ -55,7 +55,7 @@ export default function CentraleInstallationPage() {
           <ul className="space-y-2 text-gray-700">
             <li>• Connexion Internet (WiFi ou Ethernet)</li>
             <li>• Smartphone iOS 13+ ou Android 8+</li>
-            <li>• Application InSitu Security installée (disponible sur App Store et Google Play)</li>
+            <li>• Application In Situ Security installée (disponible sur App Store et Google Play)</li>
             <li>• Prise électrique proche du lieu d'installation</li>
           </ul>
         </div>
@@ -154,7 +154,7 @@ export default function CentraleInstallationPage() {
               <h3 className="text-xl font-bold">Configuration via l'application</h3>
             </div>
             <p className="text-gray-700 mb-4">
-              Ouvrez l'application InSitu Security sur votre smartphone :
+              Ouvrez l'application In Situ Security sur votre smartphone :
             </p>
             <ul className="space-y-2 text-gray-700 ml-6">
               <li>• Appuyez sur "Ajouter une centrale"</li>
