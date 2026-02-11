@@ -1,0 +1,26 @@
+# Configuration Netlify pour InSitu Security
+# Déploie le site Next.js (apps/web)
+
+[build]
+  base = "apps/web"
+  command = "npm run build"
+  publish = ".next"
+
+# Variables d'environnement de build
+[build.environment]
+  NODE_VERSION = "18"
+
+# Redirects pour l'app AR (à configurer après déploiement de l'app AR)
+# [[redirects]]
+#   from = "/ar-app/*"
+#   to = "https://votre-app-ar.netlify.app/:splat"
+#   status = 200
+
+# Headers de sécurité
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
