@@ -1021,7 +1021,7 @@ async function setupXRSession() {
             setTimeout(() => {
               APP.placementAllowed = true;
               debugLog('  ✅ Placement re-enabled');
-            }, 100);
+            }, 600);  // Augmenté: 100ms → 600ms
             return;
           }
 
@@ -1042,7 +1042,7 @@ async function setupXRSession() {
             setTimeout(() => {
               APP.placementAllowed = true;
               debugLog('  ✅ Placement re-enabled');
-            }, 100);
+            }, 800);  // Augmenté: 100ms → 800ms (confirmation prend du temps)
             return;
           }
 
@@ -1060,7 +1060,7 @@ async function setupXRSession() {
               setTimeout(() => {
                 APP.placementAllowed = true;
                 debugLog('  ✅ Placement re-enabled');
-              }, 100);
+              }, 600);  // Augmenté: 100ms → 600ms
               return;
             }
           }
@@ -1071,7 +1071,7 @@ async function setupXRSession() {
           setTimeout(() => {
             APP.placementAllowed = true;
             debugLog('  ✅ Placement re-enabled');
-          }, 300);
+          }, 600);  // Augmenté: 300ms → 600ms
           return;
         }
       }
