@@ -13,7 +13,7 @@ export function Header() {
 
   const navLinks = [
     { href: '/about', label: 'À propos' },
-    { href: '/products', label: 'Produits & Packs' },
+    { href: '/products', label: 'Produits' },
     { href: '/ar', label: 'Visualisation AR' },
     { href: '/maintenance', label: 'Maintenance' },
     { href: '/support', label: 'Support' },

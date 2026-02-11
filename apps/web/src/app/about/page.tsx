@@ -29,18 +29,22 @@ export default function AboutPage() {
           <h2 className="text-3xl font-bold mb-6 text-center">Notre mission</h2>
           <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
             <p>
-              Le sentiment de sécurité est un pilier essentiel pour chacun d'entre nous.
-              Notre mission vise à vous faire retrouver cette sensation de sécurité ou vous
-              permettre de la conserver grâce à des solutions rationnelles et efficaces.
+              La sécurité est un pilier essentiel de votre tranquillité d'esprit. Notre mission est de vous aider à retrouver — ou à préserver — ce sentiment de sérénité grâce à des solutions fiables, accessibles et efficaces.
             </p>
             <p>
-              Vivre une effraction reste traumatisant pour beaucoup de personnes. Prenez le
-              temps d'entreprendre la sécurisation de votre habitation ou de votre entreprise
-              à tête reposée. Évitez les solutions « toute faite » ou « en kit » qui privilégient
-              la rapidité d'installation à l'efficacité d'un système bien pensé.
+              Nous concevons des systèmes de sécurité <strong>inSitu</strong>, pensés pour s'intégrer naturellement dans votre environnement, sans en altérer l'esthétique, le confort ni l'usage. Un système d'alarme performant doit pouvoir être installé dans son contexte réel — habitation ou entreprise — en respectant les lieux et le mode de vie de ses occupants.
+            </p>
+            <p>
+              Nous proposons des solutions en kit, conçues pour être installées facilement par vos soins. Chaque système est accompagné d'une documentation claire et complète, vous permettant une mise en place autonome, sereine et maîtrisée.
+            </p>
+            <p>
+              Parce qu'une protection durable repose aussi sur l'accompagnement, nous assurons un support technique réactif ainsi qu'un service de maintenance, afin de garantir, dans le temps, la fiabilité et l'efficacité de votre installation.
+            </p>
+            <p>
+              Notre engagement est simple : vous offrir des solutions intelligentes, discrètes et évolutives, parfaitement adaptées à votre environnement.
             </p>
             <p className="text-xl font-semibold text-orange text-center mt-6">
-              Notre mission : Garantir votre sérénité
+              Notre mission : garantir votre sérénité.
             </p>
           </div>
         </div>

@@ -7,10 +7,10 @@ export default function DocsPage() {
       title: 'Installation',
       icon: Book,
       links: [
-        { name: 'Centrale d\'alarme', href: '#' },
-        { name: 'Caméras', href: '#' },
-        { name: 'Capteurs', href: '#' },
-        { name: 'Application mobile', href: '#' },
+        { name: 'Centrale d\'alarme', href: '/docs/installation/centrale' },
+        { name: 'Caméras', href: '/docs/installation/cameras' },
+        { name: 'Capteurs', href: '/docs/installation/capteurs' },
+        { name: 'Application mobile', href: '/docs/installation/app-mobile' },
       ],
     },
     {
