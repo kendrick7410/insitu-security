@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'In Situ Security - Votre sécurité, votre installation',
@@ -17,7 +18,7 @@ export default function HomePage() {
       <div className="max-w-6xl w-full text-center space-y-16">
         {/* Logo */}
         <div className="flex justify-center">
-          <div className="relative w-80 h-80 md:w-[28rem] md:h-[28rem] lg:w-[36rem] lg:h-[36rem]">
+          <Link href="/about" className="relative w-80 h-80 md:w-[28rem] md:h-[28rem] lg:w-[36rem] lg:h-[36rem] cursor-pointer hover:opacity-90 transition-opacity">
             <Image
               src="/images/logo.png"
               alt="In Situ Security"
@@ -25,7 +26,7 @@ export default function HomePage() {
               className="object-contain"
               priority
             />
-          </div>
+          </Link>
         </div>
 
         {/* Phrase d'accroche principale */}
