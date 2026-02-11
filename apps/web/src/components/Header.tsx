@@ -12,12 +12,12 @@ export function Header() {
   const totalItems = getTotalItems();
 
   const navLinks = [
-    { href: '/products', label: 'Produits' },
-    { href: '/packs', label: 'Packs' },
+    { href: '/about', label: 'À propos' },
+    { href: '/products', label: 'Produits & Packs' },
     { href: '/ar', label: 'Visualisation AR' },
     { href: '/maintenance', label: 'Maintenance' },
-    { href: '/docs', label: 'Documentation' },
     { href: '/support', label: 'Support' },
+    { href: '/docs', label: 'Documentation' },
   ];
 
   return (
