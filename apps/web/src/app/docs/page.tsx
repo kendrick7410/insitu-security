@@ -75,12 +75,12 @@ export default function DocsPage() {
               <ul className="space-y-2">
                 {category.links.map((link, linkIdx) => (
                   <li key={linkIdx}>
-                    <a
+                    <Link
                       href={link.href}
                       className="text-gray-600 hover:text-yellow transition-colors text-sm"
                     >
                       → {link.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
