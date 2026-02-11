@@ -35,7 +35,9 @@ export function Header() {
                 priority
               />
             </div>
-            <span className="text-xl font-bold hidden sm:inline">InSitu Security</span>
+            <span className="text-xl font-bold hidden sm:inline">
+              <span className="text-orange">InSitu</span> Security
+            </span>
           </Link>
 
           {/* Desktop Navigation */}

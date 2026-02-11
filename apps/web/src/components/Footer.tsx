@@ -15,15 +15,19 @@ export function Footer() {
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-sm">
                 <Phone className="w-4 h-4" />
-                <span>01 23 45 67 89</span>
+                <a href="tel:+3223547318" className="hover:text-yellow">
+                  +32 (0) 2 354 73 18
+                </a>
               </div>
               <div className="flex items-center space-x-2 text-sm">
                 <Mail className="w-4 h-4" />
-                <span>contact@insitusecurity.fr</span>
+                <a href="mailto:contact@insitusecurity.be" className="hover:text-yellow">
+                  contact@insitusecurity.be
+                </a>
               </div>
               <div className="flex items-center space-x-2 text-sm">
                 <MapPin className="w-4 h-4" />
-                <span>Paris, France</span>
+                <span>Grez-Doiceau, Belgique</span>
               </div>
             </div>
           </div>
