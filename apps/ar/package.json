@@ -1,12 +1,23 @@
 {
-  "name": "ar",
+  "name": "insitu-security",
   "version": "1.0.0",
-  "private": true,
-  "description": "WebAR application for InSitu Security product visualization",
+  "description": "WebAR proof-of-concept using Niantic 8th Wall and three.js",
+  "main": "index.html",
   "scripts": {
     "dev": "python3 -m http.server 8080",
-    "start": "python3 -m http.server 8080"
+    "serve": "npx http-server -p 8080 -c-1",
+    "tunnel": "npx localtunnel --port 8080"
   },
-  "keywords": ["webxr", "ar", "three.js"],
-  "author": "InSitu Security"
+  "keywords": [
+    "WebAR",
+    "8th Wall",
+    "three.js",
+    "AR",
+    "SLAM",
+    "surface-detection"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {}
 }

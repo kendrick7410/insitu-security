@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <title>In situ Security - AR Planner</title>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="hidden">
+    <div class="spinner"></div>
+    <p id="loading-text">Initializing AR...</p>
+  </div>
+
+  <!-- Start Screen -->
+  <div id="start-screen">
+    <div class="start-content">
+      <h1>🔒 In situ Security</h1>
+      <p>AR Security System Planner</p>
+      <button id="start-ar-button">Start AR Session</button>
+      <p class="requirements">Requires: Android Chrome + ARCore</p>
+
+      <!-- Debug Panel -->
+      <div id="debug-panel" style="margin-top: 30px; padding: 15px; background: rgba(0,0,0,0.8); border-radius: 10px; text-align: left; font-size: 11px; font-family: monospace; max-height: 200px; overflow-y: auto;">
+        <div style="color: #00ff00; margin-bottom: 10px; font-weight: bold;">DEBUG LOG:</div>
+        <div id="debug-log" style="color: #fff;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div id="error-message" class="overlay hidden">
+    <div class="error-content">
+      <h2>Error</h2>
+      <p id="error-text"></p>
+      <button id="reload-button">Reload</button>
+    </div>
+  </div>
+
+  <!-- AR Canvas Container -->
+  <div id="ar-container"></div>
+
+  <!-- XR Overlay Container (for WebXR DOM Overlay) -->
+  <div id="xr-overlay" class="hidden">
+    <!-- Placement feedback flash -->
+    <div id="placement-flash"></div>
+
+    <!-- Crosshair (center of screen) -->
+    <div id="crosshair"></div>
+
+    <!-- Status Overlay -->
+    <div id="status-overlay" class="hidden">
+      <div id="status-text">Scanning for surfaces...</div>
+      <div id="mode-indicator">MODE: PLACE</div>
+    </div>
+
+    <!-- Bottom Catalog (Item Selector) -->
+    <div id="catalog-panel" class="hidden">
+    <div class="catalog-header">
+      <h3>Security Items</h3>
+      <div class="header-buttons">
+        <button id="toggle-list-btn">📋 List</button>
+        <button id="finish-session-btn">✅ Finish</button>
+      </div>
+    </div>
+    <div class="catalog-items">
+      <button class="catalog-item active" data-type="camera">
+        <span class="item-icon">📹</span>
+        <span class="item-label">Camera</span>
+      </button>
+      <button class="catalog-item" data-type="sensor">
+        <span class="item-icon">🚪</span>
+        <span class="item-label">Sensor</span>
+      </button>
+      <button class="catalog-item" data-type="hub">
+        <span class="item-icon">🏠</span>
+        <span class="item-label">Hub</span>
+      </button>
+      <button class="catalog-item" data-type="siren">
+        <span class="item-icon">🔊</span>
+        <span class="item-label">Siren</span>
+      </button>
+      <button class="catalog-item" data-type="keypad">
+        <span class="item-icon">🔢</span>
+        <span class="item-label">Keypad</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Inspector Panel (shown when object selected) -->
+  <div id="inspector-panel" class="hidden">
+    <div class="inspector-header">
+      <input type="text" id="object-name" placeholder="Object name" />
+      <button id="close-inspector">✕</button>
+    </div>
+
+    <div class="inspector-controls">
+      <!-- Rotation -->
+      <div class="control-group">
+        <label>Rotation: <span id="rotation-value">0°</span></label>
+        <input type="range" id="rotation-slider" min="0" max="360" value="0" step="5" />
+      </div>
+
+      <!-- Scale -->
+      <div class="control-group">
+        <label>Scale: <span id="scale-value">1.0x</span></label>
+        <input type="range" id="scale-slider" min="50" max="200" value="100" step="5" />
+      </div>
+
+      <!-- Actions -->
+      <div class="inspector-actions">
+        <button id="move-btn" class="action-btn">📍 Move</button>
+        <button id="duplicate-btn" class="action-btn">📋 Duplicate</button>
+        <button id="delete-btn" class="action-btn delete">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Objects List Panel -->
+  <div id="list-panel" class="hidden">
+    <div class="list-header">
+      <h3>Placed Objects (<span id="object-count">0</span>)</h3>
+      <button id="close-list">✕</button>
+    </div>
+    <div id="objects-list"></div>
+    <div class="list-footer">
+      <button id="clear-all-btn">🗑️ Clear All</button>
+    </div>
+  </div>
+
+  <!-- Summary Screen -->
+  <div id="summary-screen" class="overlay hidden">
+    <div class="summary-content">
+      <h2>🔒 Session Summary</h2>
+      <div id="summary-stats"></div>
+      <div id="summary-list"></div>
+      <div class="summary-actions">
+        <button id="new-session-btn">🔄 New Session</button>
+        <button id="close-summary-btn">❌ Exit</button>
+      </div>
+    </div>
+  </div>
+  </div> <!-- End XR Overlay -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script src="js/config.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
