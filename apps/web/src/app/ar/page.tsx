@@ -1,6 +1,30 @@
-import { Eye, Smartphone, Maximize } from 'lucide-react';
+'use client';
+
+import { Eye, Smartphone, Maximize, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function ARPage() {
+  const [isMobile, setIsMobile] = useState(false);
+  const [showDesktopWarning, setShowDesktopWarning] = useState(false);
+
+  useEffect(() => {
+    // Detect mobile device
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const mobileKeywords = ['android', 'webos', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone'];
+      return mobileKeywords.some(keyword => userAgent.includes(keyword));
+    };
+    setIsMobile(checkMobile());
+  }, []);
+
+  const handleARLaunch = () => {
+    if (!isMobile) {
+      setShowDesktopWarning(true);
+      return;
+    }
+    // On mobile, redirect to AR app
+    window.location.href = process.env.NODE_ENV === 'development' ? '/ar-app/' : '/ar/app';
+  };
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
@@ -82,18 +106,51 @@ export default function ARPage() {
         <div className="card p-8 text-center bg-gradient-to-r from-yellow to-orange">
           <h2 className="text-2xl font-bold mb-4">Prêt à commencer ?</h2>
           <p className="text-gray-900 mb-6">
-            Ouvrez cette page sur votre smartphone pour lancer l'expérience AR
+            {isMobile
+              ? "Cliquez sur le bouton ci-dessous pour lancer l'expérience AR"
+              : "Ouvrez cette page sur votre smartphone pour lancer l'expérience AR"
+            }
           </p>
-          <a
-            href={process.env.NODE_ENV === 'development' ? '/ar-app/' : '/ar/'}
-            className="bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors inline-block"
+          <button
+            onClick={handleARLaunch}
+            className="bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
           >
             Lancer l'expérience AR
-          </a>
-          <p className="text-sm text-gray-700 mt-4">
-            En développement : servez l'app AR sur localhost:8080
-          </p>
+          </button>
         </div>
+
+        {/* Desktop Warning Modal */}
+        {showDesktopWarning && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-8 max-w-md w-full">
+              <div className="flex items-center justify-center mb-4">
+                <AlertCircle className="w-16 h-16 text-orange" />
+              </div>
+              <h3 className="text-2xl font-bold text-center mb-4">
+                Expérience AR uniquement sur mobile
+              </h3>
+              <p className="text-gray-700 text-center mb-6">
+                La réalité augmentée nécessite un smartphone équipé d'ARCore (Android) ou ARKit (iOS).
+              </p>
+              <div className="space-y-3">
+                <p className="text-sm text-gray-600 text-center">
+                  Pour accéder à l'expérience AR :
+                </p>
+                <ul className="text-sm text-gray-600 space-y-2">
+                  <li>📱 Scannez le QR code avec votre smartphone</li>
+                  <li>📧 Ou envoyez-vous le lien par email</li>
+                  <li>💬 Ou copiez l'URL dans votre navigateur mobile</li>
+                </ul>
+              </div>
+              <button
+                onClick={() => setShowDesktopWarning(false)}
+                className="btn-primary w-full mt-6"
+              >
+                J'ai compris
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
