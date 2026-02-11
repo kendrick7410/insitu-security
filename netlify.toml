@@ -10,11 +10,9 @@
 [build.environment]
   NODE_VERSION = "18"
 
-# Redirects pour l'app AR (à configurer après déploiement de l'app AR)
-# [[redirects]]
-#   from = "/ar-app/*"
-#   to = "https://votre-app-ar.netlify.app/:splat"
-#   status = 200
+# Plugin Next.js pour Netlify (automatique)
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # Headers de sécurité
 [[headers]]
