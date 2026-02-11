@@ -165,22 +165,57 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Payment (Stub) */}
+          {/* Payment Information */}
           <div className="card p-6">
-            <h2 className="text-2xl font-bold mb-6">Paiement</h2>
-            <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <p className="text-gray-600 mb-4">
-                🚧 Interface de paiement à intégrer (Stripe, PayPal, etc.)
-              </p>
-              <p className="text-sm text-gray-500">
-                Cette démo utilise un paiement simulé
-              </p>
+            <h2 className="text-2xl font-bold mb-6">Modalités de paiement</h2>
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+              <div className="flex items-start space-x-3 mb-4">
+                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                  <Check className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">Paiement sur facture</h3>
+                  <p className="text-gray-700 mb-3">
+                    Vous recevrez une <strong>facture par email</strong> après validation de votre commande.
+                  </p>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li className="flex items-center space-x-2">
+                      <Check className="w-4 h-4 text-green-600" />
+                      <span>Facture envoyée sous 24h</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <Check className="w-4 h-4 text-green-600" />
+                      <span>Paiement par virement bancaire</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <Check className="w-4 h-4 text-green-600" />
+                      <span>Délai de paiement : 30 jours</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <Check className="w-4 h-4 text-green-600" />
+                      <span>Expédition après réception du paiement</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-4 mt-4">
+                <p className="text-sm text-gray-600">
+                  💡 <strong>RIB inclus</strong> dans la facture. Vous pouvez également payer par chèque à l'ordre d'InSitu Security.
+                </p>
+              </div>
             </div>
           </div>
 
           <button type="submit" className="btn-primary w-full text-lg py-4">
-            Confirmer la commande ({total.toFixed(2)} €)
+            Valider ma commande ({total.toFixed(2)} €)
           </button>
+
+          <p className="text-center text-sm text-gray-500">
+            En validant, vous acceptez nos{' '}
+            <a href="/legal/terms" className="text-yellow hover:underline">
+              conditions générales de vente
+            </a>
+          </p>
         </form>
       </div>
     </div>
