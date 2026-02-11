@@ -45,8 +45,8 @@ export default function HomePage() {
 
         {/* Phrase d'accroche principale */}
         <div className="space-y-6">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 tracking-tight leading-tight">
-            Votre sécurité,<br />votre installation
+          <h1 className="text-4xl md:text-5xl lg:text-4xl font-light text-gray-700 tracking-tight leading-tight">
+            Votre sécurité,<br className="lg:hidden" />votre installation
           </h1>
         </div>
       </div>
