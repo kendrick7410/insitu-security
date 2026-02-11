@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-4 bg-white">
-      <div className="max-w-6xl w-full text-center space-y-16">
+      <div className="max-w-6xl w-full text-center space-y-32">
         {/* Logo Text */}
         <div className="flex justify-center animate-fadeIn">
           <Link
