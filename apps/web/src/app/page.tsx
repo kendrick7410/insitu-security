@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -16,16 +15,31 @@ export default function HomePage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-4 bg-white">
       <div className="max-w-6xl w-full text-center space-y-16">
-        {/* Logo */}
-        <div className="flex justify-center">
-          <Link href="/about" className="relative w-80 h-80 md:w-[28rem] md:h-[28rem] lg:w-[36rem] lg:h-[36rem] cursor-pointer hover:opacity-90 transition-opacity">
-            <Image
-              src="/images/logo.png"
-              alt="In Situ Security"
-              fill
-              className="object-contain"
-              priority
-            />
+        {/* Logo Text */}
+        <div className="flex justify-center animate-fadeIn">
+          <Link
+            href="/about"
+            className="cursor-pointer hover:opacity-90 transition-opacity duration-300"
+            style={{
+              fontFamily: 'Inter, Poppins, Montserrat, sans-serif',
+              fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
+              letterSpacing: '0.5px',
+              lineHeight: '1.2',
+            }}
+          >
+            <span
+              className="font-semibold"
+              style={{ color: '#F5A000' }}
+            >
+              In Situ
+            </span>
+            {' '}
+            <span
+              className="font-normal"
+              style={{ color: '#4A4A4A' }}
+            >
+              Security
+            </span>
           </Link>
         </div>
 

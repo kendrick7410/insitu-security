@@ -33,3 +33,18 @@
     @apply text-lg text-gray-600 mb-8;
   }
 }
+
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.6s ease-in;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
