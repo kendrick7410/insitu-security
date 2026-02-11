@@ -19,8 +19,8 @@ export default function AboutPage() {
             <span className="text-orange">In Situ</span> Security
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Seules les entreprises de sécurité avec des valeurs humaines fortes et engageantes
-            pourront vous apporter confiance et satisfaction.
+            Votre environnement est unique. Votre sécurité doit l'être aussi.<br />
+            Vous installez votre sécurité. Nous vous accompagnons à chaque étape.
           </p>
         </div>
 
