@@ -54,7 +54,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg mb-2">Téléphone</h3>
-                  <p className="text-gray-600 mb-1">01 23 45 67 89</p>
+                  <a href="tel:+3223547318" className="text-gray-600 hover:text-orange mb-1 block">
+                    +32 (0) 2 354 73 18
+                  </a>
                   <p className="text-sm text-gray-500">Lun-Ven 9h-18h</p>
                 </div>
               </div>
@@ -67,7 +69,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg mb-2">Email</h3>
-                  <p className="text-gray-600 mb-1">contact@insitusecurity.fr</p>
+                  <a href="mailto:contact@insitusecurity.be" className="text-gray-600 hover:text-orange mb-1 block">
+                    contact@insitusecurity.be
+                  </a>
                   <p className="text-sm text-gray-500">Réponse sous 24h</p>
                 </div>
               </div>
@@ -81,9 +85,9 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-bold text-lg mb-2">Adresse</h3>
                   <p className="text-gray-600">
-                    123 Avenue de la Sécurité<br />
-                    75001 Paris<br />
-                    France
+                    504/21 Chaussée de Wavre<br />
+                    1390 Grez-Doiceau<br />
+                    Belgique
                   </p>
                 </div>
               </div>
