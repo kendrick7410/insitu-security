@@ -1,0 +1,85 @@
+'use client';
+
+import Link from 'next/link';
+import { ShoppingCart, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import { useCartStore } from '@/store/cart';
+
+export function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const getTotalItems = useCartStore(state => state.getTotalItems);
+  const totalItems = getTotalItems();
+
+  const navLinks = [
+    { href: '/products', label: 'Produits' },
+    { href: '/packs', label: 'Packs' },
+    { href: '/ar', label: 'Visualisation AR' },
+    { href: '/maintenance', label: 'Maintenance' },
+    { href: '/docs', label: 'Documentation' },
+    { href: '/support', label: 'Support' },
+  ];
+
+  return (
+    <header className="sticky top-0 z-50 bg-white shadow-md">
+      <nav className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="w-10 h-10 bg-yellow rounded-lg flex items-center justify-center">
+              <span className="text-2xl font-bold">IS</span>
+            </div>
+            <span className="text-xl font-bold hidden sm:inline">InSitu Security</span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-6">
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-gray-700 hover:text-yellow transition-colors font-medium"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Cart & Mobile Menu */}
+          <div className="flex items-center space-x-4">
+            <Link href="/cart" className="relative">
+              <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-yellow transition-colors" />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-orange text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden text-gray-700"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden mt-4 pb-4 space-y-3">
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block text-gray-700 hover:text-yellow transition-colors font-medium py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </nav>
+    </header>
+  );
+}

@@ -1,0 +1,49 @@
+/**
+ * Custom CSS for InSitu Security documentation
+ */
+
+:root {
+  --ifm-color-primary: #FFA500;
+  --ifm-color-primary-dark: #e69500;
+  --ifm-color-primary-darker: #d98d00;
+  --ifm-color-primary-darkest: #b37400;
+  --ifm-color-primary-light: #ffb11a;
+  --ifm-color-primary-lighter: #ffb927;
+  --ifm-color-primary-lightest: #ffca4d;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #FF8C00;
+  --ifm-color-primary-dark: #e67e00;
+  --ifm-color-primary-darker: #d97700;
+  --ifm-color-primary-darkest: #b36200;
+  --ifm-color-primary-light: #ff9a1a;
+  --ifm-color-primary-lighter: #ffa127;
+  --ifm-color-primary-lightest: #ffb54d;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.hero__title {
+  font-size: 3rem;
+}
+
+.hero__subtitle {
+  font-size: 1.5rem;
+}
+
+/* Custom admonitions */
+.admonition {
+  border-radius: 8px;
+}
+
+/* Better code blocks */
+.prism-code {
+  border-radius: 8px;
+}
+
+/* Sidebar customization */
+.menu__link--active {
+  font-weight: 600;
+}
