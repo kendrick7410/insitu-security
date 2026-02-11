@@ -29,22 +29,16 @@ export default function AboutPage() {
           <h2 className="text-3xl font-bold mb-6 text-center">Notre mission</h2>
           <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
             <p>
-              La sécurité est un pilier essentiel de votre tranquillité d'esprit. Notre mission est de vous aider à retrouver — ou à préserver — ce sentiment de sérénité grâce à des solutions fiables, accessibles et efficaces.
+              La sécurité est essentielle à votre tranquillité d'esprit. Notre mission est de vous aider à la préserver grâce à des solutions fiables, accessibles et durables.
             </p>
             <p>
-              Nous concevons des systèmes de sécurité <strong>In Situ</strong>, pensés pour s'intégrer naturellement dans votre environnement, sans en altérer l'esthétique, le confort ni l'usage. Un système d'alarme performant doit pouvoir être installé dans son contexte réel — habitation ou entreprise — en respectant les lieux et le mode de vie de ses occupants.
+              Nous proposons des systèmes de sécurité <strong>In Situ</strong>, conçus pour s'intégrer naturellement dans votre environnement, sans en altérer l'esthétique ni le confort. Chaque installation respecte vos lieux et votre mode de vie, qu'il s'agisse de votre habitation ou de votre entreprise.
             </p>
             <p>
-              Nous proposons des solutions en kit, conçues pour être installées facilement par vos soins. Chaque système est accompagné d'une documentation claire et complète, vous permettant une mise en place autonome, sereine et maîtrisée.
-            </p>
-            <p>
-              Parce qu'une protection durable repose aussi sur l'accompagnement, nous assurons un support technique réactif ainsi qu'un service de maintenance, afin de garantir, dans le temps, la fiabilité et l'efficacité de votre installation.
-            </p>
-            <p>
-              Notre engagement est simple : vous offrir des solutions intelligentes, discrètes et évolutives, parfaitement adaptées à votre environnement.
+              Nos solutions en kit, de haute qualité, sont pensées pour une installation simple et autonome. Elles sont accompagnées d'une documentation claire, d'un support réactif et d'un service de maintenance, afin de garantir la fiabilité de votre système dans le temps.
             </p>
             <p className="text-xl font-semibold text-orange text-center mt-6">
-              Notre mission : garantir votre sérénité.
+              Notre mission : garantir votre sérénité, chaque jour.
             </p>
           </div>
         </div>
