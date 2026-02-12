@@ -76,41 +76,64 @@ export default function ARAppPage() {
     }
   };
 
-  // Gérer le tap en AR pour placer l'objet
-  useEffect(() => {
-    if (isActive && selectedProduct) {
-      setOnSelect(() => {
-        handlePlaceObject();
-      });
-    }
-  }, [isActive, selectedProduct]);
-
   const handlePlaceObject = () => {
-    if (!selectedProduct) return;
+    try {
+      console.log('handlePlaceObject called, selectedProduct:', selectedProduct);
 
-    const product = AR_PRODUCTS.find(p => p.id === selectedProduct.id);
-    if (!product) return;
+      if (!selectedProduct) {
+        console.log('Aucun produit sélectionné');
+        return;
+      }
 
-    const placedObj = placeObjectXR(selectedProduct.id, selectedProduct.name, product.color);
-    if (placedObj) {
-      setPlacedObjects([...placedObjects, placedObj]);
-      console.log('Objet placé:', placedObj.name);
+      const product = AR_PRODUCTS.find(p => p.id === selectedProduct.id);
+      if (!product) {
+        console.error('Produit non trouvé dans AR_PRODUCTS');
+        return;
+      }
+
+      console.log('Placement de:', product.name);
+      const placedObj = placeObjectXR(selectedProduct.id, selectedProduct.name, product.color);
+
+      if (placedObj) {
+        setPlacedObjects(prev => [...prev, placedObj]);
+        console.log('Objet placé avec succès:', placedObj.name);
+      } else {
+        console.log('Placement échoué - reticle non visible?');
+      }
+    } catch (error) {
+      console.error('Erreur dans handlePlaceObject:', error);
     }
   };
 
-  const deleteObject = (id: string) => {
-    const objToRemove = placedObjects.find(obj => obj.id === id);
-    if (objToRemove) {
-      removeObject(objToRemove);
+  // Gérer le tap en AR pour placer l'objet
+  useEffect(() => {
+    console.log('useEffect tap - isActive:', isActive);
+    if (isActive) {
+      setOnSelect(handlePlaceObject);
     }
-    setPlacedObjects(placedObjects.filter(obj => obj.id !== id));
+  }, [isActive, selectedProduct, placedObjects]);
+
+  const deleteObject = (id: string) => {
+    try {
+      const objToRemove = placedObjects.find(obj => obj.id === id);
+      if (objToRemove) {
+        removeObject(objToRemove);
+      }
+      setPlacedObjects(prev => prev.filter(obj => obj.id !== id));
+    } catch (error) {
+      console.error('Erreur dans deleteObject:', error);
+    }
   };
 
   const addAllToCart = () => {
-    placedObjects.forEach(obj => {
-      addToCart(obj.productId, 'product');
-    });
-    alert(`${placedObjects.length} produit(s) ajouté(s) au panier !`);
+    try {
+      placedObjects.forEach(obj => {
+        addToCart(obj.productId, 'product');
+      });
+      alert(`${placedObjects.length} produit(s) ajouté(s) au panier !`);
+    } catch (error) {
+      console.error('Erreur dans addAllToCart:', error);
+    }
   };
 
   if (isSupported === null) {
