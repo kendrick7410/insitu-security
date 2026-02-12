@@ -61,6 +61,7 @@ export function useWebXR() {
       antialias: true,
     });
     renderer.xr.enabled = true;
+    renderer.xr.setReferenceSpaceType('local'); // Important pour AR mobile
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     rendererRef.current = renderer;
