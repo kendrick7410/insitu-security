@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://insitusecurity.be/</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- À propos -->
+  <url>
+    <loc>https://insitusecurity.be/about</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Produits -->
+  <url>
+    <loc>https://insitusecurity.be/products</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Catégories produits -->
+  <url>
+    <loc>https://insitusecurity.be/products?category=camera</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://insitusecurity.be/products?category=sensor</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://insitusecurity.be/products?category=hub</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://insitusecurity.be/products?category=siren</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://insitusecurity.be/products?category=keypad</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Packs -->
+  <url>
+    <loc>https://insitusecurity.be/packs</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Documentation -->
+  <url>
+    <loc>https://insitusecurity.be/docs</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Guides installation -->
+  <url>
+    <loc>https://insitusecurity.be/docs/installation/centrale</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://insitusecurity.be/docs/installation/cameras</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://insitusecurity.be/docs/installation/capteurs</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://insitusecurity.be/docs/installation/app-mobile</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- AR -->
+  <url>
+    <loc>https://insitusecurity.be/ar</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Support -->
+  <url>
+    <loc>https://insitusecurity.be/support</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Maintenance -->
+  <url>
+    <loc>https://insitusecurity.be/maintenance</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://insitusecurity.be/contact</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Pages légales -->
+  <url>
+    <loc>https://insitusecurity.be/legal/terms</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://insitusecurity.be/legal/privacy</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://insitusecurity.be/legal/cookies</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>

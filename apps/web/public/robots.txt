@@ -1,0 +1,48 @@
+# robots.txt pour In Situ Security
+# Système de sécurité connecté DIY - Belgique
+
+# Autoriser tous les robots des moteurs de recherche
+User-agent: *
+Allow: /
+
+# Pages importantes à indexer en priorité
+Allow: /about
+Allow: /products
+Allow: /packs
+Allow: /docs
+Allow: /ar
+
+# Bloquer les pages non pertinentes pour le SEO
+Disallow: /api/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /_next/
+Disallow: /admin
+Disallow: /*.json$
+
+# Robots spécifiques - Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Robots spécifiques - Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Robots spécifiques - Images
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.webp$
+
+# Sitemap (à créer via Next.js ou plugin)
+Sitemap: https://insitusecurity.be/sitemap.xml
+
+# Informations complémentaires
+# Site: In Situ Security
+# Secteur: Sécurité connectée, alarme DIY, domotique
+# Zone: Belgique, Grez-Doiceau, Bruxelles
+# Contact: contact@insitusecurity.be
