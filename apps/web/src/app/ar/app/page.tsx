@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Camera, Scan, Package, ShoppingCart, RotateCw, Trash2, X } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import { useWebXR } from '@/hooks/useWebXR';
@@ -76,7 +76,7 @@ export default function ARAppPage() {
     }
   };
 
-  const handlePlaceObject = () => {
+  const handlePlaceObject = useCallback(() => {
     try {
       console.log('handlePlaceObject called, selectedProduct:', selectedProduct);
 
@@ -103,7 +103,7 @@ export default function ARAppPage() {
     } catch (error) {
       console.error('Erreur dans handlePlaceObject:', error);
     }
-  };
+  }, [selectedProduct, placeObjectXR]);
 
   // Gérer le tap en AR pour placer l'objet
   useEffect(() => {
@@ -111,7 +111,7 @@ export default function ARAppPage() {
     if (isActive) {
       setOnSelect(handlePlaceObject);
     }
-  }, [isActive, selectedProduct, placedObjects]);
+  }, [isActive, handlePlaceObject, setOnSelect]);
 
   const deleteObject = (id: string) => {
     try {
