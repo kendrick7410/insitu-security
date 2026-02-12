@@ -41,6 +41,21 @@ export default function ARAppPage() {
   const [showProductMenu, setShowProductMenu] = useState(false);
   const addToCart = useCartStore(state => state.addItem);
 
+  // Charger Eruda pour debug mobile
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+    script.onload = () => {
+      (window as any).eruda?.init();
+      console.log('Eruda console mobile activée');
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
   // Utiliser le hook WebXR
   const { isSupported, isActive, startSession, placeObject: placeObjectXR, removeObject } = useWebXR();
 
