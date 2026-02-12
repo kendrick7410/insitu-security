@@ -83,25 +83,39 @@ export function useWebXR() {
   };
 
   const startSession = async (canvas: HTMLCanvasElement, onPlaced?: (obj: PlacedObject) => void) => {
-    if (!isSupported) return null;
+    if (!isSupported) {
+      console.error('WebXR not supported');
+      return null;
+    }
 
     try {
+      console.log('1. Initializing Three.js...');
       const { scene, camera, renderer } = initThreeJS(canvas);
+      console.log('2. Three.js initialized');
 
+      const overlayRoot = document.getElementById('ar-overlay');
+      console.log('3. Overlay root:', overlayRoot);
+
+      console.log('4. Requesting AR session...');
       const session = await (navigator as any).xr.requestSession('immersive-ar', {
         requiredFeatures: ['hit-test'],
         optionalFeatures: ['dom-overlay'],
-        domOverlay: { root: document.getElementById('ar-overlay') }
+        domOverlay: overlayRoot ? { root: overlayRoot } : undefined
       });
+      console.log('5. AR session granted');
 
       sessionRef.current = session;
       await renderer.xr.setSession(session);
+      console.log('6. Renderer XR session set');
 
       // Hit test source
       const viewerSpace = await session.requestReferenceSpace('viewer');
       hitTestSourceRef.current = await session.requestHitTestSource({ space: viewerSpace });
+      console.log('7. Hit test source created');
 
+      console.log('8. Setting isActive to true');
       setIsActive(true);
+      console.log('9. isActive set to true');
 
       // Animation loop
       renderer.setAnimationLoop((time: number, frame: any) => {
