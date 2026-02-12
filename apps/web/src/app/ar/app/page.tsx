@@ -67,10 +67,6 @@ export default function ARAppPage() {
 
   const startAR = async () => {
     if (!canvasRef.current || !isSupported) return;
-    if (!selectedProduct) {
-      alert('Veuillez d\'abord sélectionner un produit à placer');
-      return;
-    }
 
     try {
       await startSession(canvasRef.current);
