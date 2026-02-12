@@ -317,7 +317,7 @@ export default function ARAppPage() {
                   <div className="p-4 border-t border-gray-200 space-y-3">
                     {selectedProduct && (
                       <button
-                        onClick={placeObject}
+                        onClick={handlePlaceObject}
                         className="w-full bg-yellow text-gray-900 py-3 rounded-xl font-bold hover:bg-orange transition-colors"
                       >
                         📍 Placer {selectedProduct.name}
