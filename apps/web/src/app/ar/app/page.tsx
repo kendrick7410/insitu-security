@@ -1,0 +1,296 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { Camera, Scan, Package, ShoppingCart, RotateCw, Trash2, X } from 'lucide-react';
+import { useCartStore } from '@/store/cart';
+
+// Types pour les produits AR
+type ARProduct = {
+  id: string;
+  name: string;
+  category: 'camera' | 'sensor' | 'hub' | 'siren' | 'keypad';
+  color: string;
+  icon: string;
+};
+
+// Catalogue simplifié pour AR
+const AR_PRODUCTS: ARProduct[] = [
+  { id: 'cam-001', name: 'Caméra Intérieure', category: 'camera', color: '#3B82F6', icon: '📹' },
+  { id: 'cam-002', name: 'Caméra Extérieure', category: 'camera', color: '#1E40AF', icon: '📷' },
+  { id: 'sen-001', name: 'Capteur Ouverture', category: 'sensor', color: '#10B981', icon: '🚪' },
+  { id: 'sen-002', name: 'Détecteur Mouvement', category: 'sensor', color: '#059669', icon: '👁️' },
+  { id: 'hub-001', name: 'Centrale Alarme', category: 'hub', color: '#F59E0B', icon: '🏠' },
+  { id: 'sir-001', name: 'Sirène', category: 'siren', color: '#EF4444', icon: '🔔' },
+  { id: 'key-001', name: 'Clavier Code', category: 'keypad', color: '#8B5CF6', icon: '🔢' },
+];
+
+export default function ARAppPage() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isARSupported, setIsARSupported] = useState<boolean | null>(null);
+  const [isARActive, setIsARActive] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<ARProduct | null>(null);
+  const [placedObjects, setPlacedObjects] = useState<any[]>([]);
+  const [showProductMenu, setShowProductMenu] = useState(false);
+  const addToCart = useCartStore(state => state.addItem);
+
+  useEffect(() => {
+    // Vérifier support WebXR
+    const checkARSupport = async () => {
+      if ('xr' in navigator) {
+        try {
+          const supported = await (navigator as any).xr.isSessionSupported('immersive-ar');
+          setIsARSupported(supported);
+        } catch (error) {
+          setIsARSupported(false);
+        }
+      } else {
+        setIsARSupported(false);
+      }
+    };
+    checkARSupport();
+  }, []);
+
+  const startAR = async () => {
+    if (!isARSupported) return;
+
+    try {
+      const xr = (navigator as any).xr;
+      const session = await xr.requestSession('immersive-ar', {
+        requiredFeatures: ['hit-test', 'dom-overlay'],
+        domOverlay: { root: document.getElementById('ar-overlay') }
+      });
+
+      setIsARActive(true);
+
+      // Setup WebXR session avec Three.js
+      setupARSession(session);
+    } catch (error) {
+      console.error('Erreur démarrage AR:', error);
+      alert('Impossible de démarrer l\'AR. Vérifiez que votre appareil est compatible.');
+    }
+  };
+
+  const setupARSession = (session: any) => {
+    // Cette fonction sera complétée avec Three.js
+    // Pour l'instant, on simule juste l'activation
+    console.log('AR Session started:', session);
+  };
+
+  const placeObject = () => {
+    if (!selectedProduct) return;
+
+    // Simuler placement (sera remplacé par vraie logique WebXR)
+    const newObject = {
+      id: Date.now().toString(),
+      productId: selectedProduct.id,
+      name: selectedProduct.name,
+      position: { x: 0, y: 0, z: -1 },
+      rotation: 0,
+    };
+
+    setPlacedObjects([...placedObjects, newObject]);
+    setShowProductMenu(false);
+  };
+
+  const deleteObject = (id: string) => {
+    setPlacedObjects(placedObjects.filter(obj => obj.id !== id));
+  };
+
+  const addAllToCart = () => {
+    placedObjects.forEach(obj => {
+      addToCart(obj.productId, 'product');
+    });
+    alert(`${placedObjects.length} produit(s) ajouté(s) au panier !`);
+  };
+
+  if (isARSupported === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <Scan className="w-16 h-16 text-yellow mx-auto mb-4 animate-pulse" />
+          <p className="text-gray-600">Vérification compatibilité AR...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isARSupported === false) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white p-4">
+        <div className="max-w-md text-center">
+          <Camera className="w-20 h-20 text-orange mx-auto mb-6" />
+          <h1 className="text-2xl font-bold mb-4">AR non supportée</h1>
+          <p className="text-gray-600 mb-6">
+            Votre appareil ne supporte pas la réalité augmentée WebXR.
+          </p>
+          <p className="text-sm text-gray-500">
+            Requis: iOS 12+ avec Safari ou Android avec ARCore
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full h-screen bg-black overflow-hidden">
+      {/* Canvas AR */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ touchAction: 'none' }}
+      />
+
+      {/* Overlay UI (DOM Overlay pour WebXR) */}
+      <div id="ar-overlay" className="absolute inset-0 pointer-events-none">
+        <div className="relative w-full h-full pointer-events-none">
+
+          {!isARActive ? (
+            // Écran de démarrage
+            <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/60 flex items-center justify-center pointer-events-auto">
+              <div className="text-center text-white px-6">
+                <Camera className="w-24 h-24 mx-auto mb-6 text-yellow" />
+                <h1 className="text-3xl font-bold mb-4">
+                  <span className="text-orange">In Situ</span> Security AR
+                </h1>
+                <p className="text-lg mb-8 text-gray-200">
+                  Placez vos équipements de sécurité dans votre environnement réel
+                </p>
+                <button
+                  onClick={startAR}
+                  className="bg-yellow text-gray-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-orange transition-colors shadow-lg"
+                >
+                  <Scan className="inline w-6 h-6 mr-2" />
+                  Démarrer l'expérience AR
+                </button>
+                <p className="text-sm text-gray-400 mt-6">
+                  Pointez votre caméra vers le sol et déplacez-vous lentement
+                </p>
+              </div>
+            </div>
+          ) : (
+            // Interface AR active
+            <>
+              {/* Header */}
+              <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/70 to-transparent pointer-events-auto">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-white text-sm font-semibold">AR Active</span>
+                  </div>
+                  <button
+                    onClick={() => window.history.back()}
+                    className="bg-white/20 backdrop-blur-sm text-white p-2 rounded-lg hover:bg-white/30 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Instructions centrées */}
+              {placedObjects.length === 0 && !showProductMenu && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
+                  <div className="bg-black/60 backdrop-blur-sm text-white px-6 py-4 rounded-xl">
+                    <p className="text-lg font-semibold">👇 Choisissez un produit ci-dessous</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Menu sélection produit (bas) */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-auto">
+                <div className="bg-white rounded-t-3xl shadow-2xl">
+
+                  {/* Toggle menu */}
+                  <button
+                    onClick={() => setShowProductMenu(!showProductMenu)}
+                    className="w-full py-4 flex items-center justify-center space-x-2 border-b border-gray-200"
+                  >
+                    <Package className="w-5 h-5 text-gray-600" />
+                    <span className="font-semibold text-gray-900">
+                      {selectedProduct ? selectedProduct.name : 'Choisir un produit'}
+                    </span>
+                    <RotateCw className={`w-4 h-4 text-gray-400 transition-transform ${showProductMenu ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {/* Liste produits */}
+                  {showProductMenu && (
+                    <div className="max-h-64 overflow-y-auto p-4 space-y-2">
+                      {AR_PRODUCTS.map(product => (
+                        <button
+                          key={product.id}
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setShowProductMenu(false);
+                          }}
+                          className={`w-full p-4 rounded-xl flex items-center space-x-3 transition-all ${
+                            selectedProduct?.id === product.id
+                              ? 'bg-yellow/20 border-2 border-yellow'
+                              : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
+                          }`}
+                        >
+                          <div
+                            className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
+                            style={{ backgroundColor: product.color + '20' }}
+                          >
+                            {product.icon}
+                          </div>
+                          <div className="flex-1 text-left">
+                            <p className="font-semibold text-gray-900">{product.name}</p>
+                            <p className="text-sm text-gray-500 capitalize">{product.category}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="p-4 border-t border-gray-200 space-y-3">
+                    {selectedProduct && (
+                      <button
+                        onClick={placeObject}
+                        className="w-full bg-yellow text-gray-900 py-3 rounded-xl font-bold hover:bg-orange transition-colors"
+                      >
+                        📍 Placer {selectedProduct.name}
+                      </button>
+                    )}
+
+                    {placedObjects.length > 0 && (
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={addAllToCart}
+                          className="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
+                        >
+                          <ShoppingCart className="w-5 h-5" />
+                          <span>Ajouter au panier ({placedObjects.length})</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Liste objets placés (côté droit) */}
+              {placedObjects.length > 0 && (
+                <div className="absolute right-4 top-20 space-y-2 pointer-events-auto">
+                  {placedObjects.map(obj => (
+                    <div
+                      key={obj.id}
+                      className="bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg flex items-center space-x-2"
+                    >
+                      <span className="text-sm font-medium text-gray-900">{obj.name}</span>
+                      <button
+                        onClick={() => deleteObject(obj.id)}
+                        className="p-1 hover:bg-red-100 rounded transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
