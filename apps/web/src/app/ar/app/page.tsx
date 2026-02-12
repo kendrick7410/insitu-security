@@ -151,7 +151,11 @@ export default function ARAppPage() {
   const addAllToCart = () => {
     try {
       placedObjects.forEach(obj => {
-        addToCart(obj.productId, 'product');
+        addToCart({
+          productId: obj.productId,
+          quantity: 1,
+          type: 'product'
+        });
       });
       alert(`${placedObjects.length} produit(s) ajouté(s) au panier !`);
     } catch (error) {
