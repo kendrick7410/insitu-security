@@ -39,7 +39,35 @@ export default function ARAppPage() {
   const [selectedProduct, setSelectedProduct] = useState<ARProduct | null>(null);
   const [placedObjects, setPlacedObjects] = useState<PlacedObject[]>([]);
   const [showProductMenu, setShowProductMenu] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const addToCart = useCartStore(state => state.addItem);
+
+  // Capturer les erreurs
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      console.error('Error caught:', event.error);
+      setError(event.error?.message || 'Unknown error');
+    };
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white p-4">
+        <div className="max-w-md text-center">
+          <h1 className="text-2xl font-bold mb-4 text-red-600">Erreur</h1>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-orange text-white px-6 py-3 rounded-lg"
+          >
+            Recharger
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Charger Eruda pour debug mobile
   useEffect(() => {
@@ -173,61 +201,40 @@ export default function ARAppPage() {
         <div className="relative w-full h-full pointer-events-none">
 
           {!isActive ? (
-            // Écran de démarrage avec sélection produit
-            <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/60 flex items-center justify-center pointer-events-auto overflow-y-auto">
-              <div className="text-center text-white px-6 py-12 max-w-lg">
+            // Écran de démarrage simplifié
+            <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/60 flex items-center justify-center pointer-events-auto">
+              <div className="text-center text-white px-6">
                 <Camera className="w-24 h-24 mx-auto mb-6 text-yellow" />
                 <h1 className="text-3xl font-bold mb-4">
                   <span className="text-orange">In Situ</span> Security AR
                 </h1>
-                <p className="text-lg mb-8 text-gray-200">
-                  Placez vos équipements de sécurité dans votre environnement réel
-                </p>
 
-                {/* Sélection produit */}
-                <div className="mb-8">
-                  <p className="text-sm font-semibold mb-4 text-yellow">
-                    1. Choisissez un produit à placer
-                  </p>
-                  <div className="grid grid-cols-2 gap-3">
-                    {AR_PRODUCTS.map(product => (
-                      <button
-                        key={product.id}
-                        onClick={() => setSelectedProduct(product)}
-                        className={`p-4 rounded-xl flex flex-col items-center transition-all ${
-                          selectedProduct?.id === product.id
-                            ? 'bg-yellow text-gray-900 scale-105'
-                            : 'bg-white/10 hover:bg-white/20'
-                        }`}
-                      >
-                        <div className="text-3xl mb-2">{product.icon}</div>
-                        <p className="text-xs font-semibold text-center">
-                          {product.name}
-                        </p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <p className="text-sm mb-4">Sélection rapide :</p>
+                <select
+                  value={selectedProduct?.id || ''}
+                  onChange={(e) => {
+                    const prod = AR_PRODUCTS.find(p => p.id === e.target.value);
+                    setSelectedProduct(prod || null);
+                  }}
+                  className="mb-6 px-4 py-2 rounded-lg text-gray-900 font-semibold"
+                >
+                  <option value="">-- Choisir un produit --</option>
+                  {AR_PRODUCTS.map(p => (
+                    <option key={p.id} value={p.id}>{p.icon} {p.name}</option>
+                  ))}
+                </select>
 
-                {/* Bouton lancement AR */}
-                {selectedProduct && (
-                  <button
-                    onClick={startAR}
-                    className="bg-yellow text-gray-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-orange transition-colors shadow-lg w-full"
-                  >
-                    <Scan className="inline w-6 h-6 mr-2" />
-                    Démarrer avec {selectedProduct.name}
-                  </button>
-                )}
+                <button
+                  onClick={startAR}
+                  disabled={!selectedProduct}
+                  className="bg-yellow text-gray-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-orange transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Scan className="inline w-6 h-6 mr-2" />
+                  Démarrer l'AR
+                </button>
 
-                {!selectedProduct && (
-                  <p className="text-sm text-gray-400 italic">
-                    ☝️ Sélectionnez un produit ci-dessus
-                  </p>
-                )}
-
-                <p className="text-xs text-gray-400 mt-6">
-                  2. Pointez votre caméra vers le sol et tapez pour placer
+                <p className="text-sm text-gray-400 mt-6">
+                  Tapez sur l'écran pour placer les objets
                 </p>
               </div>
             </div>
