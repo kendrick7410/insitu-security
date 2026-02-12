@@ -236,7 +236,7 @@ export function useWebXR() {
     }
 
     try {
-      if (sessionRef.current && sessionRef.current.end) {
+      if (sessionRef.current && !sessionRef.current.ended) {
         console.log('Ending XR session...');
         sessionRef.current.end();
       }
