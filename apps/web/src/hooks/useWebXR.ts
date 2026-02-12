@@ -96,15 +96,21 @@ export function useWebXR() {
       console.log('3. Requesting AR session...');
       const session = await (navigator as any).xr.requestSession('immersive-ar', {
         requiredFeatures: ['hit-test'],
-        optionalFeatures: ['dom-overlay'],
       });
       console.log('4. AR session granted');
 
       sessionRef.current = session;
 
       console.log('5. Setting XR session on renderer...');
-      await renderer.xr.setSession(session);
-      console.log('6. Renderer XR session set');
+      try {
+        await renderer.xr.setSession(session);
+        console.log('6. Renderer XR session set');
+      } catch (err) {
+        console.error('Error setting XR session:', err);
+        console.error('Error name:', (err as any).name);
+        console.error('Error message:', (err as any).message);
+        throw err;
+      }
 
       // Hit test source
       console.log('7. Requesting hit test source...');

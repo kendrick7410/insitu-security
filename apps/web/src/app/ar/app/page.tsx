@@ -52,7 +52,13 @@ export default function ARAppPage() {
     document.head.appendChild(script);
 
     return () => {
-      document.head.removeChild(script);
+      try {
+        if (script.parentNode) {
+          document.head.removeChild(script);
+        }
+      } catch (e) {
+        // Ignore cleanup errors
+      }
     };
   }, []);
 
