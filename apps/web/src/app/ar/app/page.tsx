@@ -63,10 +63,14 @@ export default function ARAppPage() {
   }, []);
 
   // Utiliser le hook WebXR
-  const { isSupported, isActive, startSession, placeObject: placeObjectXR, removeObject } = useWebXR();
+  const { isSupported, isActive, startSession, placeObject: placeObjectXR, removeObject, setOnSelect } = useWebXR();
 
   const startAR = async () => {
     if (!canvasRef.current || !isSupported) return;
+    if (!selectedProduct) {
+      alert('Veuillez d\'abord sélectionner un produit à placer');
+      return;
+    }
 
     try {
       await startSession(canvasRef.current);
@@ -76,7 +80,16 @@ export default function ARAppPage() {
     }
   };
 
-  const placeObject = () => {
+  // Gérer le tap en AR pour placer l'objet
+  useEffect(() => {
+    if (isActive && selectedProduct) {
+      setOnSelect(() => {
+        handlePlaceObject();
+      });
+    }
+  }, [isActive, selectedProduct]);
+
+  const handlePlaceObject = () => {
     if (!selectedProduct) return;
 
     const product = AR_PRODUCTS.find(p => p.id === selectedProduct.id);
@@ -85,7 +98,7 @@ export default function ARAppPage() {
     const placedObj = placeObjectXR(selectedProduct.id, selectedProduct.name, product.color);
     if (placedObj) {
       setPlacedObjects([...placedObjects, placedObj]);
-      setShowProductMenu(false);
+      console.log('Objet placé:', placedObj.name);
     }
   };
 

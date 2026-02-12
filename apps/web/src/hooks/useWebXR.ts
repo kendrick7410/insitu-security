@@ -19,6 +19,7 @@ export function useWebXR() {
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const reticleRef = useRef<THREE.Mesh | null>(null);
   const hitTestSourceRef = useRef<any>(null);
+  const onSelectCallbackRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     checkSupport();
@@ -83,7 +84,8 @@ export function useWebXR() {
     return { scene, camera, renderer };
   };
 
-  const startSession = async (canvas: HTMLCanvasElement, onPlaced?: (obj: PlacedObject) => void) => {
+  const startSession = async (canvas: HTMLCanvasElement, onSelect?: () => void) => {
+    onSelectCallbackRef.current = onSelect || null;
     if (!isSupported) {
       console.error('WebXR not supported');
       return null;
@@ -95,10 +97,26 @@ export function useWebXR() {
       console.log('2. Three.js initialized');
 
       console.log('3. Requesting AR session...');
-      const session = await (navigator as any).xr.requestSession('immersive-ar', {
-        requiredFeatures: ['hit-test'],
-      });
-      console.log('4. AR session granted');
+
+      // Essayer avec DOM overlay si possible
+      const overlayRoot = document.getElementById('ar-overlay');
+      let session;
+
+      try {
+        console.log('Tentative avec DOM overlay...');
+        session = await (navigator as any).xr.requestSession('immersive-ar', {
+          requiredFeatures: ['hit-test'],
+          optionalFeatures: ['dom-overlay'],
+          domOverlay: overlayRoot ? { root: overlayRoot } : undefined
+        });
+        console.log('4. AR session granted (avec DOM overlay)');
+      } catch (e) {
+        console.log('DOM overlay non supporté, fallback sans overlay');
+        session = await (navigator as any).xr.requestSession('immersive-ar', {
+          requiredFeatures: ['hit-test'],
+        });
+        console.log('4. AR session granted (sans DOM overlay)');
+      }
 
       sessionRef.current = session;
 
@@ -122,6 +140,14 @@ export function useWebXR() {
       console.log('9. Setting isActive to true');
       setIsActive(true);
       console.log('10. isActive set to true - AR READY!');
+
+      // Event listener pour le tap/select
+      session.addEventListener('select', () => {
+        console.log('Select event triggered');
+        if (onSelectCallbackRef.current) {
+          onSelectCallbackRef.current();
+        }
+      });
 
       // Animation loop
       renderer.setAnimationLoop((time: number, frame: any) => {
@@ -237,11 +263,16 @@ export function useWebXR() {
     console.log('Cleanup complete');
   };
 
+  const setOnSelect = (callback: () => void) => {
+    onSelectCallbackRef.current = callback;
+  };
+
   return {
     isSupported,
     isActive,
     startSession,
     placeObject,
     removeObject,
+    setOnSelect,
   };
 }
