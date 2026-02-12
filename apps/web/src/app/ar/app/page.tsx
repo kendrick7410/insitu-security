@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Camera, Scan, Package, ShoppingCart, RotateCw, Trash2, X } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
+import { useWebXR } from '@/hooks/useWebXR';
 
 // Types pour les produits AR
 type ARProduct = {
@@ -11,6 +12,15 @@ type ARProduct = {
   category: 'camera' | 'sensor' | 'hub' | 'siren' | 'keypad';
   color: string;
   icon: string;
+};
+
+type PlacedObject = {
+  id: string;
+  productId: string;
+  name: string;
+  position: any;
+  rotation: number;
+  mesh?: any;
 };
 
 // Catalogue simplifié pour AR
@@ -26,73 +36,43 @@ const AR_PRODUCTS: ARProduct[] = [
 
 export default function ARAppPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isARSupported, setIsARSupported] = useState<boolean | null>(null);
-  const [isARActive, setIsARActive] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ARProduct | null>(null);
-  const [placedObjects, setPlacedObjects] = useState<any[]>([]);
+  const [placedObjects, setPlacedObjects] = useState<PlacedObject[]>([]);
   const [showProductMenu, setShowProductMenu] = useState(false);
   const addToCart = useCartStore(state => state.addItem);
 
-  useEffect(() => {
-    // Vérifier support WebXR
-    const checkARSupport = async () => {
-      if ('xr' in navigator) {
-        try {
-          const supported = await (navigator as any).xr.isSessionSupported('immersive-ar');
-          setIsARSupported(supported);
-        } catch (error) {
-          setIsARSupported(false);
-        }
-      } else {
-        setIsARSupported(false);
-      }
-    };
-    checkARSupport();
-  }, []);
+  // Utiliser le hook WebXR
+  const { isSupported, isActive, startSession, placeObject: placeObjectXR, removeObject } = useWebXR();
 
   const startAR = async () => {
-    if (!isARSupported) return;
+    if (!canvasRef.current || !isSupported) return;
 
     try {
-      const xr = (navigator as any).xr;
-      const session = await xr.requestSession('immersive-ar', {
-        requiredFeatures: ['hit-test', 'dom-overlay'],
-        domOverlay: { root: document.getElementById('ar-overlay') }
-      });
-
-      setIsARActive(true);
-
-      // Setup WebXR session avec Three.js
-      setupARSession(session);
+      await startSession(canvasRef.current);
     } catch (error) {
       console.error('Erreur démarrage AR:', error);
       alert('Impossible de démarrer l\'AR. Vérifiez que votre appareil est compatible.');
     }
   };
 
-  const setupARSession = (session: any) => {
-    // Cette fonction sera complétée avec Three.js
-    // Pour l'instant, on simule juste l'activation
-    console.log('AR Session started:', session);
-  };
-
   const placeObject = () => {
     if (!selectedProduct) return;
 
-    // Simuler placement (sera remplacé par vraie logique WebXR)
-    const newObject = {
-      id: Date.now().toString(),
-      productId: selectedProduct.id,
-      name: selectedProduct.name,
-      position: { x: 0, y: 0, z: -1 },
-      rotation: 0,
-    };
+    const product = AR_PRODUCTS.find(p => p.id === selectedProduct.id);
+    if (!product) return;
 
-    setPlacedObjects([...placedObjects, newObject]);
-    setShowProductMenu(false);
+    const placedObj = placeObjectXR(selectedProduct.id, selectedProduct.name, product.color);
+    if (placedObj) {
+      setPlacedObjects([...placedObjects, placedObj]);
+      setShowProductMenu(false);
+    }
   };
 
   const deleteObject = (id: string) => {
+    const objToRemove = placedObjects.find(obj => obj.id === id);
+    if (objToRemove) {
+      removeObject(objToRemove);
+    }
     setPlacedObjects(placedObjects.filter(obj => obj.id !== id));
   };
 
@@ -103,7 +83,7 @@ export default function ARAppPage() {
     alert(`${placedObjects.length} produit(s) ajouté(s) au panier !`);
   };
 
-  if (isARSupported === null) {
+  if (isSupported === null) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
@@ -114,7 +94,7 @@ export default function ARAppPage() {
     );
   }
 
-  if (isARSupported === false) {
+  if (isSupported === false) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white p-4">
         <div className="max-w-md text-center">
@@ -144,7 +124,7 @@ export default function ARAppPage() {
       <div id="ar-overlay" className="absolute inset-0 pointer-events-none">
         <div className="relative w-full h-full pointer-events-none">
 
-          {!isARActive ? (
+          {!isActive ? (
             // Écran de démarrage
             <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/60 flex items-center justify-center pointer-events-auto">
               <div className="text-center text-white px-6">
