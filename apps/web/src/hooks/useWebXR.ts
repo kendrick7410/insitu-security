@@ -93,29 +93,28 @@ export function useWebXR() {
       const { scene, camera, renderer } = initThreeJS(canvas);
       console.log('2. Three.js initialized');
 
-      const overlayRoot = document.getElementById('ar-overlay');
-      console.log('3. Overlay root:', overlayRoot);
-
-      console.log('4. Requesting AR session...');
+      console.log('3. Requesting AR session...');
       const session = await (navigator as any).xr.requestSession('immersive-ar', {
         requiredFeatures: ['hit-test'],
         optionalFeatures: ['dom-overlay'],
-        domOverlay: overlayRoot ? { root: overlayRoot } : undefined
       });
-      console.log('5. AR session granted');
+      console.log('4. AR session granted');
 
       sessionRef.current = session;
+
+      console.log('5. Setting XR session on renderer...');
       await renderer.xr.setSession(session);
       console.log('6. Renderer XR session set');
 
       // Hit test source
+      console.log('7. Requesting hit test source...');
       const viewerSpace = await session.requestReferenceSpace('viewer');
       hitTestSourceRef.current = await session.requestHitTestSource({ space: viewerSpace });
-      console.log('7. Hit test source created');
+      console.log('8. Hit test source created');
 
-      console.log('8. Setting isActive to true');
+      console.log('9. Setting isActive to true');
       setIsActive(true);
-      console.log('9. isActive set to true');
+      console.log('10. isActive set to true - AR READY!');
 
       // Animation loop
       renderer.setAnimationLoop((time: number, frame: any) => {
@@ -147,6 +146,9 @@ export function useWebXR() {
       return session;
     } catch (error) {
       console.error('Erreur démarrage WebXR:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      setIsActive(false);
+      cleanup();
       return null;
     }
   };
@@ -189,18 +191,43 @@ export function useWebXR() {
   };
 
   const cleanup = () => {
-    if (sessionRef.current) {
-      sessionRef.current.end();
-      sessionRef.current = null;
+    console.log('Cleanup starting...');
+
+    try {
+      if (rendererRef.current) {
+        console.log('Stopping animation loop...');
+        rendererRef.current.setAnimationLoop(null);
+      }
+    } catch (e) {
+      console.error('Error stopping animation loop:', e);
     }
-    if (rendererRef.current) {
-      rendererRef.current.dispose();
-      rendererRef.current = null;
+
+    try {
+      if (sessionRef.current && sessionRef.current.end) {
+        console.log('Ending XR session...');
+        sessionRef.current.end();
+      }
+    } catch (e) {
+      console.error('Error ending session:', e);
     }
+
+    try {
+      if (rendererRef.current) {
+        console.log('Disposing renderer...');
+        rendererRef.current.dispose();
+      }
+    } catch (e) {
+      console.error('Error disposing renderer:', e);
+    }
+
+    sessionRef.current = null;
+    rendererRef.current = null;
     hitTestSourceRef.current = null;
     sceneRef.current = null;
     cameraRef.current = null;
     reticleRef.current = null;
+
+    console.log('Cleanup complete');
   };
 
   return {
