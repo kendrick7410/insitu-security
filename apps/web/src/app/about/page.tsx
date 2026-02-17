@@ -4,9 +4,6 @@ export default function AboutPage() {
   const values = [
     { icon: Clock, title: 'Disponibilité', desc: 'Toujours à votre écoute' },
     { icon: Shield, title: 'Réactivité', desc: 'Réponse rapide à vos besoins' },
-    { icon: CheckCircle, title: 'Ponctualité', desc: 'Respect des délais' },
-    { icon: Heart, title: 'Convivialité', desc: 'Relation humaine privilégiée' },
-    { icon: Award, title: 'Soin apporté', desc: 'Travail de qualité' },
     { icon: Users, title: 'Budget respecté', desc: 'Transparence tarifaire' },
   ];
 
@@ -24,21 +21,40 @@ export default function AboutPage() {
           </p>
         </div>
 
-        {/* Mission */}
-        <div className="card p-8 mb-12 bg-gradient-to-br from-orange/10 to-yellow/10">
-          <h2 className="text-3xl font-bold mb-6 text-center">Notre mission</h2>
+        {/* Le concept In Situ Security */}
+        <div className="card p-8 mb-12 bg-gradient-to-br from-yellow/10 to-orange/10 border-l-4 border-orange">
+          <h2 className="text-3xl font-bold mb-6 text-center">Le concept In Situ Security</h2>
           <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
             <p>
-              La sécurité est essentielle à votre tranquillité d'esprit. Notre mission est de vous aider à la préserver grâce à des solutions fiables, accessibles et durables.
+              <strong className="text-orange">In Situ Security</strong>, c'est une approche différente de la sécurité : <strong>vous achetez du matériel de qualité professionnelle chez nous, et vous l'installez vous-même</strong>.
             </p>
             <p>
-              Nous proposons des systèmes de sécurité <strong>In Situ</strong>, conçus pour s'intégrer naturellement dans votre environnement, sans en altérer l'esthétique ni le confort. Chaque installation respecte vos lieux et votre mode de vie, qu'il s'agisse de votre habitation ou de votre entreprise.
+              Pourquoi "In Situ" ? Parce que nos systèmes sont conçus pour <strong>s'intégrer naturellement dans votre environnement</strong>, sans en altérer l'esthétique ni le confort. Chaque installation respecte vos lieux et votre mode de vie, qu'il s'agisse de votre habitation ou de votre entreprise.
             </p>
             <p>
-              Nos solutions en kit, de haute qualité, sont pensées pour une installation simple et autonome. Elles sont accompagnées d'une documentation claire, d'un support réactif et d'un service de maintenance, afin de garantir la fiabilité de votre système dans le temps.
+              Cette approche vous offre :
             </p>
-            <p className="text-xl font-semibold text-orange text-center mt-6">
-              Notre mission : garantir votre sérénité, chaque jour.
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li><strong>Autonomie totale</strong> : vous maîtrisez votre installation, à votre rythme</li>
+              <li><strong>Économies significatives</strong> : pas de frais d'installation professionnelle</li>
+              <li><strong>Équipements de qualité</strong> : nous sélectionnons rigoureusement chaque produit</li>
+              <li><strong>Accompagnement complet</strong> : documentation claire, support technique réactif, service de maintenance</li>
+            </ul>
+            <p className="text-xl font-semibold text-orange text-center mt-6 italic">
+              Votre sécurité, votre installation, notre expertise.
+            </p>
+          </div>
+        </div>
+
+        {/* Mission */}
+        <div className="card p-8 mb-12">
+          <h2 className="text-3xl font-bold mb-6 text-center">Notre mission</h2>
+          <div className="space-y-4 text-lg text-gray-700 leading-relaxed text-center">
+            <p className="text-xl">
+              La sécurité est essentielle à votre tranquillité d'esprit. Notre mission est de vous aider à la préserver grâce à des <strong>solutions fiables, accessibles et durables</strong>.
+            </p>
+            <p className="text-2xl font-bold text-orange mt-8">
+              Garantir votre sérénité, chaque jour.
             </p>
           </div>
         </div>
@@ -47,16 +63,16 @@ export default function AboutPage() {
         <div className="mb-16">
           <h2 className="text-3xl font-bold text-center mb-4">Nos valeurs</h2>
           <p className="text-center text-gray-600 mb-8">
-            Au-delà de la qualité de nos prestations, nos clients apprécient particulièrement :
+            Au-delà de la qualité de nos produits, nos clients apprécient particulièrement :
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {values.map((value, idx) => (
-              <div key={idx} className="card p-6 text-center hover:shadow-xl transition-shadow">
-                <div className="w-16 h-16 bg-yellow rounded-full flex items-center justify-center mx-auto mb-4">
-                  <value.icon className="w-8 h-8 text-gray-900" />
+              <div key={idx} className="card p-8 text-center hover:shadow-xl transition-shadow">
+                <div className="w-20 h-20 bg-yellow rounded-full flex items-center justify-center mx-auto mb-4">
+                  <value.icon className="w-10 h-10 text-gray-900" />
                 </div>
-                <h3 className="font-bold text-lg mb-2">{value.title}</h3>
-                <p className="text-sm text-gray-600">{value.desc}</p>
+                <h3 className="font-bold text-xl mb-3">{value.title}</h3>
+                <p className="text-gray-600">{value.desc}</p>
               </div>
             ))}
           </div>
