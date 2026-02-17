@@ -95,22 +95,6 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Notre expertise */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <div className="card p-8 text-center">
-            <div className="text-5xl font-bold text-orange mb-2">+20 ans</div>
-            <p className="text-gray-700 font-semibold">d'expérience</p>
-          </div>
-          <div className="card p-8 text-center">
-            <div className="text-5xl font-bold text-orange mb-2">100%</div>
-            <p className="text-gray-700 font-semibold">Matériel de qualité</p>
-          </div>
-          <div className="card p-8 text-center">
-            <div className="text-5xl font-bold text-orange mb-2">1000+</div>
-            <p className="text-gray-700 font-semibold">Clients satisfaits</p>
-          </div>
-        </div>
-
         {/* Notre garantie */}
         <div className="card p-8 mb-12">
           <h2 className="text-3xl font-bold mb-6">Notre garantie</h2>
