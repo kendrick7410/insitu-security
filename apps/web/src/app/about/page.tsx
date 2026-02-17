@@ -36,9 +36,10 @@ export default function AboutPage() {
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li><strong>Autonomie totale</strong> : vous maîtrisez votre installation, à votre rythme</li>
-              <li><strong>Économies significatives</strong> : pas de frais d'installation professionnelle</li>
+              <li><strong>Économies significatives</strong> : pas de frais d'installation professionnelle obligatoires</li>
               <li><strong>Équipements de qualité</strong> : nous sélectionnons rigoureusement chaque produit</li>
               <li><strong>Accompagnement complet</strong> : documentation claire, support technique réactif, service de maintenance</li>
+              <li><strong>Aide sur place si besoin</strong> : nous restons disponibles pour vous assister lors de l'installation si vous le souhaitez</li>
             </ul>
             <p className="text-xl font-semibold text-orange text-center mt-6 italic">
               Votre sécurité, votre installation, notre expertise.
