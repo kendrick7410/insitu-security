@@ -1,4 +1,5 @@
-import { Shield, Users, Clock, Heart, CheckCircle, Award } from 'lucide-react';
+import { Shield, Users, Clock, Heart, CheckCircle, Award, ArrowRight, Package } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AboutPage() {
   const values = [
@@ -45,6 +46,21 @@ export default function AboutPage() {
               Votre sécurité, votre installation, notre expertise.
             </p>
           </div>
+        </div>
+
+        {/* CTA Produits */}
+        <div className="text-center mb-12">
+          <Link
+            href="/products"
+            className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange to-yellow text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all hover:scale-105"
+          >
+            <Package className="w-6 h-6" />
+            <span>Découvrir nos produits</span>
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+          <p className="text-sm text-gray-500 mt-3">
+            Caméras, capteurs, centrales... Tout pour votre installation
+          </p>
         </div>
 
         {/* Mission */}
