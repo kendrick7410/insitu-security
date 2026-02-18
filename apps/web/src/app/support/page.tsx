@@ -103,13 +103,13 @@ export default function SupportPage() {
             <Link
               key={index}
               href={link.href}
-              className="card p-6 hover:scale-105 transition-transform"
+              className="card dark:bg-gray-800 p-6 hover:scale-105 transition-transform"
             >
               <div className={`w-12 h-12 ${link.color} rounded-lg flex items-center justify-center mb-4`}>
                 <link.icon className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-lg mb-2">{link.title}</h3>
-              <p className="text-sm text-gray-600">{link.description}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{link.description}</p>
             </Link>
           ))}
         </div>
@@ -124,9 +124,9 @@ export default function SupportPage() {
                 <h3 className="text-xl font-bold mb-4 text-yellow">{section.category}</h3>
                 <div className="space-y-4">
                   {section.questions.map((item, qIdx) => (
-                    <div key={qIdx} className="card p-6">
+                    <div key={qIdx} className="card dark:bg-gray-800 p-6">
                       <h4 className="font-bold text-lg mb-2">{item.q}</h4>
-                      <p className="text-gray-600">{item.a}</p>
+                      <p className="text-gray-600 dark:text-gray-300">{item.a}</p>
                     </div>
                   ))}
                 </div>
@@ -136,7 +136,7 @@ export default function SupportPage() {
         </div>
 
         {/* Still Need Help */}
-        <div className="card p-8 text-center bg-gradient-to-r from-yellow to-orange">
+        <div className="card dark:bg-gray-800 p-8 text-center bg-gradient-to-r from-yellow to-orange">
           <h2 className="text-2xl font-bold mb-4">Vous ne trouvez pas votre réponse ?</h2>
           <p className="text-gray-900 mb-6">
             Notre équipe est disponible pour vous aider

@@ -51,7 +51,7 @@ export default function MaintenancePage() {
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="section-title">Plans de maintenance</h1>
+          <h1 className="section-title dark:text-white">Plans de maintenance</h1>
           <p className="section-subtitle">
             Sécurité et sérénité pour votre système d'alarme
           </p>
@@ -78,8 +78,8 @@ export default function MaintenancePage() {
 
               <div className="mb-6">
                 <span className="text-4xl font-bold">{plan.price}</span>
-                {plan.price > 0 && <span className="text-gray-600">{plan.period}</span>}
-                {plan.price === 0 && <span className="text-gray-600 ml-2">{plan.period}</span>}
+                {plan.price > 0 && <span className="text-gray-600 dark:text-gray-300">{plan.period}</span>}
+                {plan.price === 0 && <span className="text-gray-600 dark:text-gray-300 ml-2">{plan.period}</span>}
               </div>
 
               <ul className="space-y-3 mb-8">
@@ -116,7 +116,7 @@ export default function MaintenancePage() {
                 <Shield className="w-8 h-8 text-gray-900" />
               </div>
               <h3 className="font-bold text-lg mb-2">Tranquillité d'esprit</h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Votre système fonctionne 24/7. Un support réactif garantit votre sécurité sans interruption.
               </p>
             </div>
@@ -126,7 +126,7 @@ export default function MaintenancePage() {
                 <Wrench className="w-8 h-8 text-gray-900" />
               </div>
               <h3 className="font-bold text-lg mb-2">Maintenance préventive</h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Détection et résolution des problèmes avant qu'ils n'affectent votre sécurité.
               </p>
             </div>
@@ -136,7 +136,7 @@ export default function MaintenancePage() {
                 <Headphones className="w-8 h-8 text-gray-900" />
               </div>
               <h3 className="font-bold text-lg mb-2">Support expert</h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Nos techniciens sont formés pour résoudre rapidement tous vos problèmes.
               </p>
             </div>
@@ -148,29 +148,29 @@ export default function MaintenancePage() {
           <h2 className="text-3xl font-bold text-center mb-8">Questions fréquentes</h2>
 
           <div className="space-y-6">
-            <div className="card p-6">
+            <div className="card dark:bg-gray-800 p-6">
               <h3 className="font-bold text-lg mb-2">
                 Puis-je changer de plan en cours d'année ?
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Oui, vous pouvez upgrader ou downgrader votre plan à tout moment. Les ajustements sont calculés au prorata.
               </p>
             </div>
 
-            <div className="card p-6">
+            <div className="card dark:bg-gray-800 p-6">
               <h3 className="font-bold text-lg mb-2">
                 Le plan gratuit est-il vraiment suffisant ?
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Pour une utilisation basique, oui. Vous bénéficiez de la garantie 2 ans et des mises à jour. Les plans payants ajoutent confort et sérénité.
               </p>
             </div>
 
-            <div className="card p-6">
+            <div className="card dark:bg-gray-800 p-6">
               <h3 className="font-bold text-lg mb-2">
                 Que se passe-t-il en cas de panne hors garantie ?
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Sans plan, vous devrez payer les réparations. Avec Premium/Pro, le remplacement est inclus. C'est là toute la valeur des plans payants.
               </p>
             </div>

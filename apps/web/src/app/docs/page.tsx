@@ -55,7 +55,7 @@ export default function DocsPage() {
                 Notre documentation technique complète sera bientôt disponible en ligne.
                 En attendant, consultez les guides d'installation fournis avec vos produits.
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Pour toute question : <a href="mailto:support@insitusecurity.fr" className="text-blue-600 hover:underline">support@insitusecurity.fr</a> ou 01 23 45 67 89
               </p>
             </div>
@@ -65,7 +65,7 @@ export default function DocsPage() {
         {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {docCategories.map((category, idx) => (
-            <div key={idx} className="card p-6">
+            <div key={idx} className="card dark:bg-gray-800 p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-12 h-12 bg-yellow rounded-lg flex items-center justify-center">
                   <category.icon className="w-6 h-6 text-gray-900" />
@@ -77,7 +77,7 @@ export default function DocsPage() {
                   <li key={linkIdx}>
                     <Link
                       href={link.href}
-                      className="text-gray-600 hover:text-yellow transition-colors text-sm"
+                      className="text-gray-600 dark:text-gray-300 hover:text-yellow transition-colors text-sm"
                     >
                       → {link.name}
                     </Link>
@@ -90,15 +90,15 @@ export default function DocsPage() {
 
         {/* Quick Links */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link href="/support" className="card p-6 hover:shadow-xl transition-shadow">
+          <Link href="/support" className="card dark:bg-gray-800 p-6 hover:shadow-xl transition-shadow">
             <h3 className="font-bold text-lg mb-2">Centre d'aide</h3>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
               FAQ, guides de dépannage et support technique
             </p>
           </Link>
-          <Link href="/contact" className="card p-6 hover:shadow-xl transition-shadow">
+          <Link href="/contact" className="card dark:bg-gray-800 p-6 hover:shadow-xl transition-shadow">
             <h3 className="font-bold text-lg mb-2">Nous contacter</h3>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
               Besoin d'aide personnalisée ? Notre équipe est là pour vous
             </p>
           </Link>

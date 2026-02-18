@@ -30,23 +30,23 @@ export default function ARPage() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <Eye className="w-20 h-20 text-yellow mx-auto mb-6" />
-          <h1 className="section-title">Visualisation en Réalité Augmentée</h1>
-          <p className="section-subtitle">
+          <h1 className="section-title dark:text-white">Visualisation en Réalité Augmentée</h1>
+          <p className="section-subtitle dark:text-gray-300">
             Placez virtuellement nos équipements de sécurité chez vous avant d'acheter
           </p>
         </div>
 
         {/* How it works */}
-        <div className="card p-8 mb-8">
-          <h2 className="text-2xl font-bold mb-6">Comment ça marche ?</h2>
+        <div className="card dark:bg-gray-800 p-8 mb-8 dark:bg-gray-800">
+          <h2 className="text-2xl font-bold mb-6 dark:text-white">Comment ça marche ?</h2>
           <div className="space-y-6">
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 bg-yellow rounded-full flex items-center justify-center font-bold flex-shrink-0">
                 1
               </div>
               <div>
-                <h3 className="font-bold text-lg mb-2">Ouvrez sur votre smartphone</h3>
-                <p className="text-gray-600">
+                <h3 className="font-bold text-lg mb-2 dark:text-white dark:text-white">Ouvrez sur votre smartphone</h3>
+                <p className="text-gray-600 dark:text-gray-300">
                   L'expérience AR nécessite un smartphone Android (ARCore) ou iOS (ARKit)
                 </p>
               </div>
@@ -57,8 +57,8 @@ export default function ARPage() {
                 2
               </div>
               <div>
-                <h3 className="font-bold text-lg mb-2">Scannez votre espace</h3>
-                <p className="text-gray-600">
+                <h3 className="font-bold text-lg mb-2 dark:text-white">Scannez votre espace</h3>
+                <p className="text-gray-600 dark:text-gray-300">
                   Pointez votre caméra vers le sol et déplacez-vous lentement pour détecter les surfaces
                 </p>
               </div>
@@ -69,8 +69,8 @@ export default function ARPage() {
                 3
               </div>
               <div>
-                <h3 className="font-bold text-lg mb-2">Placez vos équipements</h3>
-                <p className="text-gray-600">
+                <h3 className="font-bold text-lg mb-2 dark:text-white">Placez vos équipements</h3>
+                <p className="text-gray-600 dark:text-gray-300">
                   Choisissez un produit et tapez sur une surface pour le placer. Ajustez la position et l'angle.
                 </p>
               </div>
@@ -80,20 +80,20 @@ export default function ARPage() {
 
         {/* Requirements */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="card p-6">
+          <div className="card dark:bg-gray-800 p-6">
             <Smartphone className="w-10 h-10 text-yellow mb-4" />
-            <h3 className="font-bold text-lg mb-2">Compatible avec</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <h3 className="font-bold text-lg mb-2 dark:text-white">Compatible avec</h3>
+            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
               <li>• iPhone 6s et versions ultérieures (iOS 11+)</li>
               <li>• Android 7.0+ avec ARCore</li>
               <li>• Connexion HTTPS requise</li>
             </ul>
           </div>
 
-          <div className="card p-6">
+          <div className="card dark:bg-gray-800 p-6">
             <Maximize className="w-10 h-10 text-yellow mb-4" />
-            <h3 className="font-bold text-lg mb-2">Fonctionnalités</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <h3 className="font-bold text-lg mb-2 dark:text-white">Fonctionnalités</h3>
+            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
               <li>• Placement précis sur les surfaces</li>
               <li>• Rotation et ajustement de taille</li>
               <li>• Plusieurs objets simultanés</li>
@@ -103,7 +103,7 @@ export default function ARPage() {
         </div>
 
         {/* Launch Button */}
-        <div className="card p-8 text-center bg-gradient-to-r from-yellow to-orange">
+        <div className="card dark:bg-gray-800 p-8 text-center bg-gradient-to-r from-yellow to-orange">
           <h2 className="text-2xl font-bold mb-4">Prêt à commencer ?</h2>
           <p className="text-gray-900 mb-6">
             {isMobile
@@ -133,10 +133,10 @@ export default function ARPage() {
                 La réalité augmentée nécessite un smartphone équipé d'ARCore (Android) ou ARKit (iOS).
               </p>
               <div className="space-y-3">
-                <p className="text-sm text-gray-600 text-center">
+                <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                   Pour accéder à l'expérience AR :
                 </p>
-                <ul className="text-sm text-gray-600 space-y-2">
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-2">
                   <li>📱 Scannez le QR code avec votre smartphone</li>
                   <li>📧 Ou envoyez-vous le lien par email</li>
                   <li>💬 Ou copiez l'URL dans votre navigateur mobile</li>
