@@ -21,11 +21,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors`}>
         <ThemeProvider>
           <ThemeToggle />
           <Header />
-          <main className="min-h-screen">{children}</main>
+          <main className="min-h-screen bg-white dark:bg-gray-900">{children}</main>
           <Footer />
         </ThemeProvider>
       </body>
