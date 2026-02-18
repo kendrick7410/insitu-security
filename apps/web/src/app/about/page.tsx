@@ -12,19 +12,34 @@ export default function AboutPage() {
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
         {/* Hero Section */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             <span className="text-orange">In Situ</span> Security
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
             Votre environnement est unique. Votre sécurité doit l'être aussi.<br />
             Vous installez votre sécurité. Nous vous accompagnons à chaque étape.
           </p>
+
+          {/* CTA Produits */}
+          <div className="mb-8">
+            <Link
+              href="/products"
+              className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange to-yellow text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all hover:scale-105"
+            >
+              <Package className="w-6 h-6" />
+              <span>Découvrir nos produits</span>
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <p className="text-sm text-gray-500 mt-3">
+              Caméras, capteurs, centrales... Tout pour votre installation
+            </p>
+          </div>
         </div>
 
-        {/* Le concept In Situ Security */}
+        {/* Le concept */}
         <div className="card p-8 mb-12 bg-gradient-to-br from-yellow/10 to-orange/10 border-l-4 border-orange">
-          <h2 className="text-3xl font-bold mb-6 text-center">Le concept In Situ Security</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center">Le concept</h2>
           <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
             <p>
               <strong className="text-orange">In Situ Security</strong>, c'est une approche différente de la sécurité : <strong>vous achetez du matériel de qualité professionnelle chez nous, et vous l'installez vous-même</strong>.
@@ -46,21 +61,6 @@ export default function AboutPage() {
               Votre sécurité, votre installation, notre expertise.
             </p>
           </div>
-        </div>
-
-        {/* CTA Produits */}
-        <div className="text-center mb-12">
-          <Link
-            href="/products"
-            className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange to-yellow text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all hover:scale-105"
-          >
-            <Package className="w-6 h-6" />
-            <span>Découvrir nos produits</span>
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-          <p className="text-sm text-gray-500 mt-3">
-            Caméras, capteurs, centrales... Tout pour votre installation
-          </p>
         </div>
 
         {/* Mission */}
