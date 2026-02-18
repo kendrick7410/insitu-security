@@ -2,7 +2,7 @@
 
 Système complet de site e-commerce pour équipements de sécurité connectés avec visualisation AR.
 
-## 🏗️ Architecture
+## 🏗️ Architecture 
 
 Ce monorepo contient 3 applications :
 
