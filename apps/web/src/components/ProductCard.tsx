@@ -23,7 +23,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="card group">
-      <div className="relative h-64 bg-gray-100">
+      <div className="relative h-64 bg-gray-100 dark:bg-gray-700">
         <Image
           src={product.images[0]}
           alt={product.name}
@@ -39,11 +39,11 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="p-5">
-        <h3 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h3>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.shortDescription}</p>
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{product.name}</h3>
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">{product.shortDescription}</p>
 
         <div className="flex items-center justify-between mb-4">
-          <span className="text-2xl font-bold text-gray-900">{product.price.toFixed(2)} €</span>
+          <span className="text-2xl font-bold text-gray-900 dark:text-white">{product.price.toFixed(2)} €</span>
         </div>
 
         <div className="flex space-x-2">

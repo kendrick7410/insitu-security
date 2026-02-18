@@ -46,12 +46,12 @@ export default function DocsPage() {
         </div>
 
         {/* Notice */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-12">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-12">
           <div className="flex items-start space-x-3">
-            <AlertCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+            <AlertCircle className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
             <div>
-              <h3 className="font-bold text-lg mb-2">Documentation complète disponible</h3>
-              <p className="text-gray-700 mb-3">
+              <h3 className="font-bold text-lg mb-2 dark:text-white">Documentation complète disponible</h3>
+              <p className="text-gray-700 dark:text-gray-300 mb-3">
                 Notre documentation technique complète sera bientôt disponible en ligne.
                 En attendant, consultez les guides d'installation fournis avec vos produits.
               </p>
@@ -70,7 +70,7 @@ export default function DocsPage() {
                 <div className="w-12 h-12 bg-yellow rounded-lg flex items-center justify-center">
                   <category.icon className="w-6 h-6 text-gray-900" />
                 </div>
-                <h2 className="text-xl font-bold">{category.title}</h2>
+                <h2 className="text-xl font-bold dark:text-white">{category.title}</h2>
               </div>
               <ul className="space-y-2">
                 {category.links.map((link, linkIdx) => (
@@ -106,7 +106,7 @@ export default function DocsPage() {
 
         {/* Download Section */}
         <div className="mt-12 card p-8 bg-gradient-to-r from-yellow to-orange text-center">
-          <h2 className="text-2xl font-bold mb-4">Guides d'installation PDF</h2>
+          <h2 className="text-2xl font-bold dark:text-white mb-4">Guides d'installation PDF</h2>
           <p className="text-gray-900 mb-6">
             Téléchargez les guides d'installation détaillés pour chaque produit
           </p>

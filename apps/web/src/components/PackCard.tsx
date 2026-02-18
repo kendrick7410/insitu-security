@@ -26,7 +26,7 @@ export function PackCard({ pack }: PackCardProps) {
 
   return (
     <div className="card">
-      <div className="relative h-64 bg-gray-100">
+      <div className="relative h-64 bg-gray-100 dark:bg-gray-700">
         <Image
           src={pack.image}
           alt={pack.name}
@@ -40,30 +40,30 @@ export function PackCard({ pack }: PackCardProps) {
       </div>
 
       <div className="p-6">
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">{pack.name}</h3>
-        <p className="text-gray-600 mb-4">{pack.description}</p>
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{pack.name}</h3>
+        <p className="text-gray-600 dark:text-gray-300 mb-4">{pack.description}</p>
 
         <ul className="space-y-2 mb-6">
           {pack.features.map((feature, index) => (
             <li key={index} className="flex items-start space-x-2 text-sm">
               <Check className="w-5 h-5 text-yellow flex-shrink-0 mt-0.5" />
-              <span className="text-gray-700">{feature}</span>
+              <span className="text-gray-700 dark:text-gray-300">{feature}</span>
             </li>
           ))}
         </ul>
 
-        <div className="border-t pt-4">
+        <div className="border-t dark:border-gray-700 pt-4">
           <div className="flex items-baseline justify-between mb-2">
             <div>
-              <span className="text-gray-500 line-through text-sm">
+              <span className="text-gray-500 dark:text-gray-400 line-through text-sm">
                 {originalPrice.toFixed(2)} €
               </span>
-              <span className="text-3xl font-bold text-gray-900 ml-2">
+              <span className="text-3xl font-bold text-gray-900 dark:text-white ml-2">
                 {pack.price.toFixed(2)} €
               </span>
             </div>
           </div>
-          <p className="text-sm text-green-600 font-semibold mb-4">
+          <p className="text-sm text-green-600 dark:text-green-500 font-semibold mb-4">
             Économisez {savings.toFixed(2)} €
           </p>
 

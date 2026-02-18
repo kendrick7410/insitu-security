@@ -74,7 +74,7 @@ export default function MaintenancePage() {
                 </div>
               )}
 
-              <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+              <h3 className="text-2xl font-bold mb- dark:text-white2">{plan.name}</h3>
 
               <div className="mb-6">
                 <span className="text-4xl font-bold">{plan.price}</span>
@@ -105,8 +105,8 @@ export default function MaintenancePage() {
         </div>
 
         {/* Why Maintenance */}
-        <div className="bg-gray-50 rounded-2xl p-8 mb-12">
-          <h2 className="text-3xl font-bold text-center mb-8">
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 mb-12">
+          <h2 className="text-3xl font-bold dark:text-white text-center mb-8 dark:text-white">
             Pourquoi souscrire à un plan de maintenance ?
           </h2>
 
@@ -115,7 +115,7 @@ export default function MaintenancePage() {
               <div className="w-16 h-16 bg-yellow rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield className="w-8 h-8 text-gray-900" />
               </div>
-              <h3 className="font-bold text-lg mb-2">Tranquillité d'esprit</h3>
+              <h3 className="font-bold text-lg mb-2 dark:text-white">Tranquillité d'esprit</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Votre système fonctionne 24/7. Un support réactif garantit votre sécurité sans interruption.
               </p>
@@ -125,7 +125,7 @@ export default function MaintenancePage() {
               <div className="w-16 h-16 bg-yellow rounded-full flex items-center justify-center mx-auto mb-4">
                 <Wrench className="w-8 h-8 text-gray-900" />
               </div>
-              <h3 className="font-bold text-lg mb-2">Maintenance préventive</h3>
+              <h3 className="font-bold text-lg mb-2 dark:text-white">Maintenance préventive</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Détection et résolution des problèmes avant qu'ils n'affectent votre sécurité.
               </p>
@@ -135,7 +135,7 @@ export default function MaintenancePage() {
               <div className="w-16 h-16 bg-yellow rounded-full flex items-center justify-center mx-auto mb-4">
                 <Headphones className="w-8 h-8 text-gray-900" />
               </div>
-              <h3 className="font-bold text-lg mb-2">Support expert</h3>
+              <h3 className="font-bold text-lg mb-2 dark:text-white">Support expert</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Nos techniciens sont formés pour résoudre rapidement tous vos problèmes.
               </p>
@@ -145,7 +145,7 @@ export default function MaintenancePage() {
 
         {/* FAQ Section */}
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">Questions fréquentes</h2>
+          <h2 className="text-3xl font-bold dark:text-white text-center mb-8">Questions fréquentes</h2>
 
           <div className="space-y-6">
             <div className="card dark:bg-gray-800 p-6">

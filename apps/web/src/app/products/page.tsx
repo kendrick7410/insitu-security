@@ -46,7 +46,7 @@ export default function ProductsPage() {
             className={`px-6 py-2 rounded-full font-semibold transition-colors ${
               selectedCategory === cat.value
                 ? 'bg-yellow text-gray-900'
-                : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-yellow'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-2 border-gray-200 dark:border-gray-700 hover:border-yellow'
             }`}
           >
             {cat.label}
@@ -58,7 +58,7 @@ export default function ProductsPage() {
       {showPacks && (
         <div className="mb-12">
           {selectedCategory !== 'pack' && (
-            <h2 className="text-2xl font-bold mb-6">Packs complets</h2>
+            <h2 className="text-2xl font-bold mb-6 dark:text-white">Packs complets</h2>
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {packs.map(pack => (
@@ -72,7 +72,7 @@ export default function ProductsPage() {
       {showProducts && (
         <div>
           {selectedCategory === 'all' && (
-            <h2 className="text-2xl font-bold mb-6 mt-12">Produits individuels</h2>
+            <h2 className="text-2xl font-bold mb-6 dark:text-white mt-12">Produits individuels</h2>
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.map(product => (
@@ -84,7 +84,7 @@ export default function ProductsPage() {
 
       {!showPacks && filteredProducts.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-600">Aucun produit dans cette catégorie.</p>
+          <p className="text-gray-600 dark:text-gray-300">Aucun produit dans cette catégorie.</p>
         </div>
       )}
     </div>

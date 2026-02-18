@@ -108,7 +108,7 @@ export default function SupportPage() {
               <div className={`w-12 h-12 ${link.color} rounded-lg flex items-center justify-center mb-4`}>
                 <link.icon className="w-6 h-6" />
               </div>
-              <h3 className="font-bold text-lg mb-2">{link.title}</h3>
+              <h3 className="font-bold text-lg mb-2 dark:text-white">{link.title}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-300">{link.description}</p>
             </Link>
           ))}
@@ -116,16 +116,16 @@ export default function SupportPage() {
 
         {/* FAQs */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-center mb-8">Questions fréquentes</h2>
+          <h2 className="text-3xl font-bold dark:text-white text-center mb-8">Questions fréquentes</h2>
 
           <div className="space-y-8">
             {faqs.map((section, idx) => (
               <div key={idx}>
-                <h3 className="text-xl font-bold mb-4 text-yellow">{section.category}</h3>
+                <h3 className="text-xl font-bold dark:text-white mb-4 text-yellow">{section.category}</h3>
                 <div className="space-y-4">
                   {section.questions.map((item, qIdx) => (
                     <div key={qIdx} className="card dark:bg-gray-800 p-6">
-                      <h4 className="font-bold text-lg mb-2">{item.q}</h4>
+                      <h4 className="font-bold text-lg mb-2 dark:text-white">{item.q}</h4>
                       <p className="text-gray-600 dark:text-gray-300">{item.a}</p>
                     </div>
                   ))}
