@@ -12,8 +12,8 @@ export default function AboutPage() {
             À propos de <span className="text-orange">nous</span>
           </h1>
           <p className="text-2xl md:text-3xl text-gray-600 font-light mb-16 max-w-3xl mx-auto leading-relaxed">
-            Deux amis, une vision commune :<br />
-            rendre la sécurité accessible à tous
+            Une vision simple :<br />
+            rendre la sécurité professionnelle accessible à tous
           </p>
 
           <div className="animate-bounce">
@@ -157,7 +157,7 @@ export default function AboutPage() {
                   "Posé, j'analyse la situation en détail avant d'agir."
                 </p>
                 <p className="text-sm leading-relaxed">
-                  <strong>Plus de 10 ans d'expérience</strong> dans la sécurité et la domotique. Laurent s'occupe de la <strong>sélection des produits</strong> et du contrôle qualité. Son approche méthodique garantit que chaque équipement répond à nos standards.
+                  <strong>Plus de 20 ans d'expérience</strong> dans la sécurité et la domotique. Laurent s'occupe de la <strong>sélection des produits</strong> et du contrôle qualité. Son approche méthodique garantit que chaque équipement répond à nos standards.
                 </p>
               </div>
             </div>
