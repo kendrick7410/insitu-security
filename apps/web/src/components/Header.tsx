@@ -20,12 +20,12 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-md">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-md">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <span className="text-xl font-bold">
+            <span className="text-xl font-bold dark:text-white">
               <span className="text-orange">In Situ</span> Security
             </span>
           </Link>
@@ -36,7 +36,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-700 hover:text-yellow transition-colors font-medium"
+                className="text-gray-700 dark:text-gray-200 hover:text-yellow transition-colors font-medium"
               >
                 {link.label}
               </Link>
@@ -46,7 +46,7 @@ export function Header() {
           {/* Cart & Mobile Menu */}
           <div className="flex items-center space-x-4">
             <Link href="/cart" className="relative">
-              <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-yellow transition-colors" />
+              <ShoppingCart className="w-6 h-6 text-gray-700 dark:text-gray-200 hover:text-yellow transition-colors" />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-orange text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {totalItems}
@@ -56,7 +56,7 @@ export function Header() {
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-gray-700"
+              className="lg:hidden text-gray-700 dark:text-gray-200"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -70,7 +70,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="block text-gray-700 hover:text-yellow transition-colors font-medium py-2"
+                className="block text-gray-700 dark:text-gray-200 hover:text-yellow transition-colors font-medium py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.label}
