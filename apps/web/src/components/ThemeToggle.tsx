@@ -2,9 +2,21 @@
 
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/providers/ThemeProvider';
+import { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Ne rendre le composant qu'après le montage côté client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Éviter le flash pendant le SSR
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <button
