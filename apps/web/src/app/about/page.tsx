@@ -6,7 +6,7 @@ export default function AboutPage() {
     <main className="h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-white dark:bg-gray-900">
 
       {/* Section 1 - Hero */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-white dark:from-gray-900 to-gray-50 dark:to-gray-800 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center pt-20 pb-8 bg-gradient-to-b from-white dark:from-gray-900 to-gray-50 dark:to-gray-800 px-4">
         <div className="max-w-4xl w-full text-center">
           <h1 className="text-5xl md:text-7xl font-bold mb-8 dark:text-white">
             À propos de <span className="text-orange">nous</span>
@@ -24,7 +24,7 @@ export default function AboutPage() {
       </section>
 
       {/* Section 2 - L'origine / Le Pourquoi */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-gray-50 dark:from-gray-800 to-orange/5 dark:to-orange/10 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center pt-20 pb-8 bg-gradient-to-b from-gray-50 dark:from-gray-800 to-orange/5 dark:to-orange/10 px-4">
         <div className="max-w-4xl w-full">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 dark:text-white">
             Pourquoi <span className="text-orange">In Situ Security</span> ?
@@ -53,7 +53,7 @@ export default function AboutPage() {
       </section>
 
       {/* Section 3 - La philosophie "In Situ" */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-orange/5 dark:from-orange/10 to-yellow/5 dark:to-yellow/10 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center pt-20 pb-8 bg-gradient-to-b from-orange/5 dark:from-orange/10 to-yellow/5 dark:to-yellow/10 px-4">
         <div className="max-w-5xl w-full text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-8 dark:text-white">
             Que signifie <span className="text-orange">"In Situ"</span> ?
@@ -87,7 +87,7 @@ export default function AboutPage() {
       </section>
 
       {/* Section 4 - Nos valeurs en action */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-yellow/5 dark:from-yellow/10 to-white dark:to-gray-900 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center pt-20 pb-8 bg-gradient-to-b from-yellow/5 dark:from-yellow/10 to-white dark:to-gray-900 px-4">
         <div className="max-w-5xl w-full text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-8 dark:text-white">
             Nos valeurs <span className="text-orange">en action</span>
@@ -135,7 +135,7 @@ export default function AboutPage() {
       </section>
 
       {/* Section 5 - L'équipe en profondeur */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-white dark:from-gray-900 to-orange/5 dark:to-orange/10 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center pt-20 pb-8 bg-gradient-to-b from-white dark:from-gray-900 to-orange/5 dark:to-orange/10 px-4">
         <div className="max-w-5xl w-full">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-8 dark:text-white">
             Rencontrez <span className="text-orange">l'équipe</span>
@@ -187,7 +187,7 @@ export default function AboutPage() {
       </section>
 
       {/* Section 6 - Notre engagement + Localisation */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-orange/5 dark:from-orange/10 to-yellow/10 dark:to-yellow/20 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center pt-20 pb-8 bg-gradient-to-b from-orange/5 dark:from-orange/10 to-yellow/10 dark:to-yellow/20 px-4">
         <div className="max-w-5xl w-full">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 dark:text-white">
             Notre <span className="text-orange">engagement</span>

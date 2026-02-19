@@ -17,7 +17,7 @@ export default function HomePage() {
     <main className="h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-white dark:bg-gray-900">
 
       {/* Section 1 - Hero */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-white dark:from-gray-900 to-gray-50 dark:to-gray-800">
+      <section className="min-h-screen snap-start flex items-center justify-center bg-gradient-to-b from-white dark:from-gray-900 to-gray-50 dark:to-gray-800 pt-20 pb-8">
         <div className="max-w-6xl w-full text-center px-4">
           {/* Logo Text */}
           <div className="flex justify-center mb-12 animate-fadeIn">
@@ -55,7 +55,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 2 - Le Concept */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-gray-50 dark:from-gray-800 to-orange/5 dark:to-orange/10 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center bg-gradient-to-b pt-20 pb-8 from-gray-50 dark:from-gray-800 to-orange/5 dark:to-orange/10 px-4">
         <div className="max-w-4xl w-full text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-8 dark:text-white">
             <span className="text-orange">Le concept</span>
@@ -94,7 +94,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 3 - Produits */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-orange/5 dark:from-orange/10 to-yellow/5 dark:to-yellow/10 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center bg-gradient-to-b pt-20 pb-8 from-orange/5 dark:from-orange/10 to-yellow/5 dark:to-yellow/10 px-4">
         <div className="max-w-6xl w-full text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 dark:text-white">
             Nos <span className="text-orange">produits</span>
@@ -144,7 +144,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 4 - AR Experience */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-yellow/5 dark:from-yellow/10 to-white dark:to-gray-900 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center bg-gradient-to-b pt-20 pb-8 from-yellow/5 dark:from-yellow/10 to-white dark:to-gray-900 px-4">
         <div className="max-w-4xl w-full text-center">
           <div className="mb-8">
             <Eye className="w-20 h-20 text-orange mx-auto mb-6" />
@@ -190,7 +190,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 5 - CTA Final */}
-      <section className="h-screen snap-start flex items-center justify-center bg-gradient-to-b from-white dark:from-gray-900 to-orange/10 dark:to-orange/20 px-4">
+      <section className="min-h-screen snap-start flex items-center justify-center bg-gradient-to-b pt-20 pb-8 from-white dark:from-gray-900 to-orange/10 dark:to-orange/20 px-4">
         <div className="max-w-4xl w-full text-center">
           <h2 className="text-4xl md:text-6xl font-bold mb-6 dark:text-white">
             Prêt à <span className="text-orange">commencer</span> ?
